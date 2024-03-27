@@ -1,0 +1,18 @@
+-----------------------------------------------
+NOTES:
+-----------------------------------------------
+
+SYMFONY
+- create web app (it has to be empty project) -
+symfony new . --version=lts --webapp
+symfony new . --version="7.0.*" --webapp
+
+- displays information about the project -
+php bin/console about
+
+- symfony server -
+symfony server:start
+symfony server:start -d
+
+- check whether a project's dependencies contain any known security vulnerability -
+symfony check:security
