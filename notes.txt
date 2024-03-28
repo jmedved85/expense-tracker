@@ -16,3 +16,14 @@ symfony server:start -d
 
 - check whether a project's dependencies contain any known security vulnerability -
 symfony check:security
+
+
+SONATA ADMIN
+
+composer require sonata-project/admin-bundle
+composer require sonata-project/doctrine-orm-admin-bundle
+
+bin/console cache:clear
+bin/console assets:install
+
+http://127.0.0.1:8001/admin/
