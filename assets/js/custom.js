@@ -1,0 +1,1 @@
+console.log('Hello from assets/js/custom.js 🎉');

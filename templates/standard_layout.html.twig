@@ -11,3 +11,9 @@
 
     <link rel="stylesheet" href="{{ asset('styles/custom.css') }}">
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('js/custom.js') }}"></script>
+{% endblock %}
