@@ -17,6 +17,8 @@ symfony server:start -d
 - check whether a project's dependencies contain any known security vulnerability -
 symfony check:security
 
+- command that checks security vulnerabilities in the dependencies of the app
+bin/console importmap:audit
 
 SONATA ADMIN
 
