@@ -1,0 +1,11 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{% block field %}
+    {% if value %}
+        {# Active = NO #}
+        <span class="label label-danger">no</span>
+    {% else %}
+        {# Active = YES #}
+        <span class="label label-success">yes</span>
+    {% endif %}
+{% endblock %}
