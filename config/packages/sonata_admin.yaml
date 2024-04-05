@@ -1,5 +1,8 @@
 sonata_admin:
-    title: 'Sonata Admin'
+    title: 'HomeAcc'
+    title_logo: custom/logo.svg
+    templates:
+        layout: 'standard_layout.html.twig'
     dashboard:
         blocks:
             - { type: sonata.admin.block.admin_list, position: left }

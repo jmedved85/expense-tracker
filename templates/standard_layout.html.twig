@@ -11,18 +11,3 @@
 
     <link rel="stylesheet" href="{{ asset('styles/custom.css') }}">
 {% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-
-    <script type="text/javascript" src="{{ asset('typescript/custom.ts') }}"></script>
-    {# <script src="{{ asset('js/custom.js') }}"></script> #}
-{% endblock %}
-
-{% block sonata_admin_content_actions_wrappers %}
-    {% if _actions|replace({ '<li>': '', '</li>': '' })|trim is not empty %}
-        <ul class="nav navbar-nav navbar-left" style="padding-top: 8px;">
-            {{ parent() }}
-        </ul>
-    {% endif %}
-{% endblock sonata_admin_content_actions_wrappers %}
