@@ -117,6 +117,7 @@ admin1234
 
 ASSETS
 - styles/custom.css
+- js/custom.js
 
 bin/console debug:asset-map
 
