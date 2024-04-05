@@ -53,3 +53,64 @@ bin/console doctrine:fixtures:load
 
 vendor/bin/doctrine orm:schema-tool:update --dump-sql
 vendor/bin/doctrine orm:schema-tool:update --force
+
+
+USER ADMIN-DEV
+
+- postavljanje hashed passworda
+bin/console security:hash-password
+
+admin-dev
+admin1234
+
+{
+"user": [
+	{
+		"id" : 1,
+		"username" : "admin-dev",
+		"username_canonical" : "admin-dev",
+		"email" : "admin-dev@test.com",
+		"email_canonical" : "admin-dev@test.com",
+		"enabled" : 1,
+		"salt" : "$2y$13$r8W59gyeQkbSoiC7\/r2bae3a5a5mY7jIDQz.Kp0sbZY.1UYATSLDS",
+		"password" : "$2y$13$y6S3EHTHbt1DAmoJZkRUWOEuA7FrTqiwSJFkriimLEo1X8I\/xyKm2",
+		"last_login" : "2024-04-05 10:15:27",
+		"confirmation_token" : null,
+		"password_requested_at" : null,
+		"roles" : "a:2:{i:0;s:17:\"ROLE_SONATA_ADMIN\";i:1;s:16:\"ROLE_SUPER_ADMIN\";}",
+		"created_at" : "2024-05-04 12:04:00",
+		"updated_at" : "2024-04-05 10:15:27"
+	}
+]}
+
+
+.vscode/launch.json
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Listen for Xdebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9003
+        },
+        {
+            "name": "Launch currently open script",
+            "type": "php",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
+            "port": 9003,
+            "runtimeArgs": [
+                "-dxdebug.start_with_request=yes"
+            ],
+            "env": {
+                "XDEBUG_MODE": "debug,develop",
+                "XDEBUG_CONFIG": "client_port=${port}"
+            }
+        },
+    ]
+}
