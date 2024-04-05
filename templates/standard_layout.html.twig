@@ -1,0 +1,13 @@
+{% extends '@SonataAdmin/standard_layout.html.twig' %}
+
+{% block meta_tags %}
+    {{ parent() }}
+
+    <link href="{{ asset('custom/favicon.ico') }}" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link rel="stylesheet" href="{{ asset('styles/custom.css') }}">
+{% endblock %}

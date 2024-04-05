@@ -114,3 +114,11 @@ admin1234
         },
     ]
 }
+
+ASSETS
+- styles/custom.css
+
+bin/console debug:asset-map
+
+bin/console asset-map:compile
+bin/console cache:clear
