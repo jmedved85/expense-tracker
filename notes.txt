@@ -55,6 +55,13 @@ vendor/bin/doctrine orm:schema-tool:update --dump-sql
 vendor/bin/doctrine orm:schema-tool:update --force
 
 
+SONATA CREATE ADMIN CLASS
+-------------------------
+bin/console make:sonata:admin
+
+- fully qualified model class: App/Entity/Account
+
+
 USER ADMIN-DEV
 
 - postavljanje hashed passworda
@@ -116,6 +123,7 @@ admin1234
 }
 
 ASSETS
+------
 - styles/custom.css
 - js/custom.js
 
@@ -123,3 +131,7 @@ bin/console debug:asset-map
 
 bin/console asset-map:compile
 bin/console cache:clear
+
+PHP-STAN
+--------
+phpstan analyze --memory-limit=1G --level=3 src/

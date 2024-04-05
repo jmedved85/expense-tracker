@@ -13,19 +13,12 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use App\Entity\Account;
-use App\Entity\AccountType;
-use Doctrine\ORM\EntityRepository;
-use InvalidArgumentException;
 use Sonata\AdminBundle\Datagrid\DatagridInterface;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
-use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
 use Sonata\Form\Type\CollectionType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 final class AccountAdmin extends AbstractAdmin
 {
-    // MARK: ConfigureRoutes
     protected function configureRoutes(RouteCollectionInterface $collection): void
     {
         // $collection
@@ -40,12 +33,12 @@ final class AccountAdmin extends AbstractAdmin
     }
 
     // /* Remove batch delete action from the list */
-    protected function configureBatchActions($actions): array
-    {
-        unset($actions['delete']);
+    // protected function configureBatchActions($actions): array
+    // {
+    //     unset($actions['delete']);
 
-        return $actions;
-    }
+    //     return $actions;
+    // }
 
     // /* Remove Download button from bottom of the list */
     // public function getExportFormats(): array
@@ -53,26 +46,11 @@ final class AccountAdmin extends AbstractAdmin
     //     return [];
     // }
 
-    // MARK: - Datagrid Filters
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
-        // /* Get unit */
-        // $unitId = $this->getUnitId();
-
         $filter
             ->add('name')
-            // ->add('accountType', null, [
-            //     'placeholder' => 'Choose an option',
-            //     'show_filter' => true,
-            //     'field_type' => ChoiceType::class,
-            //     'field_options' => [
-            //         'choices' => AccountType::NAMES,
-            //     ],
-            //     'query_builder' => function (EntityRepository $er) {
-            //         return $er->createQueryBuilder('a')
-            //             ->orderBy('a.accountType', 'ASC');
-            //     },
-            // ])
+            // ->add('accountType')
             ->add('balance')
             ->add('currency', null, [
                 'label' => 'Currency',
@@ -86,37 +64,11 @@ final class AccountAdmin extends AbstractAdmin
                 'show_filter' => true,
             ])
         ;
-
-        // /* If unit is not selected, unit selection is available */
-        // if (!$unitId) {
-        //     $filter
-        //         ->add('unit', null, [
-        //             'label' => 'Unit',
-        //             'show_filter' => true,
-        //             'field_type' => EntityType::class,
-        //             'field_options' => [
-        //                 'class' => Unit::class,
-        //                 'choice_label' => 'name',
-        //                 'query_builder' => function (EntityRepository $er) {
-        //                     return $er->createQueryBuilder('s')
-        //                         ->andWhere('s.active = :active')
-        //                         ->orderBy('s.name', 'ASC')
-        //                         ->setParameter('active', true)
-        //                     ;
-        //                 },
-        //             ],
-        //         ])
-        //     ;
-        // }
     }
 
-    // MARK: - List Fields
     protected function configureListFields(ListMapper $list): void
     {
-        // /* Get unit */
-        // $unitId = $this->getUnitId();
-
-        $actions = [
+        $actionsAdmin = [
             // 'addFunds' => [
             //     'template' => 'Account/list__action_add_funds.html.twig',
             // ],
@@ -134,54 +86,41 @@ final class AccountAdmin extends AbstractAdmin
                     'name' => 'show'
                 ],
             ])
-            ->add('accountTypeName', null, [
-                'label' => 'Account Type',
-            ])
+            // ->add('accountType.name', null, [
+            //     'label' => 'Account Type',
+            // ])
             ->add('currency', null, [
-                'row_align' => 'center',
-                'header_style' => 'text-align: center',
-            ])
+				'row_align' => 'center',
+				'header_style' => 'text-align: center',
+			])
             ->add('balance', MoneyType::class, [
-                'template' => 'CRUD/list_currency.html.twig',
-                'row_align' => 'right',
-                'header_style' => 'text-align: right',
+                // 'template' => 'CRUD/list_currency.html.twig',
+				'row_align' => 'right',
+				'header_style' => 'text-align: right',
             ])
             ->add('deactivated', null, [
                 'label' => 'Active',
                 'template' => 'Account/custom_deactivated_list.html.twig',
-                'row_align' => 'center',
-                'header_style' => 'text-align: center',
+				'row_align' => 'center',
+				'header_style' => 'text-align: center',
             ])
             ->add(ListMapper::NAME_ACTIONS, null, [
-                'actions' => $actions,
+                'actions' => $actionsAdmin,
             ])
         ;
-
-        // if (!$unitId) {
-        //     $list
-        //         ->add('unit.name', null, [
-        //             'label' => 'Unit'
-        //         ])
-        //     ;
-        // }
     }
 
-    // MARK: - Form Fields
     protected function configureFormFields(FormMapper $form): void
     {
-        // /* Get unit */
-        // $unitId = $this->getUnitId();
+        // $accountTypes = ['Bank Account', 'Card Account', 'Cash Account'];
 
         $form
             ->with('Account', ['class' => 'col-md-4'])
                 ->add('name')
-                ->add('accountType', ChoiceType::class, [
-                    'placeholder' => 'Choose an option',
-                    'choices' => AccountType::NAMES,
-                ])
+                // ->add('accountType')
                 ->add('currency', CurrencyType::class, [
-                    'placeholder' => 'Choose an option',
-                    'preferred_choices' => ['EUR', 'GBP', 'USD']
+                        'placeholder' => 'Choose an option',
+                        'preferred_choices' => ['EUR', 'GBP', 'USD']
                 ])
             ->end()
             ->with('Upload File', ['class' => 'col-md-4'])
@@ -202,34 +141,15 @@ final class AccountAdmin extends AbstractAdmin
                 ])
             ->end()
         ;
-
-        // if (!$unitId) {
-        //     $form
-        //         ->add('unit', EntityType::class, [
-        //             'label' => 'Unit',
-        //             'class' => Unit::class,
-        //             'choice_label' => 'name',
-        //             'placeholder' => 'Choose an option',
-        //             'query_builder' => function (EntityRepository $er) {
-        //                 return $er->createQueryBuilder('s')
-        //                     ->andWhere('s.active = :active')
-        //                     ->orderBy('s.name', 'ASC')
-        //                     ->setParameter('active', true)
-        //                 ;
-        //             },
-        //         ])
-        //     ;
-        // }
     }
 
-    // MARK: - Show Fields
     protected function configureShowFields(ShowMapper $show): void
     {
         /** @var Account $subject */
         $subject = $this->getSubject();
 
         $accountName = $subject->getName();
-        // $accountType = $subject->getAccountTypeName();
+        // $accountType = $subject->getAccountType();
         $currency = $subject->getCurrency();
 
         $show
@@ -238,16 +158,13 @@ final class AccountAdmin extends AbstractAdmin
                 'class' => 'col-md-6'
             ])
                 ->add('name')
-                ->add('accountTypeName', null, [
-                    'label' => 'Account Type',
-                ])
-                // ->add('unit.name', null, [
-                //     'label' => 'Unit'
+                // ->add('accountType', null, [
+                //     'label' => 'Account Type'
                 // ])
                 ->add('currency')
                 ->add('balance', MoneyType::class, [
                     'label' => 'Balance',
-                    'template' => 'CRUD/show_currency.html.twig',
+                    // 'template' => 'CRUD/show_currency.html.twig',
                     'currency' => $currency
                 ])
                 ->add('deactivated', null, [
@@ -279,52 +196,35 @@ final class AccountAdmin extends AbstractAdmin
         // ;
     }
 
-    // MARK: - PrePersist
-    protected function prePersist(object $account): void
+    // /**
+    //  * @param ProxyQueryInterface<T> $query
+    //  *
+    //  * @return ProxyQueryInterface<T>
+    //  */
+    // protected function configureQuery(ProxyQueryInterface $query): ProxyQueryInterface
+    // {
+    //     if (!$query instanceof ProxyQueryInterface) {
+    //         throw new InvalidArgumentException('Expected an instance of ProxyQueryInterface');
+    //     }
+
+    //     $qb = $query->getQueryBuilder();
+    //     $rootAlias = current($query->getQueryBuilder()->getRootAliases());
+
+    //     $object = '';
+
+    //     $qb
+    //         ->where($rootAlias . '.object = :object')
+    //         ->setParameter('object', $object)
+    //     ;
+
+    //     return $query;
+    // }
+
+    protected function prePersist(object $object): void
     {
-        /** @var Account $account */
+        /** @var Account $object */
 
-        // /** @var UnitRepository $unitRepository */
-        // $unitRepository = $this->entityManager->getRepository(Unit::class);
-
-        // /* Get unit */
-        // $unitId = $this->getUnitId();
-
-        // if ($unitId) {
-        //     $unit = $unitRepository->findOneBy(['id' => $unitId]);
-        //     $account->setUnit($unit);
-        // }
-
-        $account->setDeactivated(false);
-    }
-
-    // MARK: - Configure Query
-    protected function configureQuery(ProxyQueryInterface $query): ProxyQueryInterface
-    {
-        if (!$query instanceof ProxyQuery) {
-            throw new InvalidArgumentException('Expected an instance of ProxyQuery');
-        }
-
-        // $qb = $query->getQueryBuilder();
-        // $rootAlias = current($query->getQueryBuilder()->getRootAliases());
-
-        // /* Get unit */
-        // $unitId = $this->getUnitId();
-
-        // if ($unitId) {
-        //     $qb
-        //         ->where($rootAlias . '.unit = :unitId')
-        //         ->setParameter('unitId', $unitId)
-        //     ;
-        // } else {
-        //     $qb
-        //         ->join($rootAlias . '.unit', 's')
-        //         ->andWhere('s.active = :active')
-        //         ->setParameter('active', true)
-        //     ;
-        // }
-
-        return $query;
+        $object->setDeactivated(false);
     }
 
     protected function configureDefaultSortValues(array &$sortValues): void

@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\AccountRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use NumberFormatter;
@@ -20,10 +18,7 @@ class Account
     #[ORM\Column(type: Types::STRING, length: 255)]
     private $name;
 
-    #[ORM\Column(type: Types::INTEGER)]
-    private int $accountType;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 20, scale: 2, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private $balance;
 
     #[ORM\Column(type: Types::STRING, length: 3)]
@@ -32,16 +27,8 @@ class Account
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
     private $deactivated;
 
-    #[ORM\ManyToOne(inversedBy: 'accounts')]
-    private ?Unit $unit = null;
-
-    #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'account')]
-    private Collection $purchases;
-
     public function __construct()
     {
-        $this->balance = 0;
-        $this->purchases = new ArrayCollection();
     }
 
     public function __toString()
@@ -59,23 +46,6 @@ class Account
         return $this->name;
     }
 
-    public function getAccountType(): AccountType
-    {
-        return AccountType::from($this->accountType);
-    }
-
-    public function getAccountTypeName(): string
-    {
-        return AccountType::getName($this->accountType);
-    }
-
-    public function setAccountType(AccountType $accountType): self
-    {
-        $this->accountType = $accountType->value;
-
-        return $this;
-    }
-
     public function getNameWithCurrency(): ?string
     {
         return $this->name . ' ' . '(' . $this->getCurrency() . ')';
@@ -88,16 +58,14 @@ class Account
         $accountCurrencySymbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
 
         if ($this->getCurrency() === 'EUR' || $this->getCurrency() === 'USD' || $this->getCurrency() === 'GBP') {
-            $formattedBalanceValueDisplay =
-                $accountCurrencySymbol . number_format(floatval($this->getBalance()), 2, '.', ',');
+            $formattedBalanceValueDisplay = $accountCurrencySymbol . number_format(floatval($this->getBalance()), 2, '.', ',');
         } else {
-            $formattedBalanceValueDisplay =
-                $accountCurrencySymbol . ' ' . number_format(floatval($this->getBalance()), 2, '.', ',');
+            $formattedBalanceValueDisplay = $accountCurrencySymbol . ' ' . number_format(floatval($this->getBalance()), 2, '.', ',');
         }
 
         return $this->name . ' ' . '(' . $this->getCurrency() . ') (Balance: ' . $formattedBalanceValueDisplay . ')';
     }
-
+    
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -116,12 +84,12 @@ class Account
 
         if ($increase) {
             $currentBalance += floatval($amount);
-        } elseif ($increase === false) {
+        } else if ($increase === false) {
             $currentBalance -= floatval($amount);
         } else {
             $currentBalance = floatval($amount);
         }
-
+        
         $this->balance = strval($currentBalance);
 
         return $this;
@@ -147,48 +115,6 @@ class Account
     public function setDeactivated(?bool $deactivated): self
     {
         $this->deactivated = $deactivated;
-
-        return $this;
-    }
-
-    public function getUnit(): ?Unit
-    {
-        return $this->unit;
-    }
-
-    public function setUnit(?Unit $unit): static
-    {
-        $this->unit = $unit;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Purchase>
-     */
-    public function getPurchases(): Collection
-    {
-        return $this->purchases;
-    }
-
-    public function addPurchase(Purchase $purchase): static
-    {
-        if (!$this->purchases->contains($purchase)) {
-            $this->purchases->add($purchase);
-            $purchase->setAccount($this);
-        }
-
-        return $this;
-    }
-
-    public function removePurchase(Purchase $purchase): static
-    {
-        if ($this->purchases->removeElement($purchase)) {
-            // set the owning side to null (unless already changed)
-            if ($purchase->getAccount() === $this) {
-                $purchase->setAccount(null);
-            }
-        }
 
         return $this;
     }
