@@ -1,0 +1,8 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{% block field %}
+    {%- include 'CRUD/display_currency.html.twig' with {
+        value: value|number_format(2, '.', ','),
+        currency: object.currency,
+    } only -%}
+{% endblock %}

@@ -1,0 +1,11 @@
+{%- apply spaceless %}
+    {%- if value is null -%}
+        &nbsp;
+    {%- else -%}
+        {% if value < 0 %}
+             {{ currency|currency_symbol }}<span style="color:red">{{ value }}</span>
+        {% else %}
+             {{ currency|currency_symbol }}{{ value }}
+        {% endif %}
+    {%- endif -%}
+{% endapply %}

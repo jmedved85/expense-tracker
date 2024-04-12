@@ -1,0 +1,22 @@
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    {# {% if field_description.name == 'leftOver' %}
+        {% if value > 0 %}
+            <span style="color:green;">{{ value|format_currency(object.currency) }}</span>
+        {% elseif value < 0 %}
+            <span style="color:red;">+&nbsp;{{ value|abs|format_currency(object.currency) }}</span>
+        {% else %}
+            <span>{{ value|format_currency(object.currency) }}</span>
+        {% endif %}
+    {% else %} #}
+        {%- include 'CRUD/display_currency.html.twig' with {
+            value: value|number_format(2, '.', ','),
+            currency: object.currency,
+        } only -%}
+    {# {% endif %} #}
+
+    {# {% if field_description.name == 'actualAvg' %}
+        <span class="pl-1 text-muted font-italic">{{ 'actual_avg_message'|trans({}, 'SonataAdminBundle') }}</span>
+    {% endif %} #}
+{% endblock %}
