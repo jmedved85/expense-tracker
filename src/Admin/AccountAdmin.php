@@ -13,9 +13,11 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use App\Entity\Account;
+use App\Entity\AccountType;
 use Sonata\AdminBundle\Datagrid\DatagridInterface;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\Form\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 final class AccountAdmin extends AbstractAdmin
 {
@@ -34,12 +36,12 @@ final class AccountAdmin extends AbstractAdmin
     }
 
     // /* Remove batch delete action from the list */
-    // protected function configureBatchActions($actions): array
-    // {
-    //     unset($actions['delete']);
+    protected function configureBatchActions($actions): array
+    {
+        unset($actions['delete']);
 
-    //     return $actions;
-    // }
+        return $actions;
+    }
 
     // /* Remove Download button from bottom of the list */
     // public function getExportFormats(): array
@@ -89,15 +91,15 @@ final class AccountAdmin extends AbstractAdmin
                     'name' => 'show'
                 ],
             ])
-            // ->add('accountType.name', null, [
-            //     'label' => 'Account Type',
-            // ])
+            ->add('accountTypeName', null, [
+                'label' => 'Account Type',
+            ])
             ->add('currency', null, [
 				'row_align' => 'center',
 				'header_style' => 'text-align: center',
 			])
             ->add('balance', MoneyType::class, [
-                // 'template' => 'CRUD/list_currency.html.twig',
+                'template' => 'CRUD/list_currency.html.twig',
 				'row_align' => 'right',
 				'header_style' => 'text-align: right',
             ])
@@ -116,12 +118,12 @@ final class AccountAdmin extends AbstractAdmin
     // MARK: - Form Fields
     protected function configureFormFields(FormMapper $form): void
     {
-        // $accountTypes = ['Bank Account', 'Card Account', 'Cash Account'];
-
         $form
             ->with('Account', ['class' => 'col-md-4'])
                 ->add('name')
-                // ->add('accountType')
+                ->add('accountType', ChoiceType::class, [
+                    'choices' => AccountType::CHOICES,
+                ])
                 ->add('currency', CurrencyType::class, [
                         'placeholder' => 'Choose an option',
                         'preferred_choices' => ['EUR', 'GBP', 'USD']
@@ -163,13 +165,13 @@ final class AccountAdmin extends AbstractAdmin
                 'class' => 'col-md-6'
             ])
                 ->add('name')
-                // ->add('accountType', null, [
-                //     'label' => 'Account Type'
-                // ])
+                ->add('accountTypeName', null, [
+                    'label' => 'Account Type',
+                ])
                 ->add('currency')
                 ->add('balance', MoneyType::class, [
                     'label' => 'Balance',
-                    // 'template' => 'CRUD/show_currency.html.twig',
+                    'template' => 'CRUD/show_currency.html.twig',
                     'currency' => $currency
                 ])
                 ->add('deactivated', null, [

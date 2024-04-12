@@ -18,6 +18,9 @@ class Account
     #[ORM\Column(type: Types::STRING, length: 255)]
     private $name;
 
+    #[ORM\Column(type: Types::INTEGER)]
+    private int $accountType;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private $balance;
 
@@ -29,6 +32,7 @@ class Account
 
     public function __construct()
     {
+        $this->balance = 0;
     }
 
     public function __toString()
@@ -44,6 +48,23 @@ class Account
     public function getName(): ?string
     {
         return $this->name;
+    }
+
+    public function getAccountType(): AccountType
+    {
+        return AccountType::from($this->accountType);
+    }
+
+    public function getAccountTypeName(): string
+    {
+        return AccountType::getName($this->accountType);
+    }
+
+    public function setAccountType(AccountType $accountType): self
+    {
+        $this->accountType = $accountType->value;
+    
+        return $this;
     }
 
     public function getNameWithCurrency(): ?string
