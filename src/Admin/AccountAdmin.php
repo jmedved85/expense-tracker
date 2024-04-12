@@ -19,6 +19,7 @@ use Sonata\Form\Type\CollectionType;
 
 final class AccountAdmin extends AbstractAdmin
 {
+    // MARK: ConfigureRoutes
     protected function configureRoutes(RouteCollectionInterface $collection): void
     {
         // $collection
@@ -46,6 +47,7 @@ final class AccountAdmin extends AbstractAdmin
     //     return [];
     // }
 
+    // MARK: - Datagrid Filters
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
         $filter
@@ -66,6 +68,7 @@ final class AccountAdmin extends AbstractAdmin
         ;
     }
 
+    // MARK: - List Fields
     protected function configureListFields(ListMapper $list): void
     {
         $actionsAdmin = [
@@ -110,6 +113,7 @@ final class AccountAdmin extends AbstractAdmin
         ;
     }
 
+    // MARK: - Form Fields
     protected function configureFormFields(FormMapper $form): void
     {
         // $accountTypes = ['Bank Account', 'Card Account', 'Cash Account'];
@@ -143,6 +147,7 @@ final class AccountAdmin extends AbstractAdmin
         ;
     }
 
+    // MARK: - Show Fields
     protected function configureShowFields(ShowMapper $show): void
     {
         /** @var Account $subject */
@@ -220,6 +225,7 @@ final class AccountAdmin extends AbstractAdmin
     //     return $query;
     // }
 
+    // MARK: - PrePersist
     protected function prePersist(object $object): void
     {
         /** @var Account $object */
