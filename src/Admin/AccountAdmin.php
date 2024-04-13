@@ -122,11 +122,12 @@ final class AccountAdmin extends AbstractAdmin
             ->with('Account', ['class' => 'col-md-4'])
                 ->add('name')
                 ->add('accountType', ChoiceType::class, [
-                    'choices' => AccountType::CHOICES,
+                    'placeholder' => 'Choose an option',
+                    'choices' => AccountType::NAMES,
                 ])
                 ->add('currency', CurrencyType::class, [
-                        'placeholder' => 'Choose an option',
-                        'preferred_choices' => ['EUR', 'GBP', 'USD']
+                    'placeholder' => 'Choose an option',
+                    'preferred_choices' => ['EUR', 'GBP', 'USD']
                 ])
             ->end()
             ->with('Upload File', ['class' => 'col-md-4'])
