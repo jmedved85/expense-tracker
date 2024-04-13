@@ -137,3 +137,11 @@ bin/console cache:clear
 PHP-STAN
 --------
 phpstan analyze --memory-limit=1G --level=3 src/
+
+
+CODESNIFFER
+-----------
+composer require --dev squizlabs/php_codesniffer
+
+vendor/bin/phpcs src
+vendor/bin/phpcbf src
