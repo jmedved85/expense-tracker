@@ -17,3 +17,11 @@
 
     <script src="{{ asset('js/custom.js') }}"></script>
 {% endblock %}
+
+{% block sonata_admin_content_actions_wrappers %}
+    {% if _actions|replace({ '<li>': '', '</li>': '' })|trim is not empty %}
+        <ul class="nav navbar-nav navbar-left" style="padding-top: 8px;">
+            {{ parent() }}
+        </ul>
+    {% endif %}
+{% endblock sonata_admin_content_actions_wrappers %}

@@ -25,11 +25,11 @@ services:
 
     admin.account:
         class: App\Admin\AccountAdmin
-        # calls:
+        calls:
         #     - [ setTemplate, ['edit', 'Account\account_edit.html.twig'] ]
         #     - [ setTemplate, ['show', 'Account\account_show.html.twig'] ]
         #     - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
-        #     - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
+            - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
         #     - [ setTokenStorage, [ '@security.token_storage' ] ]
         #     - [ setSecurityContext, [ '@security.authorization_checker' ] ]
         #     - [ setRequestStack, [ '@request_stack' ] ]
