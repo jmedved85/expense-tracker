@@ -63,7 +63,7 @@ class Account
     public function setAccountType(AccountType $accountType): self
     {
         $this->accountType = $accountType->value;
-    
+
         return $this;
     }
 
@@ -79,14 +79,16 @@ class Account
         $accountCurrencySymbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
 
         if ($this->getCurrency() === 'EUR' || $this->getCurrency() === 'USD' || $this->getCurrency() === 'GBP') {
-            $formattedBalanceValueDisplay = $accountCurrencySymbol . number_format(floatval($this->getBalance()), 2, '.', ',');
+            $formattedBalanceValueDisplay =
+                $accountCurrencySymbol . number_format(floatval($this->getBalance()), 2, '.', ',');
         } else {
-            $formattedBalanceValueDisplay = $accountCurrencySymbol . ' ' . number_format(floatval($this->getBalance()), 2, '.', ',');
+            $formattedBalanceValueDisplay =
+                $accountCurrencySymbol . ' ' . number_format(floatval($this->getBalance()), 2, '.', ',');
         }
 
         return $this->name . ' ' . '(' . $this->getCurrency() . ') (Balance: ' . $formattedBalanceValueDisplay . ')';
     }
-    
+
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -105,12 +107,12 @@ class Account
 
         if ($increase) {
             $currentBalance += floatval($amount);
-        } else if ($increase === false) {
+        } elseif ($increase === false) {
             $currentBalance -= floatval($amount);
         } else {
             $currentBalance = floatval($amount);
         }
-        
+
         $this->balance = strval($currentBalance);
 
         return $this;

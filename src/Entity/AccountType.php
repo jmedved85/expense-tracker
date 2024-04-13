@@ -28,8 +28,7 @@ enum AccountType: int
 
     public static function getName(int $value): string
     {
-        return match ($value)
-        {
+        return match ($value) {
             self::CASH->value => 'Cash',
             self::BANK->value => 'Bank',
             self::CREDIT_CARD->value => 'Credit Card',
