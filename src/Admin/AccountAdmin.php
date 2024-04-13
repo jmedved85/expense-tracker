@@ -95,19 +95,19 @@ final class AccountAdmin extends AbstractAdmin
                 'label' => 'Account Type',
             ])
             ->add('currency', null, [
-				'row_align' => 'center',
-				'header_style' => 'text-align: center',
-			])
+                'row_align' => 'center',
+                'header_style' => 'text-align: center',
+            ])
             ->add('balance', MoneyType::class, [
                 'template' => 'CRUD/list_currency.html.twig',
-				'row_align' => 'right',
-				'header_style' => 'text-align: right',
+                'row_align' => 'right',
+                'header_style' => 'text-align: right',
             ])
             ->add('deactivated', null, [
                 'label' => 'Active',
                 'template' => 'Account/custom_deactivated_list.html.twig',
-				'row_align' => 'center',
-				'header_style' => 'text-align: center',
+                'row_align' => 'center',
+                'header_style' => 'text-align: center',
             ])
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => $actionsAdmin,
