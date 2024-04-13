@@ -14,7 +14,7 @@ enum AccountType: int
     case SAVINGS = 8;
     case WALLET = 9;
 
-    public const CHOICES = [
+    public const NAMES = [
         'Cash' => self::CASH,
         'Bank' => self::BANK,
         'Credit Card' => self::CREDIT_CARD,
@@ -28,16 +28,19 @@ enum AccountType: int
 
     public static function getName(int $value): string
     {
-        try {
-            $case = self::from($value);
+        return match ($value)
+        {
+            self::CASH->value => 'Cash',
+            self::BANK->value => 'Bank',
+            self::CREDIT_CARD->value => 'Credit Card',
+            self::DEBIT_CARD->value => 'Debit Card',
+            self::CRYPTO->value => 'Crypto',
+            self::INVESTMENT->value => 'Investment',
+            self::LOAN->value => 'Loan',
+            self::SAVINGS->value => 'Savings',
+            self::WALLET->value => 'Wallet',
 
-            foreach (self::CHOICES as $name => $type) {
-                if ($type === $case) {
-                    return $name;
-                }
-            }
-        } catch (\UnexpectedValueException $e) {
-            return 'Unknown';
-        }
+            default => 'Unknown',
+        };
     }
 }
