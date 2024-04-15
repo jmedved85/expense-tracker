@@ -35,3 +35,17 @@ services:
         #     - [ setRequestStack, [ '@request_stack' ] ]
         tags:
             - { name: sonata.admin, model_class: App\Entity\Account, controller: App\Controller\AccountAdminController, manager_type: orm, group: Banking, label: Accounts }
+
+    admin.supplier:
+        class: App\Admin\SupplierAdmin
+        calls:
+            # - [ setTemplate, ['edit', 'CRUD\base_edit.html.twig'] ]
+            # - [ setTemplate, ['show', 'Supplier\supplier_show.html.twig'] ]
+            # - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
+            - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
+            # - [ setTokenStorage, [ '@security.token_storage' ] ]
+            # - [ setSecurityContext, [ '@security.authorization_checker' ] ]
+            # - [ setModules, [ ['ComCount'] ] ]
+            # - [ setRequestStack, [ '@request_stack' ] ]
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Supplier, controller: App\Controller\SupplierAdminController, manager_type: orm, group: Suppliers, label: Suppliers, on_top: true }

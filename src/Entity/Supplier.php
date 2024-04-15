@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\SupplierRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -66,17 +64,6 @@ class Supplier
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $supplierTerms = null;
-
-    #[ORM\ManyToOne(inversedBy: 'suppliers')]
-    private ?Unit $unit = null;
-
-    #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'supplier')]
-    private Collection $purchases;
-
-    public function __construct()
-    {
-        $this->purchases = new ArrayCollection();
-    }
 
     public function __toString()
     {
@@ -288,48 +275,6 @@ class Supplier
     public function setSupplierTerms(?string $supplierTerms): static
     {
         $this->supplierTerms = $supplierTerms;
-
-        return $this;
-    }
-
-    public function getUnit(): ?Unit
-    {
-        return $this->unit;
-    }
-
-    public function setUnit(?Unit $unit): static
-    {
-        $this->unit = $unit;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Purchase>
-     */
-    public function getPurchases(): Collection
-    {
-        return $this->purchases;
-    }
-
-    public function addPurchase(Purchase $purchase): static
-    {
-        if (!$this->purchases->contains($purchase)) {
-            $this->purchases->add($purchase);
-            $purchase->setSupplier($this);
-        }
-
-        return $this;
-    }
-
-    public function removePurchase(Purchase $purchase): static
-    {
-        if ($this->purchases->removeElement($purchase)) {
-            // set the owning side to null (unless already changed)
-            if ($purchase->getSupplier() === $this) {
-                $purchase->setSupplier(null);
-            }
-        }
 
         return $this;
     }
