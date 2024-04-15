@@ -21,7 +21,7 @@ class Account
     #[ORM\Column(type: Types::INTEGER)]
     private int $accountType;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 20, scale: 2, nullable: true)]
     private $balance;
 
     #[ORM\Column(type: Types::STRING, length: 3)]
