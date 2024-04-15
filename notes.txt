@@ -134,6 +134,19 @@ bin/console debug:asset-map
 bin/console asset-map:compile
 bin/console cache:clear
 
+
+TYPESCRIPT COMPILE (https://github.com/sensiolabs/AssetMapperTypeScriptBundle/blob/main/doc/index.rst)
+# to compile only the TypeScript files
+php bin/console typescript:build 
+php bin/console typescript:build --watch
+
+# to see the full config from this bundle
+php bin/console config:dump sensiolabs_typescript
+
+# to compile ALL your assets
+php bin/console asset-map:compile
+
+
 PHP-STAN
 --------
 phpstan analyze --memory-limit=1G --level=3 src/
