@@ -15,7 +15,8 @@
 {% block javascripts %}
     {{ parent() }}
 
-    <script src="{{ asset('js/custom.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('typescript/custom.ts') }}"></script>
+    {# <script src="{{ asset('js/custom.js') }}"></script> #}
 {% endblock %}
 
 {% block sonata_admin_content_actions_wrappers %}
