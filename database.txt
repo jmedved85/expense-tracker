@@ -1,0 +1,77 @@
+ACCOUNT
+- id            int
+- name          varchar(100)
+- account_type  int
+- balance       decimal(20,2)
+- currency      varchar(3)
+- deactivated   tinyint(1)
+- unit_id       int
+
+
+SUPPLIER
+- id                    int
+- name                  varchar(255)
+- currency              varchar(3)
+- address               varchar(255)
+- phone_number          varchar(45)
+- mobile_number         varchar(45)
+- email                 varchar(255)
+- website               varchar(255)
+- contact_name          varchar(100)
+- job_title             varchar(100)
+- vat_number            varchar(15)
+- vat_rate              decimal(4,2)
+- bank_account_name     varchar(100)
+- bank_account_number   varchar(45)
+- iban                  varchar(45)
+- sort_code             varchar(8)
+- bic_code              varchar(11)
+- supplier_terms        longtext
+- unit_id               int
+
+
+TRANSACTION
+- id                                int
+- transaction_number                int
+- transaction_type                  int
+- date                              date
+- date_time_added                   datetime
+- date_time_edited                  datetime
+- currency                          varchar(3)
+- real_currency                     varchar(3)
+- to_currency                       varchar(3)
+- amount                            decimal(20,2)
+- new_value                         decimal(20,2)
+- amount_from_account               decimal(20,2)
+- real_amount_paid                  decimal(20,2)
+- money_returned_amount             decimal(20,2)
+- money_returned_date               date
+- money_in                          decimal(20,2)
+- money_out                         decimal(20,2)
+- bank_fee_added                    tinyint(1)
+- bank_fee_not_applicable           tinyint(1)
+- bank_fee_currency                 varchar(3)
+- description                       varchar(2048)
+- bank_fee_amount                   decimal(20,2)
+- balance_main_account              decimal(20,2)
+- balance_transfer_from_account     decimal(20,2)
+- balance_transfer_to_account       decimal(20,2)
+- budget_id                         int
+- budget_category_id                int
+- supplier_id                       int
+- main_account_id                   int
+- transfer_from_account_id          int
+- transfer_to_account_id            int
+- invoice_id                        int
+- invoice_part_payment_id           int
+- purchase_id                       int
+- transaction_id                    int
+- added_by_user_id                  int
+- edited_by_user_id                 int
+- unit_id                           int
+
+
+UNIT
+- id    int
+- name  varchar(100)
+
