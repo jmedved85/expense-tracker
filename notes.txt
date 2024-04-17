@@ -33,6 +33,7 @@ http://127.0.0.1:8001/admin/
 ----------
 .env.local
 DATABASE_URL=mysql://jmedved:Root753$@127.0.0.1:3306/home-acc
+DATABASE_URL=mysql://root:jmedved85@127.0.0.1:3306/home-acc
 APP_ENV=dev
 APP_DEBUG=true
 ----------
