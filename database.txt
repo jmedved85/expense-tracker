@@ -8,6 +8,25 @@ ACCOUNT
 - unit_id       int
 
 
+BUDGET MAIN CATEGORY
+- id            int
+- name          varchar(100)
+- unit_id       int
+
+
+BUDGET SUB CATEGORY
+- id                            int
+- name                          varchar(100)
+- budget_main_category_id       int
+- unit_id                       int
+
+
+GENERAL CATEGORY -> IDEA
+- id            int
+- name          varchar(100)
+- unit_id       int
+
+
 SUPPLIER
 - id                    int
 - name                  varchar(255)
@@ -57,7 +76,8 @@ TRANSACTION
 - balance_transfer_from_account     decimal(20,2)
 - balance_transfer_to_account       decimal(20,2)
 - budget_id                         int
-- budget_category_id                int
+- budget_sub_category_id            int
+- general_category                  int -> IDEA
 - supplier_id                       int
 - main_account_id                   int
 - transfer_from_account_id          int
