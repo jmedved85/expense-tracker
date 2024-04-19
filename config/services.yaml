@@ -48,7 +48,7 @@ services:
             # - [ setSecurityContext, [ '@security.authorization_checker' ] ]
             # - [ setRequestStack, [ '@request_stack' ] ]
         tags:
-            - { name: sonata.admin, model_class: App\Entity\BudgetSubCategory, controller: App\Controller\BudgetSubCategoryAdminController, manager_type: orm, group: Budgets, label: Budget Sub Categories }
+            - { name: sonata.admin, model_class: App\Entity\BudgetSubCategory, controller: App\Controller\BudgetSubCategoryAdminController, manager_type: orm, group: Categories, label: Budget Sub Categories }
             # - { name: sonata.admin, model_class: App\Entity\BudgetSubCategory, controller: App\Controller\BudgetSubCategoryAdminController, manager_type: orm, group: Admin, label: Budget Sub Categories, show_in_dashboard: false }
 
     admin.budget_main_category:
@@ -64,8 +64,15 @@ services:
             # - [ setSecurityContext, [ '@security.authorization_checker' ] ]
             # - [ setRequestStack, [ '@request_stack' ] ]
         tags:
-            - { name: sonata.admin, model_class: App\Entity\BudgetMainCategory, controller: App\Controller\BudgetMainCategoryAdminController, manager_type: orm, group: Budgets, label: Budget Main Categories }
+            - { name: sonata.admin, model_class: App\Entity\BudgetMainCategory, controller: App\Controller\BudgetMainCategoryAdminController, manager_type: orm, group: Categories, label: Budget Main Categories }
             # - { name: sonata.admin, model_class: App\Entity\BudgetMainCategory, controller: App\Controller\BudgetMainCategoryAdminController, manager_type: orm, group: Admin, label: Budget Categories }
+
+    admin.general_category:
+        class: App\Admin\GeneralCategoryAdmin
+        calls:
+            - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\GeneralCategory, controller: App\Controller\GeneralCategoryAdminController, manager_type: orm, group: Categories, label: General Category }
 
     admin.supplier:
         class: App\Admin\SupplierAdmin
