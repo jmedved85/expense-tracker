@@ -41,9 +41,6 @@ class BudgetItem
     #[ORM\ManyToOne(inversedBy: 'editedBudgetItems')]
     private ?User $editedByUser = null;
 
-    #[ORM\ManyToOne(inversedBy: 'budgetItems')]
-    private ?Unit $unit = null;
-
     public function __toString()
     {
         return (string) $this->getBudget()->getBudgetTypeName()
@@ -162,18 +159,6 @@ class BudgetItem
     public function setEditedByUser(?User $editedByUser): static
     {
         $this->editedByUser = $editedByUser;
-
-        return $this;
-    }
-
-    public function getUnit(): ?Unit
-    {
-        return $this->unit;
-    }
-
-    public function setUnit(?Unit $unit): static
-    {
-        $this->unit = $unit;
 
         return $this;
     }

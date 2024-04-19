@@ -8,6 +8,52 @@ ACCOUNT
 - unit_id       int
 
 
+BUDGET
+  - id                  int
+  - name                varchar(100)
+  - budget_type         int
+  - start_date          date
+  - totalBudgeted       decimal(20,2)
+  - totalActual         decimal(20,2)
+  - leftOver            decimal(20,2)
+  - added_by_user_id    int
+  - edited_by_user_id   int
+  - unit_id             int
+
+Store the start date of the budget period: Instead of storing the month and year separately, you could store a start_date (of type DATE or DATETIME). This represents the start of the budget period. This approach provides more flexibility as it can handle all types of budget periods (monthly, annual, etc.) and is not limited to calendar years or months.
+
+Calculate the end date based on the budget type: You can calculate the end date of the budget period based on the budget_type and start_date. For example, if the budget_type is MONTHLY, the end date would be one month after the start_date.
+
+This approach provides flexibility and simplifies queries. For example, to find all budgets within a certain date range, you can simply query for budgets where the start_date is within the range.
+
+public function getEndDate(): \DateTime
+{
+    $startDate = $this->getStartDate();
+
+    return match ($this->getBudgetType()) {
+        BudgetType::MONTHLY => $startDate->modify('+1 month'),
+        BudgetType::ANNUAL => $startDate->modify('+1 year'),
+        BudgetType::QUARTERLY => $startDate->modify('+3 months'),
+        BudgetType::BI_ANNUAL => $startDate->modify('+6 months'),
+        BudgetType::WEEKLY => $startDate->modify('+1 week'),
+        default => $startDate,
+    };
+}
+
+
+BUDGET ITEM
+  - id                          int
+  - currency                    varchar(3)
+  - budgeted                    decimal(20,2)
+  - actual                      decimal(20,2)
+  - budget_id                   int
+  - budget_sub_category_id      int
+  - general_category            int
+  - added_by_user_id            int
+  - edited_by_user_id           int
+  - unit_id                     int
+
+
 BUDGET MAIN CATEGORY
 - id            int
 - name          varchar(100)
@@ -21,7 +67,7 @@ BUDGET SUB CATEGORY
 - unit_id                       int
 
 
-GENERAL CATEGORY -> IDEA
+GENERAL CATEGORY
 - id            int
 - name          varchar(100)
 - unit_id       int
@@ -75,19 +121,19 @@ TRANSACTION
 - balance_main_account              decimal(20,2)
 - balance_transfer_from_account     decimal(20,2)
 - balance_transfer_to_account       decimal(20,2)
-- budget_id                         int
-- budget_sub_category_id            int
-- general_category                  int -> IDEA
-- supplier_id                       int
-- main_account_id                   int
-- transfer_from_account_id          int
-- transfer_to_account_id            int
+- budget_id                         int *
+- budget_sub_category_id            int *
+- general_category                  int *
+- supplier_id                       int *
+- main_account_id                   int *
+- transfer_from_account_id          int *
+- transfer_to_account_id            int *
 - invoice_id                        int
 - invoice_part_payment_id           int
 - purchase_id                       int
 - transaction_id                    int
-- added_by_user_id                  int
-- edited_by_user_id                 int
+- added_by_user_id                  int *
+- edited_by_user_id                 int *
 - unit_id                           int
 
 

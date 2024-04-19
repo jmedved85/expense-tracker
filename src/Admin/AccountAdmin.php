@@ -61,7 +61,18 @@ final class AccountAdmin extends AbstractAdmin
 
         $filter
             ->add('name')
-            // ->add('accountType')
+            // ->add('accountType', null, [
+            //     'placeholder' => 'Choose an option',
+            //     'show_filter' => true,
+            //     'field_type' => ChoiceType::class,
+            //     'field_options' => [
+            //         'choices' => AccountType::NAMES,
+            //     ],
+            //     'query_builder' => function (EntityRepository $er) {
+            //         return $er->createQueryBuilder('a')
+            //             ->orderBy('a.accountType', 'ASC');
+            //     },
+            // ])
             ->add('balance')
             ->add('currency', null, [
                 'label' => 'Currency',
@@ -218,7 +229,7 @@ final class AccountAdmin extends AbstractAdmin
         $subject = $this->getSubject();
 
         $accountName = $subject->getName();
-        // $accountType = $subject->getAccountType();
+        // $accountType = $subject->getAccountTypeName();
         $currency = $subject->getCurrency();
 
         $show

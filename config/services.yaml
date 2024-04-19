@@ -36,6 +36,20 @@ services:
         tags:
             - { name: sonata.admin, model_class: App\Entity\Account, controller: App\Controller\AccountAdminController, manager_type: orm, group: Banking, label: Accounts }
 
+    admin.budget:
+        class: App\Admin\BudgetAdmin
+        calls:
+            - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Budget, controller: App\Controller\BudgetAdminController, manager_type: orm, group: Budgets, label: Budget }
+
+    admin.budget_item:
+        class: App\Admin\BudgetItemAdmin
+        calls:
+            - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\BudgetItem, controller: App\Controller\BudgetItemAdminController, manager_type: orm, group: Budgets, label: Budget Item }
+
     admin.budget_sub_category:
         class: App\Admin\BudgetSubCategoryAdmin
         calls:
