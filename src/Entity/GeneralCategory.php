@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\GeneralCategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GeneralCategoryRepository::class)]
@@ -15,6 +17,14 @@ class GeneralCategory
 
     #[ORM\Column(length: 100)]
     private ?string $name = null;
+
+    #[ORM\OneToMany(targetEntity: BudgetItem::class, mappedBy: 'generalCategory')]
+    private Collection $budgetItems;
+
+    public function __construct()
+    {
+        $this->budgetItems = new ArrayCollection();
+    }
 
     public function __toString()
     {
@@ -34,6 +44,36 @@ class GeneralCategory
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BudgetItem>
+     */
+    public function getBudgetItems(): Collection
+    {
+        return $this->budgetItems;
+    }
+
+    public function addBudgetItem(BudgetItem $budgetItem): static
+    {
+        if (!$this->budgetItems->contains($budgetItem)) {
+            $this->budgetItems->add($budgetItem);
+            $budgetItem->setGeneralCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBudgetItem(BudgetItem $budgetItem): static
+    {
+        if ($this->budgetItems->removeElement($budgetItem)) {
+            // set the owning side to null (unless already changed)
+            if ($budgetItem->getGeneralCategory() === $this) {
+                $budgetItem->setGeneralCategory(null);
+            }
+        }
 
         return $this;
     }
