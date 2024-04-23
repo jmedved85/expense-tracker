@@ -66,15 +66,18 @@ BUDGET SUB CATEGORY
 - budget_main_category_id       int
 - unit_id                       int
 
+
 DEPARTMENT
 - id            int
 - name          varchar(100)
 - unit_id       int
 
+
 GENERAL CATEGORY
 - id            int
 - name          varchar(100)
 - unit_id       int
+
 
 SUPPLIER
 - id                    int
@@ -138,7 +141,7 @@ TRANSACTION
 - transaction_id                    int
 - added_by_user_id                  int *
 - edited_by_user_id                 int *
-- unit_id                           int
+- unit_id                           int *
 
 
 UNIT
@@ -147,3 +150,28 @@ UNIT
 - image         varchar(255)
 - logo          varchar(255)
 - description   text
+
+
+USER
+- id                      int
+- username                varchar(180)
+- username_canonical      varchar(180)
+- email                   varchar(180)
+- email_canonical         varchar(180)
+- enabled                 tinyint(1)
+- salt                    varchar(255)
+- password                varchar(255)
+- last_login              datetime
+- confirmation_token      varchar(180)
+- password_requested_at   datetime
+- roles                   text
+- created_at              datetime
+- updated_at              datetime
+
+
+USER_UNIT
+- id              int
+- member_type     int
+- status          int
+- user_id         int
+- unit_id         int

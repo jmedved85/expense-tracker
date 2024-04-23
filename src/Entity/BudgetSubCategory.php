@@ -24,6 +24,9 @@ class BudgetSubCategory
     #[ORM\OneToMany(targetEntity: BudgetItem::class, mappedBy: 'budgetSubCategory')]
     private Collection $budgetItems;
 
+    #[ORM\ManyToOne(inversedBy: 'budgetSubCategories')]
+    private ?Unit $unit = null;
+
     public function __construct()
     {
         $this->budgetItems = new ArrayCollection();
@@ -89,6 +92,18 @@ class BudgetSubCategory
                 $budgetItem->setBudgetSubCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUnit(): ?Unit
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(?Unit $unit): static
+    {
+        $this->unit = $unit;
 
         return $this;
     }
