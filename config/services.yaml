@@ -71,7 +71,7 @@ services:
             # - [ setTemplate, ['list', 'Budget\budget_list.html.twig'] ]
             # - [ setTemplate, ['list', 'Budget\budget_category_list.html.twig'] ]
             # - [ setTemplate, ['edit', 'CRUD\base_edit.html.twig'] ]
-#            - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
+            # - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
             # - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
             - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
             # - [ setTokenStorage, [ '@security.token_storage' ] ]
@@ -80,6 +80,20 @@ services:
         tags:
             - { name: sonata.admin, model_class: App\Entity\BudgetMainCategory, controller: App\Controller\BudgetMainCategoryAdminController, manager_type: orm, group: Categories, label: Budget Main Categories }
             # - { name: sonata.admin, model_class: App\Entity\BudgetMainCategory, controller: App\Controller\BudgetMainCategoryAdminController, manager_type: orm, group: Admin, label: Budget Categories }
+
+    admin.department:
+        class: App\Admin\DepartmentAdmin
+        calls:
+            # - [ setTemplate, ['list', 'Department\department_list.html.twig'] ]
+            # - [ setTemplate, ['edit', 'CRUD\base_edit.html.twig'] ]
+            # - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
+            # - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
+            - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
+            # - [ setTokenStorage, [ '@security.token_storage' ] ]
+            # - [ setSecurityContext, [ '@security.authorization_checker' ] ]
+            # - [ setRequestStack, [ '@request_stack' ] ]
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Department, controller: App\Controller\DepartmentAdminController, manager_type: orm, group: Departments, label: Departments, on_top: true }
 
     admin.general_category:
         class: App\Admin\GeneralCategoryAdmin
