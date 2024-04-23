@@ -30,6 +30,9 @@ class Account
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
     private $deactivated;
 
+    #[ORM\ManyToOne(inversedBy: 'accounts')]
+    private ?Unit $unit = null;
+
     public function __construct()
     {
         $this->balance = 0;
@@ -138,6 +141,18 @@ class Account
     public function setDeactivated(?bool $deactivated): self
     {
         $this->deactivated = $deactivated;
+
+        return $this;
+    }
+
+    public function getUnit(): ?Unit
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(?Unit $unit): static
+    {
+        $this->unit = $unit;
 
         return $this;
     }

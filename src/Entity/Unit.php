@@ -55,9 +55,6 @@ class Unit
     #[ORM\OneToMany(targetEntity: UserUnit::class, mappedBy: 'unit')]
     private Collection $userUnits;
 
-    #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'unit')]
-    private Collection $purchases;
-
     public function __construct()
     {
         $this->accounts = new ArrayCollection();
@@ -69,7 +66,6 @@ class Unit
         $this->generalCategories = new ArrayCollection();
         $this->suppliers = new ArrayCollection();
         $this->userUnits = new ArrayCollection();
-        $this->purchases = new ArrayCollection();
     }
 
     public function __toString()
@@ -394,36 +390,6 @@ class Unit
             // set the owning side to null (unless already changed)
             if ($userUnit->getUnit() === $this) {
                 $userUnit->setUnit(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Purchase>
-     */
-    public function getPurchases(): Collection
-    {
-        return $this->purchases;
-    }
-
-    public function addPurchase(Purchase $purchase): static
-    {
-        if (!$this->purchases->contains($purchase)) {
-            $this->purchases->add($purchase);
-            $purchase->setUnit($this);
-        }
-
-        return $this;
-    }
-
-    public function removePurchase(Purchase $purchase): static
-    {
-        if ($this->purchases->removeElement($purchase)) {
-            // set the owning side to null (unless already changed)
-            if ($purchase->getUnit() === $this) {
-                $purchase->setUnit(null);
             }
         }
 

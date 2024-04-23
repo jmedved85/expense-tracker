@@ -111,7 +111,18 @@ services:
             - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
             # - [ setTokenStorage, [ '@security.token_storage' ] ]
             # - [ setSecurityContext, [ '@security.authorization_checker' ] ]
-            # - [ setModules, [ ['ComCount'] ] ]
             # - [ setRequestStack, [ '@request_stack' ] ]
         tags:
             - { name: sonata.admin, model_class: App\Entity\Supplier, controller: App\Controller\SupplierAdminController, manager_type: orm, group: Suppliers, label: Suppliers, on_top: true }
+
+    admin.unit:
+        class: App\Admin\UnitAdmin
+        calls:
+            - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Unit, controller: App\Controller\UnitAdminController, manager_type: orm, group: Units, label: Units, on_top: true }
+
+    admin.user_unit:
+        class: App\Admin\UserUnitAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\UserUnit, controller: App\Controller\UserUnitAdminController, manager_type: orm, group: admin, label: UserUnit, show_in_dashboard: false }

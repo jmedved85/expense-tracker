@@ -21,6 +21,9 @@ class GeneralCategory
     #[ORM\OneToMany(targetEntity: BudgetItem::class, mappedBy: 'generalCategory')]
     private Collection $budgetItems;
 
+    #[ORM\ManyToOne(inversedBy: 'generalCategories')]
+    private ?Unit $unit = null;
+
     public function __construct()
     {
         $this->budgetItems = new ArrayCollection();
@@ -74,6 +77,18 @@ class GeneralCategory
                 $budgetItem->setGeneralCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUnit(): ?Unit
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(?Unit $unit): static
+    {
+        $this->unit = $unit;
 
         return $this;
     }

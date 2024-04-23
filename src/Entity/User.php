@@ -29,12 +29,16 @@ class User extends BaseUser
     #[ORM\OneToMany(targetEntity: BudgetItem::class, mappedBy: 'editedByUser')]
     private Collection $editedBudgetItems;
 
+    #[ORM\OneToMany(targetEntity: UserUnit::class, mappedBy: 'user')]
+    private Collection $userUnits;
+
     public function __construct()
     {
         $this->addedBudgets = new ArrayCollection();
         $this->editedBudgets = new ArrayCollection();
         $this->addedBudgetItems = new ArrayCollection();
         $this->editedBudgetItems = new ArrayCollection();
+        $this->userUnits = new ArrayCollection();
     }
 
     /**
@@ -151,6 +155,36 @@ class User extends BaseUser
             // set the owning side to null (unless already changed)
             if ($editedBudgetItem->getEditedByUser() === $this) {
                 $editedBudgetItem->setEditedByUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserUnit>
+     */
+    public function getUserUnits(): Collection
+    {
+        return $this->userUnits;
+    }
+
+    public function addUserUnit(UserUnit $userUnit): static
+    {
+        if (!$this->userUnits->contains($userUnit)) {
+            $this->userUnits->add($userUnit);
+            $userUnit->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserUnit(UserUnit $userUnit): static
+    {
+        if ($this->userUnits->removeElement($userUnit)) {
+            // set the owning side to null (unless already changed)
+            if ($userUnit->getUser() === $this) {
+                $userUnit->setUser(null);
             }
         }
 

@@ -65,6 +65,9 @@ class Supplier
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $supplierTerms = null;
 
+    #[ORM\ManyToOne(inversedBy: 'suppliers')]
+    private ?Unit $unit = null;
+
     public function __toString()
     {
         return (string) $this->name;
@@ -275,6 +278,18 @@ class Supplier
     public function setSupplierTerms(?string $supplierTerms): static
     {
         $this->supplierTerms = $supplierTerms;
+
+        return $this;
+    }
+
+    public function getUnit(): ?Unit
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(?Unit $unit): static
+    {
+        $this->unit = $unit;
 
         return $this;
     }
