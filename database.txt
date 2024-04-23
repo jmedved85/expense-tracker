@@ -66,12 +66,15 @@ BUDGET SUB CATEGORY
 - budget_main_category_id       int
 - unit_id                       int
 
+DEPARTMENT
+- id            int
+- name          varchar(100)
+- unit_id       int
 
 GENERAL CATEGORY
 - id            int
 - name          varchar(100)
 - unit_id       int
-
 
 SUPPLIER
 - id                    int
@@ -91,7 +94,7 @@ SUPPLIER
 - iban                  varchar(45)
 - sort_code             varchar(8)
 - bic_code              varchar(11)
-- supplier_terms        longtext
+- supplier_terms        text
 - unit_id               int
 
 
@@ -123,7 +126,8 @@ TRANSACTION
 - balance_transfer_to_account       decimal(20,2)
 - budget_id                         int *
 - budget_sub_category_id            int *
-- general_category                  int *
+- general_category_id               int *
+- department_id                     int *
 - supplier_id                       int *
 - main_account_id                   int *
 - transfer_from_account_id          int *
@@ -138,6 +142,8 @@ TRANSACTION
 
 
 UNIT
-- id    int
-- name  varchar(100)
-
+- id            int
+- name          varchar(100)
+- image         varchar(255)
+- logo          varchar(255)
+- description   text

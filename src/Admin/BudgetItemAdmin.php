@@ -55,6 +55,7 @@ final class BudgetItemAdmin extends AbstractAdmin
     //     return [];
     // }
 
+    // MARK: - Datagrid Filters
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
         // /* Get unit */
@@ -189,6 +190,7 @@ final class BudgetItemAdmin extends AbstractAdmin
         // }
     }
 
+    // MARK: - List Fields
     protected function configureListFields(ListMapper $list): void
     {
         // /* Get unit */
@@ -262,6 +264,7 @@ final class BudgetItemAdmin extends AbstractAdmin
         ;
     }
 
+    // MARK: - Form Fields
     protected function configureFormFields(FormMapper $form): void
     {
         // /* Get unit */
@@ -342,6 +345,7 @@ final class BudgetItemAdmin extends AbstractAdmin
         ;
     }
 
+    // MARK: - Show Fields
     protected function configureShowFields(ShowMapper $show): void
     {
         /** @var BudgetItem $subject */
