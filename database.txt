@@ -1,4 +1,4 @@
-ACCOUNT
+* ACCOUNT
 - id            int
 - name          varchar(100)
 - account_type  int
@@ -8,7 +8,7 @@ ACCOUNT
 - unit_id       int
 
 
-BUDGET
+* BUDGET
   - id                  int
   - name                varchar(100)
   - budget_type         int
@@ -41,7 +41,7 @@ public function getEndDate(): \DateTime
 }
 
 
-BUDGET ITEM
+* BUDGET ITEM
   - id                          int
   - currency                    varchar(3)
   - budgeted                    decimal(20,2)
@@ -54,32 +54,146 @@ BUDGET ITEM
   - unit_id                     int
 
 
-BUDGET MAIN CATEGORY
+* BUDGET MAIN CATEGORY
 - id            int
 - name          varchar(100)
+- description   varchar(2048)
 - unit_id       int
 
 
-BUDGET SUB CATEGORY
+* BUDGET SUB CATEGORY
 - id                            int
 - name                          varchar(100)
+- description                   varchar(2048)
 - budget_main_category_id       int
 - unit_id                       int
 
 
-DEPARTMENT
+COMMENT
+  - id                        int
+  - datetime                  datetime
+  - message                   text
+  - added_by_user_id          int
+  - added_by_user_deleted     varchar(64)
+  - invoice_id                int
+  - purchase_id               int
+  - supplier_id               int *
+  - budget_item_id            int *
+  - unit_id                   int *
+
+
+* DEPARTMENT
 - id            int
 - name          varchar(100)
 - unit_id       int
 
 
-GENERAL CATEGORY
+* GENERAL CATEGORY
 - id            int
 - name          varchar(100)
+- description   varchar(2048)
 - unit_id       int
 
 
-SUPPLIER
+INVOICE
+  - id                                    int
+  - invoice_number                        varchar(64)
+  - invoice_date                          date
+  - invoice_date_due                      date
+  - invoice_date_paid                     date
+  - description                           varchar(2048)
+  - priority                              varchar(25)
+  - invoice_approval_status               varchar(25)
+  - invoice_payment_status                varchar(25)
+  - currency                              varchar(3)
+  - amount                                decimal(20,2)
+  - real_currency_paid                    varchar(3)
+  - real_amount_paid                      decimal(20,2)
+  - rest_payment_total                    decimal(20,2)
+  - total_paid                            decimal(20,2)
+  - bank_fee_added                        tinyint(1)
+  - bank_fee_amount                       decimal(20,2)
+  - bank_fee_not_added                    tinyint(1)
+  - date_time_added                       datetime
+  - date_time_edited                      datetime
+  - account_id                            int
+  - budget_id`                            int 
+  - budget_category_id                    int
+  - general_category_id                   int
+  - department_id                         int
+  - supplier_id                           int
+  - added_by_user_id                      int
+  - edited_by_user_id                     int
+  - added_by_user_deleted                 varchar(64)
+  - edited_by_user_deleted                varchar(64)
+  - unit_id                               int
+
+
+INVOICE LINE
+  - id                    int
+  - description           int
+  - vat                   decimal(4,2)
+  - vat_value             decimal(20,2)
+  - net_value             decimal(20,2)
+  - line_total            decimal(20,2)
+  - invoice_id            int
+  - budget_category_id    int
+  - general_category_id   int
+
+
+INVOICE PART PAYMENT
+  - id                      int
+  - date_paid               date
+  - currency                varchar(3)
+  - amount                  decimal(20,2)
+  - rest_payment_amount     decimal(20,2)
+  - real_currency           varchar(3)
+  - real_amount_paid        decimal(20,2)
+  - bank_fee_added          tinyint(1)
+  - bank_fee_amount         decimal(20,2)
+  - bank_fee_not_added      tinyint(1)
+  - money_returned_amount   decimal(20,2)
+  - money_returned_date     date
+  - invoice_id              int
+
+
+PURCHASE
+  - id                        int
+  - transaction_type          int
+  - date_of_purchase          date
+  - description               varchar(2048)
+  - currency                  varchar(3)
+  - amount                    decimal(20,2)
+  - real_currency_paid        varchar(3)
+  - real_amount_paid          decimal(20,2)
+  - date_time_added           datetime
+  - date_time_edited          datetime
+  - account_id                int
+  - budget_id                 int
+  - budget_category_id        int
+  - general_category_id       int
+  - department_id             int
+  - supplier_id               int
+  - added_by_user_id          int
+  - edited_by_user_id         int
+  - added_by_user_deleted     varchar(64)
+  - edited_by_user_deleted    varchar(64)
+  - unit_id                   int
+
+
+PURCHASE LINE
+  - id                    int
+  - description           int
+  - vat                   decimal(4,2)
+  - vat_value             decimal(20,2)
+  - net_value             decimal(20,2)
+  - line_total            decimal(20,2)
+  - purchase_id           int
+  - budget_category_id    int
+  - general_category_id   int
+
+
+* SUPPLIER
 - id                    int
 - name                  varchar(255)
 - currency              varchar(3)
@@ -144,7 +258,7 @@ TRANSACTION
 - unit_id                           int *
 
 
-UNIT
+* UNIT
 - id            int
 - name          varchar(100)
 - image         varchar(255)
@@ -152,7 +266,7 @@ UNIT
 - description   text
 
 
-USER
+* USER
 - id                      int
 - username                varchar(180)
 - username_canonical      varchar(180)
@@ -169,7 +283,7 @@ USER
 - updated_at              datetime
 
 
-USER_UNIT
+* USER_UNIT
 - id              int
 - member_type     int
 - status          int
