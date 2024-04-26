@@ -16,8 +16,8 @@ class Purchase
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::INTEGER)]
-    private int $transactionType;
+    #[ORM\Column]
+    private ?int $transactionType = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateOfPurchase = null;

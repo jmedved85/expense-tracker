@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AccountRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use NumberFormatter;
@@ -33,9 +35,13 @@ class Account
     #[ORM\ManyToOne(inversedBy: 'accounts')]
     private ?Unit $unit = null;
 
+    #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'account')]
+    private Collection $purchases;
+
     public function __construct()
     {
         $this->balance = 0;
+        $this->purchases = new ArrayCollection();
     }
 
     public function __toString()
@@ -153,6 +159,36 @@ class Account
     public function setUnit(?Unit $unit): static
     {
         $this->unit = $unit;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Purchase>
+     */
+    public function getPurchases(): Collection
+    {
+        return $this->purchases;
+    }
+
+    public function addPurchase(Purchase $purchase): static
+    {
+        if (!$this->purchases->contains($purchase)) {
+            $this->purchases->add($purchase);
+            $purchase->setAccount($this);
+        }
+
+        return $this;
+    }
+
+    public function removePurchase(Purchase $purchase): static
+    {
+        if ($this->purchases->removeElement($purchase)) {
+            // set the owning side to null (unless already changed)
+            if ($purchase->getAccount() === $this) {
+                $purchase->setAccount(null);
+            }
+        }
 
         return $this;
     }

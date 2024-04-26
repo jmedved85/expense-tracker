@@ -337,8 +337,7 @@ final class PurchaseAdmin extends AbstractAdmin
         // if ($unitId) {
             $form
                 ->with('accountName', [
-                    // 'label' => $accountName . ' - ' . 'Purchase',
-                    'label' => 'Purchase',
+                    'label' => $accountName . ' - ' . 'Purchase',
                     'class' => 'col-md-6'
                 ])
                     /* Only available Cash payment & Card payment */
@@ -369,6 +368,7 @@ final class PurchaseAdmin extends AbstractAdmin
                         // ])
                     ->add('dateOfPurchase', DatePickerType::class, [
                         'years' => range(1900, $now->format('Y')),
+                        'dp_max_date' => $now->format('c'),
                         'required' => true,
                         'format' => 'dd.MM.yyyy',
                         'label' => 'Date of Purchase',
@@ -487,7 +487,7 @@ final class PurchaseAdmin extends AbstractAdmin
                         ],
                     ], [
                         'edit' => 'inline',
-                        'inline' => 'table',
+                        'inline' => 'form',
                         'sortable'  => 'position',
                     ])
                 ->end()

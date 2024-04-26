@@ -32,6 +32,12 @@ class User extends BaseUser
     #[ORM\OneToMany(targetEntity: UserUnit::class, mappedBy: 'user')]
     private Collection $userUnits;
 
+    #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'addedByUser')]
+    private Collection $addedPurchases;
+
+    #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'editedByUser')]
+    private Collection $editedPurchases;
+
     public function __construct()
     {
         $this->addedBudgets = new ArrayCollection();
@@ -39,6 +45,8 @@ class User extends BaseUser
         $this->addedBudgetItems = new ArrayCollection();
         $this->editedBudgetItems = new ArrayCollection();
         $this->userUnits = new ArrayCollection();
+        $this->addedPurchases = new ArrayCollection();
+        $this->editedPurchases = new ArrayCollection();
     }
 
     /**
@@ -185,6 +193,66 @@ class User extends BaseUser
             // set the owning side to null (unless already changed)
             if ($userUnit->getUser() === $this) {
                 $userUnit->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Purchase>
+     */
+    public function getAddedPurchases(): Collection
+    {
+        return $this->addedPurchases;
+    }
+
+    public function addAddedPurchase(Purchase $addedPurchase): static
+    {
+        if (!$this->addedPurchases->contains($addedPurchase)) {
+            $this->addedPurchases->add($addedPurchase);
+            $addedPurchase->setAddedByUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAddedPurchase(Purchase $addedPurchase): static
+    {
+        if ($this->addedPurchases->removeElement($addedPurchase)) {
+            // set the owning side to null (unless already changed)
+            if ($addedPurchase->getAddedByUser() === $this) {
+                $addedPurchase->setAddedByUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Purchase>
+     */
+    public function getEditedPurchases(): Collection
+    {
+        return $this->editedPurchases;
+    }
+
+    public function addEditedPurchase(Purchase $editedPurchase): static
+    {
+        if (!$this->editedPurchases->contains($editedPurchase)) {
+            $this->editedPurchases->add($editedPurchase);
+            $editedPurchase->setEditedByUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEditedPurchase(Purchase $editedPurchase): static
+    {
+        if ($this->editedPurchases->removeElement($editedPurchase)) {
+            // set the owning side to null (unless already changed)
+            if ($editedPurchase->getEditedByUser() === $this) {
+                $editedPurchase->setEditedByUser(null);
             }
         }
 
