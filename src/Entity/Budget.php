@@ -49,9 +49,13 @@ class Budget
     #[ORM\ManyToOne(inversedBy: 'budgets')]
     private ?Unit $unit = null;
 
+    #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'budget')]
+    private Collection $purchases;
+
     public function __construct()
     {
         $this->budgetItems = new ArrayCollection();
+        $this->purchases = new ArrayCollection();
     }
 
     public function __toString()
@@ -234,6 +238,36 @@ class Budget
     public function setUnit(?Unit $unit): static
     {
         $this->unit = $unit;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Purchase>
+     */
+    public function getPurchases(): Collection
+    {
+        return $this->purchases;
+    }
+
+    public function addPurchase(Purchase $purchase): static
+    {
+        if (!$this->purchases->contains($purchase)) {
+            $this->purchases->add($purchase);
+            $purchase->setBudget($this);
+        }
+
+        return $this;
+    }
+
+    public function removePurchase(Purchase $purchase): static
+    {
+        if ($this->purchases->removeElement($purchase)) {
+            // set the owning side to null (unless already changed)
+            if ($purchase->getBudget() === $this) {
+                $purchase->setBudget(null);
+            }
+        }
 
         return $this;
     }

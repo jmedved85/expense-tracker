@@ -27,9 +27,13 @@ class BudgetSubCategory
     #[ORM\ManyToOne(inversedBy: 'budgetSubCategories')]
     private ?Unit $unit = null;
 
+    #[ORM\OneToMany(targetEntity: PurchaseLine::class, mappedBy: 'budgetSubCategory')]
+    private Collection $purchaseLines;
+
     public function __construct()
     {
         $this->budgetItems = new ArrayCollection();
+        $this->purchaseLines = new ArrayCollection();
     }
 
     public function __toString()
@@ -104,6 +108,36 @@ class BudgetSubCategory
     public function setUnit(?Unit $unit): static
     {
         $this->unit = $unit;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PurchaseLine>
+     */
+    public function getPurchaseLines(): Collection
+    {
+        return $this->purchaseLines;
+    }
+
+    public function addPurchaseLine(PurchaseLine $purchaseLine): static
+    {
+        if (!$this->purchaseLines->contains($purchaseLine)) {
+            $this->purchaseLines->add($purchaseLine);
+            $purchaseLine->setBudgetSubCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removePurchaseLine(PurchaseLine $purchaseLine): static
+    {
+        if ($this->purchaseLines->removeElement($purchaseLine)) {
+            // set the owning side to null (unless already changed)
+            if ($purchaseLine->getBudgetSubCategory() === $this) {
+                $purchaseLine->setBudgetSubCategory(null);
+            }
+        }
 
         return $this;
     }

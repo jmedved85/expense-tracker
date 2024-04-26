@@ -117,9 +117,7 @@ INVOICE
   - date_time_added                       datetime
   - date_time_edited                      datetime
   - account_id                            int
-  - budget_id`                            int 
-  - budget_category_id                    int
-  - general_category_id                   int
+  - budget_id                             int 
   - department_id                         int
   - supplier_id                           int
   - added_by_user_id                      int
@@ -137,7 +135,7 @@ INVOICE LINE
   - net_value             decimal(20,2)
   - line_total            decimal(20,2)
   - invoice_id            int
-  - budget_category_id    int
+  - budget_sub_category_id    int
   - general_category_id   int
 
 
@@ -157,7 +155,7 @@ INVOICE PART PAYMENT
   - invoice_id              int
 
 
-PURCHASE
+* PURCHASE
   - id                        int
   - transaction_type          int
   - date_of_purchase          date
@@ -170,8 +168,6 @@ PURCHASE
   - date_time_edited          datetime
   - account_id                int
   - budget_id                 int
-  - budget_category_id        int
-  - general_category_id       int
   - department_id             int
   - supplier_id               int
   - added_by_user_id          int
@@ -181,16 +177,16 @@ PURCHASE
   - unit_id                   int
 
 
-PURCHASE LINE
-  - id                    int
-  - description           int
-  - vat                   decimal(4,2)
-  - vat_value             decimal(20,2)
-  - net_value             decimal(20,2)
-  - line_total            decimal(20,2)
-  - purchase_id           int
-  - budget_category_id    int
-  - general_category_id   int
+* PURCHASE LINE
+  - id                        int
+  - description               varchar(2048)
+  - vat                       decimal(4,2)
+  - vat_value                 decimal(20,2)
+  - net_value                 decimal(20,2)
+  - line_total                decimal(20,2)
+  - purchase_id               int
+  - budget_sub_category_id    int
+  - general_category_id       int
 
 
 * SUPPLIER

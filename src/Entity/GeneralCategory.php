@@ -24,9 +24,13 @@ class GeneralCategory
     #[ORM\ManyToOne(inversedBy: 'generalCategories')]
     private ?Unit $unit = null;
 
+    #[ORM\OneToMany(targetEntity: PurchaseLine::class, mappedBy: 'generalCategory')]
+    private Collection $purchaseLines;
+
     public function __construct()
     {
         $this->budgetItems = new ArrayCollection();
+        $this->purchaseLines = new ArrayCollection();
     }
 
     public function __toString()
@@ -89,6 +93,36 @@ class GeneralCategory
     public function setUnit(?Unit $unit): static
     {
         $this->unit = $unit;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PurchaseLine>
+     */
+    public function getPurchaseLines(): Collection
+    {
+        return $this->purchaseLines;
+    }
+
+    public function addPurchaseLine(PurchaseLine $purchaseLine): static
+    {
+        if (!$this->purchaseLines->contains($purchaseLine)) {
+            $this->purchaseLines->add($purchaseLine);
+            $purchaseLine->setGeneralCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removePurchaseLine(PurchaseLine $purchaseLine): static
+    {
+        if ($this->purchaseLines->removeElement($purchaseLine)) {
+            // set the owning side to null (unless already changed)
+            if ($purchaseLine->getGeneralCategory() === $this) {
+                $purchaseLine->setGeneralCategory(null);
+            }
+        }
 
         return $this;
     }
