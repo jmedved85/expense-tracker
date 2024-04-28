@@ -60,7 +60,7 @@ final class PurchaseLineAdmin extends AbstractAdmin
         // }
 
         $form
-            ->add('shortDescription', TextareaType::class, [
+            ->add('description', TextareaType::class, [
                 'required' => false,
                 'label' => 'Item Description',
             ])
