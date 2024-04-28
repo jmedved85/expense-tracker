@@ -98,7 +98,7 @@ services:
             # - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
             - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
         tags:
-            - { name: sonata.admin, model_class: App\Entity\Purchase, controller: App\Controller\PurchaseAdminController, manager_type: orm, group: Purchases, label: Purchases, on_top: false }
+            - { name: sonata.admin, model_class: App\Entity\Purchase, controller: App\Controller\PurchaseAdminController, manager_type: orm, group: Purchases, label: Purchases, on_top: true }
 
     admin.purchase_line:
         class: App\Admin\PurchaseLineAdmin
