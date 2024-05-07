@@ -38,6 +38,12 @@ class User extends BaseUser
     #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'editedByUser')]
     private Collection $editedPurchases;
 
+    #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'addedByUser')]
+    private Collection $addedInvoices;
+
+    #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'editedByUser')]
+    private Collection $editedInvoices;
+
     public function __construct()
     {
         $this->addedBudgets = new ArrayCollection();
@@ -47,6 +53,8 @@ class User extends BaseUser
         $this->userUnits = new ArrayCollection();
         $this->addedPurchases = new ArrayCollection();
         $this->editedPurchases = new ArrayCollection();
+        $this->addedInvoices = new ArrayCollection();
+        $this->editedInvoices = new ArrayCollection();
     }
 
     /**
@@ -253,6 +261,66 @@ class User extends BaseUser
             // set the owning side to null (unless already changed)
             if ($editedPurchase->getEditedByUser() === $this) {
                 $editedPurchase->setEditedByUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getAddedInvoices(): Collection
+    {
+        return $this->addedInvoices;
+    }
+
+    public function addAddedInvoice(Invoice $addedInvoice): static
+    {
+        if (!$this->addedInvoices->contains($addedInvoice)) {
+            $this->addedInvoices->add($addedInvoice);
+            $addedInvoice->setAddedByUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAddedInvoice(Invoice $addedInvoice): static
+    {
+        if ($this->addedInvoices->removeElement($addedInvoice)) {
+            // set the owning side to null (unless already changed)
+            if ($addedInvoice->getAddedByUser() === $this) {
+                $addedInvoice->setAddedByUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getEditedInvoices(): Collection
+    {
+        return $this->editedInvoices;
+    }
+
+    public function addEditedInvoice(Invoice $editedInvoice): static
+    {
+        if (!$this->editedInvoices->contains($editedInvoice)) {
+            $this->editedInvoices->add($editedInvoice);
+            $editedInvoice->setEditedByUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEditedInvoice(Invoice $editedInvoice): static
+    {
+        if ($this->editedInvoices->removeElement($editedInvoice)) {
+            // set the owning side to null (unless already changed)
+            if ($editedInvoice->getEditedByUser() === $this) {
+                $editedInvoice->setEditedByUser(null);
             }
         }
 

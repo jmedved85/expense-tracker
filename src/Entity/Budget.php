@@ -52,10 +52,17 @@ class Budget
     #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'budget')]
     private Collection $purchases;
 
+    /**
+     * @var Collection<int, Invoice>
+     */
+    #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'budget')]
+    private Collection $invoices;
+
     public function __construct()
     {
         $this->budgetItems = new ArrayCollection();
         $this->purchases = new ArrayCollection();
+        $this->invoices = new ArrayCollection();
     }
 
     public function __toString()
@@ -266,6 +273,36 @@ class Budget
             // set the owning side to null (unless already changed)
             if ($purchase->getBudget() === $this) {
                 $purchase->setBudget(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getInvoices(): Collection
+    {
+        return $this->invoices;
+    }
+
+    public function addInvoice(Invoice $invoice): static
+    {
+        if (!$this->invoices->contains($invoice)) {
+            $this->invoices->add($invoice);
+            $invoice->setBudget($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoice(Invoice $invoice): static
+    {
+        if ($this->invoices->removeElement($invoice)) {
+            // set the owning side to null (unless already changed)
+            if ($invoice->getBudget() === $this) {
+                $invoice->setBudget(null);
             }
         }
 

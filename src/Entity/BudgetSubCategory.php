@@ -30,10 +30,17 @@ class BudgetSubCategory
     #[ORM\OneToMany(targetEntity: PurchaseLine::class, mappedBy: 'budgetSubCategory')]
     private Collection $purchaseLines;
 
+    /**
+     * @var Collection<int, InvoiceLine>
+     */
+    #[ORM\OneToMany(targetEntity: InvoiceLine::class, mappedBy: 'budgetSubCategory')]
+    private Collection $invoiceLines;
+
     public function __construct()
     {
         $this->budgetItems = new ArrayCollection();
         $this->purchaseLines = new ArrayCollection();
+        $this->invoiceLines = new ArrayCollection();
     }
 
     public function __toString()
@@ -136,6 +143,36 @@ class BudgetSubCategory
             // set the owning side to null (unless already changed)
             if ($purchaseLine->getBudgetSubCategory() === $this) {
                 $purchaseLine->setBudgetSubCategory(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, InvoiceLine>
+     */
+    public function getInvoiceLines(): Collection
+    {
+        return $this->invoiceLines;
+    }
+
+    public function addInvoiceLine(InvoiceLine $invoiceLine): static
+    {
+        if (!$this->invoiceLines->contains($invoiceLine)) {
+            $this->invoiceLines->add($invoiceLine);
+            $invoiceLine->setBudgetSubCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoiceLine(InvoiceLine $invoiceLine): static
+    {
+        if ($this->invoiceLines->removeElement($invoiceLine)) {
+            // set the owning side to null (unless already changed)
+            if ($invoiceLine->getBudgetSubCategory() === $this) {
+                $invoiceLine->setBudgetSubCategory(null);
             }
         }
 

@@ -58,6 +58,12 @@ class Unit
     #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'unit')]
     private Collection $purchases;
 
+    /**
+     * @var Collection<int, Invoice>
+     */
+    #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'unit')]
+    private Collection $invoices;
+
     public function __construct()
     {
         $this->accounts = new ArrayCollection();
@@ -70,6 +76,7 @@ class Unit
         $this->suppliers = new ArrayCollection();
         $this->userUnits = new ArrayCollection();
         $this->purchases = new ArrayCollection();
+        $this->invoices = new ArrayCollection();
     }
 
     public function __toString()
@@ -424,6 +431,36 @@ class Unit
             // set the owning side to null (unless already changed)
             if ($purchase->getUnit() === $this) {
                 $purchase->setUnit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getInvoices(): Collection
+    {
+        return $this->invoices;
+    }
+
+    public function addInvoice(Invoice $invoice): static
+    {
+        if (!$this->invoices->contains($invoice)) {
+            $this->invoices->add($invoice);
+            $invoice->setUnit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoice(Invoice $invoice): static
+    {
+        if ($this->invoices->removeElement($invoice)) {
+            // set the owning side to null (unless already changed)
+            if ($invoice->getUnit() === $this) {
+                $invoice->setUnit(null);
             }
         }
 

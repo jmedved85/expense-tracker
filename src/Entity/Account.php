@@ -38,10 +38,17 @@ class Account
     #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'account')]
     private Collection $purchases;
 
+    /**
+     * @var Collection<int, Invoice>
+     */
+    #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'account')]
+    private Collection $invoices;
+
     public function __construct()
     {
         $this->balance = 0;
         $this->purchases = new ArrayCollection();
+        $this->invoices = new ArrayCollection();
     }
 
     public function __toString()
@@ -187,6 +194,36 @@ class Account
             // set the owning side to null (unless already changed)
             if ($purchase->getAccount() === $this) {
                 $purchase->setAccount(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getInvoices(): Collection
+    {
+        return $this->invoices;
+    }
+
+    public function addInvoice(Invoice $invoice): static
+    {
+        if (!$this->invoices->contains($invoice)) {
+            $this->invoices->add($invoice);
+            $invoice->setAccount($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoice(Invoice $invoice): static
+    {
+        if ($this->invoices->removeElement($invoice)) {
+            // set the owning side to null (unless already changed)
+            if ($invoice->getAccount() === $this) {
+                $invoice->setAccount(null);
             }
         }
 

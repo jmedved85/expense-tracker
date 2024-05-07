@@ -27,10 +27,17 @@ class GeneralCategory
     #[ORM\OneToMany(targetEntity: PurchaseLine::class, mappedBy: 'generalCategory')]
     private Collection $purchaseLines;
 
+    /**
+     * @var Collection<int, InvoiceLine>
+     */
+    #[ORM\OneToMany(targetEntity: InvoiceLine::class, mappedBy: 'generalCategory')]
+    private Collection $invoiceLines;
+
     public function __construct()
     {
         $this->budgetItems = new ArrayCollection();
         $this->purchaseLines = new ArrayCollection();
+        $this->invoiceLines = new ArrayCollection();
     }
 
     public function __toString()
@@ -121,6 +128,36 @@ class GeneralCategory
             // set the owning side to null (unless already changed)
             if ($purchaseLine->getGeneralCategory() === $this) {
                 $purchaseLine->setGeneralCategory(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, InvoiceLine>
+     */
+    public function getInvoiceLines(): Collection
+    {
+        return $this->invoiceLines;
+    }
+
+    public function addInvoiceLine(InvoiceLine $invoiceLine): static
+    {
+        if (!$this->invoiceLines->contains($invoiceLine)) {
+            $this->invoiceLines->add($invoiceLine);
+            $invoiceLine->setGeneralCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoiceLine(InvoiceLine $invoiceLine): static
+    {
+        if ($this->invoiceLines->removeElement($invoiceLine)) {
+            // set the owning side to null (unless already changed)
+            if ($invoiceLine->getGeneralCategory() === $this) {
+                $invoiceLine->setGeneralCategory(null);
             }
         }
 
