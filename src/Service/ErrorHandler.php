@@ -13,7 +13,7 @@ use TypeError;
 
 class ErrorHandler
 {
-    public function __construct(private LoggerInterface $logger,private EntityManagerInterface $entityManager)
+    public function __construct(private LoggerInterface $logger, private EntityManagerInterface $entityManager)
     {
     }
 

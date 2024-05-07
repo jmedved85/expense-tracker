@@ -20,8 +20,7 @@ class TransactionService
         private EntityManagerInterface $entityManager,
         private ErrorHandler $errorHandler,
         private BudgetCalculationService $budgetCalculationService
-    )
-    {
+    ) {
     }
 
     /**
@@ -41,8 +40,7 @@ class TransactionService
         string $flag,
         string $realAmountPaid = null,
         Transaction $transaction = null
-    ): Transaction
-    {
+    ): Transaction {
         /** @var TransactionRepository $transactionRepository */
         $transactionRepository = $this->entityManager->getRepository(Transaction::class);
 
@@ -99,7 +97,11 @@ class TransactionService
             } else {
                 // If there is a change in Budget (month / year) - from yes to none
                 if ($this->budgetCalculationService->isValidOriginalData($originalData, 'budget_id')) {
-                    $this->budgetCalculationService->calculateBudgetsActualExpenses($object, $originalData['budget_id'], 'remove');
+                    $this->budgetCalculationService->calculateBudgetsActualExpenses(
+                        $object,
+                        $originalData['budget_id'],
+                        'remove'
+                    );
                 }
             }
 
@@ -108,7 +110,7 @@ class TransactionService
             $this->entityManager->commit(); // Commit the transaction
 
             return $transaction;
-        } catch (TypeError|Exception $ex) {
+        } catch (TypeError | Exception $ex) {
             $this->errorHandler->handleDatabaseErrors($ex);
 
             throw $ex;
@@ -130,8 +132,7 @@ class TransactionService
         float $balance,
         string $flag,
         Transaction $transaction = null
-    ): Transaction
-    {
+    ): Transaction {
         /** @var TransactionRepository $transactionRepository */
         $transactionRepository = $this->entityManager->getRepository(Transaction::class);
 
@@ -182,7 +183,11 @@ class TransactionService
             } else {
                 // If there is a change in Budget (month / year) - from yes to none
                 if ($this->budgetCalculationService->isValidOriginalData($originalData, 'budget_id')) {
-                    $this->budgetCalculationService->calculateBudgetsActualExpenses($object, $originalData['budget_id'], 'remove');
+                    $this->budgetCalculationService->calculateBudgetsActualExpenses(
+                        $object,
+                        $originalData['budget_id'],
+                        'remove'
+                    );
                 }
             }
 
@@ -191,7 +196,7 @@ class TransactionService
             $this->entityManager->commit(); // Commit the transaction
 
             return $transaction;
-        } catch (TypeError|Exception $ex) {
+        } catch (TypeError | Exception $ex) {
             $this->errorHandler->handleDatabaseErrors($ex);
 
             throw $ex;
@@ -212,8 +217,7 @@ class TransactionService
         float $balance,
         string $flag,
         Transaction $bankFeeTransaction = null
-    ): Transaction
-    {
+    ): Transaction {
         /** @var TransactionRepository $transactionRepository*/
         $transactionRepository = $this->entityManager->getRepository(Transaction::class);
 
@@ -258,7 +262,7 @@ class TransactionService
             $this->entityManager->commit(); // Commit the transaction
 
             return $bankFeeTransaction;
-        } catch (TypeError|Exception $ex) {
+        } catch (TypeError | Exception $ex) {
             $this->errorHandler->handleDatabaseErrors($ex, $transaction);
 
             throw $ex;
@@ -280,8 +284,7 @@ class TransactionService
         array $userAndDateTime,
         ?float $balanceTransferFrom = null,
         float $balanceTransferTo
-    ): Transaction
-    {
+    ): Transaction {
         /** @var TransactionRepository $transactionRepository*/
         $transactionRepository = $this->entityManager->getRepository(Transaction::class);
 
@@ -324,7 +327,7 @@ class TransactionService
             $this->entityManager->commit(); // Commit the transaction
 
             return $transaction;
-        } catch (TypeError|Exception $ex) {
+        } catch (TypeError | Exception $ex) {
             $this->errorHandler->handleDatabaseErrors($ex);
 
             throw $ex;

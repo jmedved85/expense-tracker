@@ -77,8 +77,7 @@ class GeneratePdfDocumentService
         string $reportGroup,
         AppUtil $appUtil,
         bool $download = false
-    ): array
-    {
+    ): array {
         /** @var UnitRepository $unitRepository */
         $unitRepository = $this->entityManager->getRepository(Unit::class);
 
@@ -94,7 +93,7 @@ class GeneratePdfDocumentService
 
         if ($dateStart && $dateEnd) {
             $subTitle = $dateStart . ' - ' . $dateEnd;
-        } else if ($month) {
+        } elseif ($month) {
             $subTitle = $month . ' ' . $monthYear;
         } else {
             $subTitle = $period . ' ' . $periodYear;

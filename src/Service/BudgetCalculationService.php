@@ -19,8 +19,11 @@ class BudgetCalculationService
     {
     }
 
-    public function calculateBudgetsActualExpenses(object $object, string $originalBudgetId = null, string $flag = null): void
-    {
+    public function calculateBudgetsActualExpenses(
+        object $object,
+        string $originalBudgetId = null,
+        string $flag = null
+    ): void {
         $reflectionClass = new ReflectionClass($object);
         $className = $reflectionClass->getShortName();
         $unitOfWork = $this->entityManager->getUnitOfWork();
@@ -30,7 +33,7 @@ class BudgetCalculationService
         // Checking if the object has a budget
         if ($object->getBudget()) {
             $budgetId = $object->getBudget()->getId();
-        } else if ($originalBudgetId) {
+        } elseif ($originalBudgetId) {
             $budgetId = $originalBudgetId;
         }
 
@@ -79,7 +82,13 @@ class BudgetCalculationService
                                 }
                             }
 
-                            $budgetItem = $this->getBudgetItem($budgetId, $budgetMainCategoryId, $budgetSubCategoryId, $currency, $unitId);
+                            $budgetItem = $this->getBudgetItem(
+                                $budgetId,
+                                $budgetMainCategoryId,
+                                $budgetSubCategoryId,
+                                $currency,
+                                $unitId
+                            );
 
                             if ($budgetItem) {
                                 $budgetItem->setActual($lineTotal, false);
@@ -93,12 +102,14 @@ class BudgetCalculationService
         foreach ($objectLines as $line) {
             $originalData = $unitOfWork->getOriginalEntityData($line);
 
-            if (($this->isValidOriginalData($originalData, 'budget_sub_category_id')) &&
-                ($this->isValidOriginalData($originalData, 'budget_main_category_id')))
-            {
-                if (($originalData['budget_sub_category_id'] && $line->getBudgetSubCategory() == null) ||
-                    ($originalData['budget_main_category_id'] && $line->getBudgetMainCategory() == null))
-                {
+            if (
+                ($this->isValidOriginalData($originalData, 'budget_sub_category_id')) &&
+                ($this->isValidOriginalData($originalData, 'budget_main_category_id'))
+            ) {
+                if (
+                    ($originalData['budget_sub_category_id'] && $line->getBudgetSubCategory() == null) ||
+                    ($originalData['budget_main_category_id'] && $line->getBudgetMainCategory() == null)
+                ) {
                     $this->removeBudgetTotal(
                         $budgetId,
                         $originalData['budget_main_category_id'],
@@ -107,24 +118,32 @@ class BudgetCalculationService
                         $currency,
                         $unitId
                     );
-                } else if ($line->getBudgetMainCategory() && $line->getBudgetSubCategory()) {
+                } elseif ($line->getBudgetMainCategory() && $line->getBudgetSubCategory()) {
                     $budgetMainCategoryId = $line->getBudgetMainCategory()->getId();
                     $budgetSubCategoryId = $line->getBudgetSubCategory()->getId();
                     $lineTotal = $line->getLineTotal();
 
-                    $budgetItem = $this->getBudgetItem($budgetId, $budgetMainCategoryId, $budgetSubCategoryId, $currency, $unitId);
+                    $budgetItem = $this->getBudgetItem(
+                        $budgetId,
+                        $budgetMainCategoryId,
+                        $budgetSubCategoryId,
+                        $currency,
+                        $unitId
+                    );
 
                     if ($flag == 'update') {
                         if ($line->getId()) {
-                            if ((!$originalData['budget_sub_category_id'] && $line->getBudgetSubCategory()) ||
-                                (!$originalData['budget_main_category_id'] && $line->getBudgetMainCategory()))
-                            {
+                            if (
+                                (!$originalData['budget_sub_category_id'] && $line->getBudgetSubCategory()) ||
+                                (!$originalData['budget_main_category_id'] && $line->getBudgetMainCategory())
+                            ) {
                                 if ($budgetItem) {
                                     $budgetItem->setActual($lineTotal, true);
                                 }
-                            } else if (($originalData['budget_sub_category_id'] !== $line->getBudgetSzbCategory()->getId()) ||
-                                ($originalData['budget_main_category_id'] !== $line->getBudgetMainCategory()->getId()))
-                            {
+                            } elseif (
+                                ($originalData['budget_sub_category_id'] !== $line->getBudgetSzbCategory()->getId()) ||
+                                ($originalData['budget_main_category_id'] !== $line->getBudgetMainCategory()->getId())
+                            ) {
                                 $this->removeBudgetTotal(
                                     $budgetId,
                                     $originalData['budget_main_category_id'],
@@ -150,7 +169,7 @@ class BudgetCalculationService
                                 $budgetItem->setActual($lineTotal, true);
                             }
                         }
-                    } else if ($flag == 'remove') {
+                    } elseif ($flag == 'remove') {
                         if ($budgetItem) {
                             $budgetItem->setActual($lineTotal, false);
                         }
@@ -166,7 +185,13 @@ class BudgetCalculationService
                     $budgetSubCategoryId = $line->getBudgetSubCategory()->getId();
                     $lineTotal = $line->getLineTotal();
 
-                    $budgetItem = $this->getBudgetItem($budgetId, $budgetMainCategoryId, $budgetSubCategoryId, $currency, $unitId);
+                    $budgetItem = $this->getBudgetItem(
+                        $budgetId,
+                        $budgetMainCategoryId,
+                        $budgetSubCategoryId,
+                        $currency,
+                        $unitId
+                    );
 
                     if ($budgetItem) {
                         if ($flag == 'remove') {
@@ -187,8 +212,7 @@ class BudgetCalculationService
         string $lineTotal,
         string $currency,
         string $unitId
-    ): void
-    {
+    ): void {
         $budgetItem = $this->getBudgetItem($budgetId, $budgetMainCategoryId, $budgetSubCategoryId, $currency, $unitId);
 
         if ($budgetItem) {
@@ -202,8 +226,7 @@ class BudgetCalculationService
         string $budgetSubCategoryId,
         string $currency,
         string $unitId
-    ) : ?BudgetItem
-    {
+    ): ?BudgetItem {
         /** @var BudgetItemRepository $budgetItemRepository */
         $budgetItemRepository = $this->entityManager->getRepository(BudgetItem::class);
 
@@ -217,7 +240,7 @@ class BudgetCalculationService
         ;
     }
 
-    private function getCurrentLineTotal(string $lineId, string $objectClassNameLabel) : ?string
+    private function getCurrentLineTotal(string $lineId, string $objectClassNameLabel): ?string
     {
         /** @var PurchaseLineRepository $purchaseLineRepository */
         $purchaseLineRepository = $this->entityManager->getRepository(PurchaseLine::class);

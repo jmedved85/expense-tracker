@@ -30,8 +30,8 @@ class AppUtil
     public function getFooterHtml(?Unit $unit = null, bool $currentTime = true): string
     {
         return $this->twig->render('PDF/footer.html.twig', [
-            'unit' => $unit, 
-            'currentTime' => $currentTime, 
+            'unit' => $unit,
+            'currentTime' => $currentTime,
             'projectDir' => $this->projectDir
         ]);
     }
