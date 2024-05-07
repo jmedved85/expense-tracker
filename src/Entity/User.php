@@ -44,6 +44,18 @@ class User extends BaseUser
     #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'editedByUser')]
     private Collection $editedInvoices;
 
+    /**
+     * @var Collection<int, Transaction>
+     */
+    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'addedByUser')]
+    private Collection $addedTransactions;
+
+    /**
+     * @var Collection<int, Transaction>
+     */
+    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'editedByUser')]
+    private Collection $editedTransactions;
+
     public function __construct()
     {
         $this->addedBudgets = new ArrayCollection();
@@ -55,6 +67,8 @@ class User extends BaseUser
         $this->editedPurchases = new ArrayCollection();
         $this->addedInvoices = new ArrayCollection();
         $this->editedInvoices = new ArrayCollection();
+        $this->addedTransactions = new ArrayCollection();
+        $this->editedTransactions = new ArrayCollection();
     }
 
     /**
@@ -321,6 +335,66 @@ class User extends BaseUser
             // set the owning side to null (unless already changed)
             if ($editedInvoice->getEditedByUser() === $this) {
                 $editedInvoice->setEditedByUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getAddedTransactions(): Collection
+    {
+        return $this->addedTransactions;
+    }
+
+    public function addAddedTransaction(Transaction $addedTransaction): static
+    {
+        if (!$this->addedTransactions->contains($addedTransaction)) {
+            $this->addedTransactions->add($addedTransaction);
+            $addedTransaction->setAddedByUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAddedTransaction(Transaction $addedTransaction): static
+    {
+        if ($this->addedTransactions->removeElement($addedTransaction)) {
+            // set the owning side to null (unless already changed)
+            if ($addedTransaction->getAddedByUser() === $this) {
+                $addedTransaction->setAddedByUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getEditedTransactions(): Collection
+    {
+        return $this->editedTransactions;
+    }
+
+    public function addEditedTransaction(Transaction $editedTransaction): static
+    {
+        if (!$this->editedTransactions->contains($editedTransaction)) {
+            $this->editedTransactions->add($editedTransaction);
+            $editedTransaction->setEditedByUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEditedTransaction(Transaction $editedTransaction): static
+    {
+        if ($this->editedTransactions->removeElement($editedTransaction)) {
+            // set the owning side to null (unless already changed)
+            if ($editedTransaction->getEditedByUser() === $this) {
+                $editedTransaction->setEditedByUser(null);
             }
         }
 

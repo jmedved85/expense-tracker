@@ -3,8 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Budget;
+use App\Entity\BudgetItem;
+use App\Entity\Invoice;
+use App\Entity\Purchase;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @extends ServiceEntityRepository<Budget>
@@ -21,148 +25,149 @@ class BudgetRepository extends ServiceEntityRepository
         parent::__construct($registry, Budget::class);
     }
 
-    // /**
-    //  * @throws Exception
-    //  */
-    // public function findWithTotals(string $id): ?Budget
-    // {
-    //     $budget = $this->find($id);
+    /**
+     * @throws Exception
+     */
+    public function findWithTotals(string $id): ?Budget
+    {
+        $budget = $this->find($id);
 
-    //     if ($budget) {
-    //         $entityManager = $this->getEntityManager();
+        if ($budget) {
+            $entityManager = $this->getEntityManager();
 
-    //         try {
-    //             $query = $entityManager->createQueryBuilder()
-    //                 ->select('
-    //                     SUM(bi.budgeted) as totalBudgeted,
-    //                     SUM(bi.actualAvg) as totalActual,
-    //                     bi.currency
-    //                 ')
-    //                 ->from(BudgetItem::class, 'bi')
-    //                 ->where('bi.budget = :budget')
-    //                 ->groupBy('bi.currency')
-    //                 ->orderBy('bi.currency')
-    //                 ->setParameter('budget', $budget)
-    //                 ->getQuery()
-    //             ;
+            try {
+                $query = $entityManager->createQueryBuilder()
+                    ->select('
+                        SUM(bi.budgeted) as totalBudgeted,
+                        SUM(bi.actualAvg) as totalActual,
+                        bi.currency
+                    ')
+                    ->from(BudgetItem::class, 'bi')
+                    ->where('bi.budget = :budget')
+                    ->groupBy('bi.currency')
+                    ->orderBy('bi.currency')
+                    ->setParameter('budget', $budget)
+                    ->getQuery()
+                ;
 
-    //             $results = $query->getResult();
+                $results = $query->getResult();
 
-    //             foreach ($results as $result) {
-    //                 $budget->setTotalBudgeted($result['currency'], $result['totalBudgeted']);
-    //                 $budget->setTotalActual($result['currency'], $result['totalActual']);
-    //             }
-    //         } catch (Exception $e) {
-    //             error_log($e->getMessage());
+                foreach ($results as $result) {
+                    $budget->setTotalBudgeted($result['totalBudgeted']);
+                    $budget->setTotalActual($result['totalActual']);
+                }
+            } catch (Exception $e) {
+                error_log($e->getMessage());
 
-    //             return null;
-    //         }
-    //     }
+                return null;
+            }
+        }
 
-    //     return $budget;
-    // }
+        return $budget;
+    }
 
-    // /**
-    //  * @throws Exception
-    //  */
-    // public function findBudgetInvoices(string $objectId): array
-    // {
-    //     /** @var InvoiceRepository $invoiceRepository */
-    //     $invoiceRepository = $this->getEntityManager()->getRepository(Invoice::class);
-    //     /** @var BudgetItemRepository $budgetItemRepository */
-    //     $budgetItemRepository = $this->getEntityManager()->getRepository(BudgetItem::class);
+    /**
+     * @throws Exception
+     */
+    public function findBudgetInvoices(string $objectId): array
+    {
+        /** @var InvoiceRepository $invoiceRepository */
+        $invoiceRepository = $this->getEntityManager()->getRepository(Invoice::class);
+        /** @var BudgetItemRepository $budgetItemRepository */
+        $budgetItemRepository = $this->getEntityManager()->getRepository(BudgetItem::class);
 
-    //     $budget = $this->findOneBy(['id' => $objectId]);
+        $budget = $this->findOneBy(['id' => $objectId]);
 
-    //     try {
-    //         $budgetItems = $budgetItemRepository->createQueryBuilder('bi')
-    //             ->where('bi.budget = :budget')
-    //             ->setParameter('budget', $budget)
-    //             ->getQuery()
-    //             ->getResult()
-    //         ;
+        try {
+            $budgetItems = $budgetItemRepository->createQueryBuilder('bi')
+                ->where('bi.budget = :budget')
+                ->setParameter('budget', $budget)
+                ->getQuery()
+                ->getResult()
+            ;
 
-    //         $budgetCurrencies = $this->getUniqueValues($budgetItems, 'getCurrency');
-    //         $budgetMainCategories = $this->getUniqueValues($budgetItems, 'getBudgetMainCategory');
-    //         $budgetCategories = $this->getUniqueValues($budgetItems, 'getBudgetCategory');
+            $budgetCurrencies = $this->getUniqueValues($budgetItems, 'getCurrency');
+            $budgetMainCategories = $this->getUniqueValues($budgetItems, 'getBudgetMainCategory');
+            $budgetCategories = $this->getUniqueValues($budgetItems, 'getBudgetCategory');
 
-    //         $budgetInvoices = $invoiceRepository->createQueryBuilder('i')
-    //             ->join('i.invoiceLines', 'il')
-    //             ->where('i.invoicePaymentStatus = :paid')
-    //             ->andWhere('i.budget = :budget')
-    //             ->andWhere('i.currency IN (:budgetCurrencies)')
-    //             ->andWhere('il.budgetMainCategory IN (:budgetMainCategories)')
-    //             ->andWhere('il.budgetCategory IN (:budgetCategories)')
-    //             ->setParameter('paid', 'Paid')
-    //             ->setParameter('budget', $budget)
-    //             ->setParameter('budgetCurrencies', $budgetCurrencies)
-    //             ->setParameter('budgetMainCategories', $budgetMainCategories)
-    //             ->setParameter('budgetCategories', $budgetCategories)
-    //             ->orderBy('i.invoiceDate', 'ASC')
-    //             ->getQuery()
-    //             ->getResult()
-    //         ;
+            $budgetInvoices = $invoiceRepository->createQueryBuilder('i')
+                ->join('i.invoiceLines', 'il')
+                ->where('i.invoicePaymentStatus = :paid')
+                ->andWhere('i.budget = :budget')
+                ->andWhere('i.currency IN (:budgetCurrencies)')
+                ->andWhere('il.budgetMainCategory IN (:budgetMainCategories)')
+                ->andWhere('il.budgetCategory IN (:budgetCategories)')
+                ->setParameter('paid', 'Paid')
+                ->setParameter('budget', $budget)
+                ->setParameter('budgetCurrencies', $budgetCurrencies)
+                ->setParameter('budgetMainCategories', $budgetMainCategories)
+                ->setParameter('budgetCategories', $budgetCategories)
+                ->orderBy('i.invoiceDate', 'ASC')
+                ->getQuery()
+                ->getResult()
+            ;
 
-    //         return $budgetInvoices;
-    //     } catch (Exception $e) {
-    //         error_log($e->getMessage());
+            return $budgetInvoices;
+        } catch (Exception $e) {
+            error_log($e->getMessage());
 
-    //         return [];
-    //     }
-    // }
+            return [];
+        }
+    }
 
-    // /**
-    //  * @throws Exception
-    //  */
-    // public function findBudgetPurchases(string $objectId): array
-    // {
-    //     /** @var PurchaseRepository $purchaseRepository */
-    //     $purchaseRepository = $this->getEntityManager()->getRepository(Purchase::class);
-    //     /** @var BudgetItemRepository $budgetItemRepository */
-    //     $budgetItemRepository = $this->getEntityManager()->getRepository(BudgetItem::class);
+    /**
+     * @throws Exception
+     */
+    public function findBudgetPurchases(string $objectId): array
+    {
+        /** @var PurchaseRepository $purchaseRepository */
+        $purchaseRepository = $this->getEntityManager()->getRepository(Purchase::class);
+        /** @var BudgetItemRepository $budgetItemRepository */
+        $budgetItemRepository = $this->getEntityManager()->getRepository(BudgetItem::class);
 
-    //     $budget = $this->findOneBy(['id' => $objectId]);
+        $budget = $this->findOneBy(['id' => $objectId]);
 
-    //     try {
-    //         $budgetItems = $budgetItemRepository->createQueryBuilder('bi')
-    //             ->where('bi.budget = :budget')
-    //             ->setParameter('budget', $budget)
-    //             ->getQuery()
-    //             ->getResult()
-    //         ;
+        try {
+            $budgetItems = $budgetItemRepository->createQueryBuilder('bi')
+                ->where('bi.budget = :budget')
+                ->setParameter('budget', $budget)
+                ->getQuery()
+                ->getResult()
+            ;
 
-    //         $budgetCurrencies = $this->getUniqueValues($budgetItems, 'getCurrency');
-    //         $budgetMainCategories = $this->getUniqueValues($budgetItems, 'getBudgetMainCategory');
-    //         $budgetCategories = $this->getUniqueValues($budgetItems, 'getBudgetCategory');
+            $budgetCurrencies = $this->getUniqueValues($budgetItems, 'getCurrency');
+            $budgetMainCategories = $this->getUniqueValues($budgetItems, 'getBudgetMainCategory');
+            $budgetCategories = $this->getUniqueValues($budgetItems, 'getBudgetCategory');
 
-    //         $budgetPurchases = $purchaseRepository->createQueryBuilder('p')
-    //             ->join('p.purchaseLines', 'pl')
-    //             ->where('p.budget = :budget')
-    //             ->andWhere('p.currency IN (:budgetCurrencies)')
-    //             ->andWhere('pl.budgetMainCategory IN (:budgetMainCategories)')
-    //             ->andWhere('pl.budgetCategory IN (:budgetCategories)')
-    //             ->setParameter('budget', $budget)
-    //             ->setParameter('budgetCurrencies', $budgetCurrencies)
-    //             ->setParameter('budgetMainCategories', $budgetMainCategories)
-    //             ->setParameter('budgetCategories', $budgetCategories)
-    //             ->orderBy('p.dateOfPurchase', 'ASC')
-    //             ->getQuery()
-    //             ->getResult()
-    //         ;
+            $budgetPurchases = $purchaseRepository->createQueryBuilder('p')
+                ->join('p.purchaseLines', 'pl')
+                ->where('p.budget = :budget')
+                ->andWhere('p.currency IN (:budgetCurrencies)')
+                ->andWhere('pl.budgetMainCategory IN (:budgetMainCategories)')
+                ->andWhere('pl.budgetCategory IN (:budgetCategories)')
+                ->setParameter('budget', $budget)
+                ->setParameter('budgetCurrencies', $budgetCurrencies)
+                ->setParameter('budgetMainCategories', $budgetMainCategories)
+                ->setParameter('budgetCategories', $budgetCategories)
+                ->orderBy('p.dateOfPurchase', 'ASC')
+                ->getQuery()
+                ->getResult()
+            ;
 
-    //         return $budgetPurchases;
-    //     } catch (Exception $e) {
-    //         error_log($e->getMessage());
+            return $budgetPurchases;
+        } catch (Exception $e) {
+            error_log($e->getMessage());
 
-    //         return [];
-    //     }
-    // }
+            return [];
+        }
+    }
 
-    // private function getUniqueValues(array $items, string $method): array {
-    //     return array_values(array_unique(array_map(function($item) use ($method) {
-    //         return $item->$method();
-    //     }, $items)));
-    // }
+    private function getUniqueValues(array $items, string $method): array
+    {
+        return array_values(array_unique(array_map(function ($item) use ($method) {
+            return $item->$method();
+        }, $items)));
+    }
 
     //    /**
     //     * @return Budget[] Returns an array of Budget objects

@@ -44,11 +44,32 @@ class Account
     #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'account')]
     private Collection $invoices;
 
+    /**
+     * @var Collection<int, Transaction>
+     */
+    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'mainAccount')]
+    private Collection $mainAccountTransactions;
+
+    /**
+     * @var Collection<int, Transaction>
+     */
+    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'transferFromAccount')]
+    private Collection $transferFromAccountTransactions;
+
+    /**
+     * @var Collection<int, Transaction>
+     */
+    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'transferToAccount')]
+    private Collection $transferToAccountTransactions;
+
     public function __construct()
     {
         $this->balance = 0;
         $this->purchases = new ArrayCollection();
         $this->invoices = new ArrayCollection();
+        $this->mainAccountTransactions = new ArrayCollection();
+        $this->transferFromAccountTransactions = new ArrayCollection();
+        $this->transferToAccountTransactions = new ArrayCollection();
     }
 
     public function __toString()
@@ -119,7 +140,7 @@ class Account
 
     public function setBalance(?string $amount, bool $increase = null): self
     {
-        $currentBalance = floatval($this->getBalance());
+        $currentBalance = floatval($this->balance);
 
         if ($increase) {
             $currentBalance += floatval($amount);
@@ -224,6 +245,96 @@ class Account
             // set the owning side to null (unless already changed)
             if ($invoice->getAccount() === $this) {
                 $invoice->setAccount(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getMainAccountTransactions(): Collection
+    {
+        return $this->mainAccountTransactions;
+    }
+
+    public function addMainAccountTransaction(Transaction $mainAccountTransaction): static
+    {
+        if (!$this->mainAccountTransactions->contains($mainAccountTransaction)) {
+            $this->mainAccountTransactions->add($mainAccountTransaction);
+            $mainAccountTransaction->setMainAccount($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMainAccountTransaction(Transaction $mainAccountTransaction): static
+    {
+        if ($this->mainAccountTransactions->removeElement($mainAccountTransaction)) {
+            // set the owning side to null (unless already changed)
+            if ($mainAccountTransaction->getMainAccount() === $this) {
+                $mainAccountTransaction->setMainAccount(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getTransferFromAccountTransactions(): Collection
+    {
+        return $this->transferFromAccountTransactions;
+    }
+
+    public function addTransferFromAccountTransaction(Transaction $transferFromAccountTransaction): static
+    {
+        if (!$this->transferFromAccountTransactions->contains($transferFromAccountTransaction)) {
+            $this->transferFromAccountTransactions->add($transferFromAccountTransaction);
+            $transferFromAccountTransaction->setTransferFromAccount($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransferFromAccountTransaction(Transaction $transferFromAccountTransaction): static
+    {
+        if ($this->transferFromAccountTransactions->removeElement($transferFromAccountTransaction)) {
+            // set the owning side to null (unless already changed)
+            if ($transferFromAccountTransaction->getTransferFromAccount() === $this) {
+                $transferFromAccountTransaction->setTransferFromAccount(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getTransferToAccountTransactions(): Collection
+    {
+        return $this->transferToAccountTransactions;
+    }
+
+    public function addTransferToAccountTransaction(Transaction $transferToAccountTransaction): static
+    {
+        if (!$this->transferToAccountTransactions->contains($transferToAccountTransaction)) {
+            $this->transferToAccountTransactions->add($transferToAccountTransaction);
+            $transferToAccountTransaction->setTransferToAccount($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransferToAccountTransaction(Transaction $transferToAccountTransaction): static
+    {
+        if ($this->transferToAccountTransactions->removeElement($transferToAccountTransaction)) {
+            // set the owning side to null (unless already changed)
+            if ($transferToAccountTransaction->getTransferToAccount() === $this) {
+                $transferToAccountTransaction->setTransferToAccount(null);
             }
         }
 

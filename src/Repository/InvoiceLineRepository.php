@@ -21,9 +21,6 @@ class InvoiceLineRepository extends ServiceEntityRepository
         parent::__construct($registry, InvoiceLine::class);
     }
 
-    /**
-     * @throws NonUniqueResultException
-     */
     public function getCurrentLineTotal(string $invoiceLineId): ?string
     {
         $query = $this->createQueryBuilder('lt')

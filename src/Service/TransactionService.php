@@ -56,15 +56,12 @@ class TransactionService
             }
             $transaction->setDate($datePaid);
             $transaction->setUnit($unit);
-            $transaction->setBudget($object->getBudget());
-            $transaction->setTransactionType($bankPaymentTransactionType);
+            // $transaction->setTransactionType($bankPaymentTransactionType);
             $transaction->setMainAccount($account);
-            $transaction->setSupplier($object->getSupplier());
-            $transaction->setDepartment($object->getDepartment());
             if (!empty($object->getInvoicePartPayments()->toArray())) {
-                $transaction->setShortDescription($object->getShortDescription() . ' - Part-Payment');
+                $transaction->setDescription($object->getDescription() . ' - Part-Payment');
             } else {
-                $transaction->setShortDescription($object->getShortDescription());
+                $transaction->setDescription($object->getDescription());
             }
             if (($currency !== $invoiceCurrency) && $realAmountPaid) {
                 $transaction->setAmount($realAmountPaid);
@@ -148,18 +145,15 @@ class TransactionService
             }
             $transaction->setDate($dateOfPurchase);
             $transaction->setUnit($unit);
-            $transaction->setBudget($object->getBudget());
-            $transaction->setTransactionType($transactionType);
+            // $transaction->setTransactionType($transactionType);
             $transaction->setMainAccount($account);
-            $transaction->setSupplier($object->getSupplier());
-            $transaction->setDepartment($object->getDepartment());
-            $transaction->setShortDescription($object->getDescription());
+            $transaction->setDescription($object->getDescription());
             $transaction->setAmount($amountTotal);
             $transaction->setMoneyOut($amountTotal);
             $transaction->setCurrency($currency);
             if ($object->getRealAmountPaid()) {
                 $transaction->setRealAmountPaid($object->getRealAmountPaid());
-                $transaction->setRealCurrency($object->getRealCurrencyPaid());
+                $transaction->setRealCurrencyPaid($object->getRealCurrencyPaid());
             }
             if ($flag == 'create') {
                 $transaction->setAddedByUser($userAndDateTime['user']);
@@ -230,17 +224,17 @@ class TransactionService
             }
             $bankFeeTransaction->setDate($date);
             $bankFeeTransaction->setUnit($unit);
-            $bankFeeTransaction->setTransactionType($bankFeeTransactionType);
+            // $bankFeeTransaction->setTransactionType($bankFeeTransactionType);
             $bankFeeTransaction->setMainAccount($account);
             if ($transaction->getInvoice()) {
-                $bankFeeTransaction->setShortDescription(
+                $bankFeeTransaction->setDescription(
                     'Bank Fee for Invoice nr. "' .
                     $transaction->getInvoice()->getInvoiceNumber() .
                     '" (Transaction nr. ' . $transaction->getTransactionNumber() . ')'
                 );
                 $bankFeeTransaction->setInvoice($transaction->getInvoice());
             } else {
-                $bankFeeTransaction->setShortDescription(
+                $bankFeeTransaction->setDescription(
                     'Bank Fee for Transaction No. ' .
                     $transaction->getTransactionNumberString() . ' on ' .
                     $transaction->getDate()->format('d/m/Y')
@@ -298,8 +292,8 @@ class TransactionService
             $transaction->setDate($date);
             $transaction->setTransactionNumber($this->getAutoTransactionNumber($unit));
             $transaction->setUnit($unit);
-            $transaction->setTransactionType($transactionType);
-            $transaction->setShortDescription($description);
+            // $transaction->setTransactionType($transactionType);
+            $transaction->setDescription($description);
             /* NOTE: Auto-generated description */
             // $transaction->setShortDescription('Bank transfer to ' . $accountTo->getName());
             $transaction->setMainAccount($accountTo);
@@ -313,11 +307,11 @@ class TransactionService
             $transaction->setAmount($funds);
             $transaction->setMoneyIn($funds);
             if (!$accountFrom && $transactionType::CASH_TRANSFER) {
-                $transaction->setBankFeeNotAdded(true);
+                $transaction->setBankFeeNotApplicable(true);
             }
             if (($accountToCurrency !== $accountFromCurrency) && $realAmount) {
                 $transaction->setRealAmountPaid($realAmount);
-                $transaction->setRealCurrency($accountFromCurrency);
+                $transaction->setRealCurrencyPaid($accountFromCurrency);
             }
             $transaction->setCurrency($accountToCurrency);
             $transaction->setAddedByUser($userAndDateTime['user']);

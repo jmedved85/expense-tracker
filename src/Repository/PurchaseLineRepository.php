@@ -21,6 +21,36 @@ class PurchaseLineRepository extends ServiceEntityRepository
         parent::__construct($registry, PurchaseLine::class);
     }
 
+    public function add(PurchaseLine $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(PurchaseLine $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function getCurrentLineTotal(string $purchaseLineId): ?string
+    {
+        $query = $this->createQueryBuilder('lt')
+            ->select('lt.lineTotal')
+            ->andWhere('lt.id = :purchaseLineId')
+            ->setParameter('purchaseLineId', $purchaseLineId)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $query['lineTotal'];
+    }
+
     //    /**
     //     * @return PurchaseLine[] Returns an array of PurchaseLine objects
     //     */

@@ -153,6 +153,7 @@ COMMENT
   - money_returned_amount     decimal(20,2)
   - money_returned_date       date
   - invoice_id                int
+  - transaction_id            int
 
 
 * PURCHASE
@@ -237,11 +238,6 @@ TRANSACTION
   - balance_main_account              decimal(20,2)
   - balance_transfer_from_account     decimal(20,2)
   - balance_transfer_to_account       decimal(20,2)
-  - budget_id                         int *
-  - budget_sub_category_id            int *
-  - general_category_id               int *
-  - department_id                     int *
-  - supplier_id                       int *
   - main_account_id                   int *
   - transfer_from_account_id          int *
   - transfer_to_account_id            int *
@@ -251,6 +247,8 @@ TRANSACTION
   - transaction_id                    int *
   - added_by_user_id                  int *
   - edited_by_user_id                 int *
+  - added_by_user_deleted             varchar(64)
+  - edited_by_user_deleted            varchar(64)
   - unit_id                           int *
 
 

@@ -89,7 +89,7 @@ class BudgetItem
 
     public function setActual(?string $amount, bool $increase = null): static
     {
-        $currentActual = floatval($this->getActual());
+        $currentActual = floatval($this->actual);
 
         if ($increase) {
             $currentActual += floatval($amount);

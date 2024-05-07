@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\InvoicePartPaymentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -49,6 +51,9 @@ class InvoicePartPayment
 
     #[ORM\ManyToOne(inversedBy: 'invoicePartPayments')]
     private ?Invoice $invoice = null;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Transaction $transaction = null;
 
     public function getId(): ?int
     {
@@ -98,16 +103,16 @@ class InvoicePartPayment
 
     public function setRestPaymentAmount(?string $amount, bool $increase = null): static
     {
-        $currentRestPayment = floatval($this->getRestPaymentAmount());
+        $currentRestPayment = floatval($this->restPaymentAmount);
 
         if ($increase) {
             $currentRestPayment += floatval($amount);
-        } else if ($increase === false) {
+        } elseif ($increase === false) {
             $currentRestPayment -= floatval($amount);
         } else {
             $currentRestPayment = floatval($amount);
         }
-        
+
         $this->restPaymentAmount = strval($currentRestPayment);
 
         return $this;
@@ -211,6 +216,28 @@ class InvoicePartPayment
     public function setInvoice(?Invoice $invoice): static
     {
         $this->invoice = $invoice;
+
+        return $this;
+    }
+
+    public function getTransaction(): ?Transaction
+    {
+        return $this->transaction;
+    }
+
+    public function setTransaction(?Transaction $transaction): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($transaction === null && $this->transaction !== null) {
+            $this->transaction->setInvoicePartPayment(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($transaction !== null && $transaction->getInvoicePartPayment() !== $this) {
+            $transaction->setInvoicePartPayment($this);
+        }
+
+        $this->transaction = $transaction;
 
         return $this;
     }

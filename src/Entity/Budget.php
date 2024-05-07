@@ -152,6 +152,21 @@ class Budget
         return $this->totalBudgeted;
     }
 
+    public function getTotalBudgetedString(): string
+    {
+        // $strings = [];
+
+        // foreach ($this->totalBudgeted as $currency => $total) {
+        //     $formatter = new \NumberFormatter('en_US', \NumberFormatter::CURRENCY);
+        //     $formattedTotal = $formatter->formatCurrency($total, $currency);
+        //     $strings[] = $formattedTotal;
+        // }
+
+        // return implode(' | ', $strings);
+
+        return '';
+    }
+
     public function setTotalBudgeted(?string $totalBudgeted): static
     {
         $this->totalBudgeted = $totalBudgeted;
@@ -164,6 +179,21 @@ class Budget
         return $this->totalActual;
     }
 
+    public function getTotalActualString(): string
+    {
+        // $strings = [];
+
+        // foreach ($this->totalActual as $currency => $total) {
+        //     $formatter = new \NumberFormatter('en_US', \NumberFormatter::CURRENCY);
+        //     $formattedTotal = $formatter->formatCurrency($total, $currency);
+        //     $strings[] = $formattedTotal;
+        // }
+
+        // return implode(' | ', $strings);
+
+        return '';
+    }
+
     public function setTotalActual(?string $totalActual): static
     {
         $this->totalActual = $totalActual;
@@ -174,6 +204,22 @@ class Budget
     public function getLeftOver(): ?string
     {
         return $this->leftOver;
+    }
+
+    public function getLeftOverString(): string
+    {
+        // $leftOver = $this->getLeftOver();
+        // $strings = [];
+
+        // foreach ($leftOver as $currency => $total) {
+        //     $formatter = new \NumberFormatter('en_US', \NumberFormatter::CURRENCY);
+        //     $formattedTotal = $formatter->formatCurrency($total, $currency);
+        //     $strings[] = $formattedTotal;
+        // }
+
+        // return implode(' | ', $strings);
+
+        return '';
     }
 
     public function setLeftOver(?string $leftOver): static

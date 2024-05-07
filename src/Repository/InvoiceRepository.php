@@ -21,6 +21,24 @@ class InvoiceRepository extends ServiceEntityRepository
         parent::__construct($registry, Invoice::class);
     }
 
+    public function add(Invoice $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Invoice $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     //    /**
     //     * @return Invoice[] Returns an array of Invoice objects
     //     */

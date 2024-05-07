@@ -112,10 +112,22 @@ class Invoice
     #[ORM\OneToMany(targetEntity: InvoicePartPayment::class, mappedBy: 'invoice')]
     private Collection $invoicePartPayments;
 
+    /**
+     * @var Collection<int, Transaction>
+     */
+    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'invoice')]
+    private Collection $transactions;
+
     public function __construct()
     {
         $this->invoiceLines = new ArrayCollection();
         $this->invoicePartPayments = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return 'Invoice nr. ' . $this->invoiceNumber;
     }
 
     public function getId(): ?int
@@ -262,18 +274,18 @@ class Invoice
 
     public function setRealAmountPaid(?string $amount, bool $increase = null): static
     {
-        $realAmountPaid = floatval($this->getRealAmountPaid());
-        
+        $realAmountPaid = floatval($this->realAmountPaid);
+
         if ($increase) {
             $realAmountPaid += floatval($amount);
-        } else if ($increase === false) {
+        } elseif ($increase === false) {
             $realAmountPaid -= floatval($amount);
         } else {
             $realAmountPaid = floatval($amount);
         }
-        
+
         $this->realAmountPaid = strval($realAmountPaid);
-        
+
         return $this;
     }
 
@@ -284,16 +296,16 @@ class Invoice
 
     public function setRestPaymentTotal(?string $amount, bool $increase = null): static
     {
-        $restPaymentTotal = floatval($this->getRestPaymentTotal());
+        $restPaymentTotal = floatval($this->restPaymentTotal);
 
         if ($increase) {
             $restPaymentTotal += floatval($amount);
-        } else if ($increase === false) {
+        } elseif ($increase === false) {
             $restPaymentTotal -= floatval($amount);
         } else {
             $restPaymentTotal = floatval($amount);
         }
-        
+
         $this->restPaymentTotal = strval($restPaymentTotal);
 
         return $this;
@@ -310,16 +322,16 @@ class Invoice
 
     public function setTotalPaid(?string $amount, bool $increase = null): static
     {
-        $totalPaid = floatval($this->getTotalPaid());
+        $totalPaid = floatval($this->totalPaid);
 
         if ($increase) {
             $totalPaid += floatval($amount);
-        } else if ($increase === false) {
+        } elseif ($increase === false) {
             $totalPaid -= floatval($amount);
         } else {
             $totalPaid = floatval($amount);
         }
-        
+
         $this->totalPaid = strval($totalPaid);
 
         return $this;
@@ -353,18 +365,20 @@ class Invoice
         $bankFeeAmount = $this->bankFeeAmount;
 
         if ($increase) {
-            $bankFeeAmount += $amount;
-        } else if ($increase === false) {
-            $bankFeeAmount -= $amount;
-        } else if ($amount !== null) {
-            $bankFeeAmount = $amount;
+            $bankFeeAmount = $bankFeeAmount !== null ? floatval($bankFeeAmount) : 0.0;
+            $bankFeeAmount += floatval($amount);
+        } elseif ($increase === false) {
+            $bankFeeAmount = $bankFeeAmount !== null ? floatval($bankFeeAmount) : 0.0;
+            $bankFeeAmount -= floatval($amount);
+        } elseif ($amount !== null) {
+            $bankFeeAmount = floatval($amount);
         }
-        
+
         $this->bankFeeAmount = $bankFeeAmount;
 
         if ($this->paymentStatus == 'Unpaid') {
             $this->setBankFeeAdded(false);
-        } else if ($this->paymentStatus == 'Part-Paid') {
+        } elseif ($this->paymentStatus == 'Part-Paid') {
             $this->setBankFeeAdded(false);
         } else {
             $invoicePartPayments = $this->invoicePartPayments->toArray();
@@ -632,6 +646,36 @@ class Invoice
             // set the owning side to null (unless already changed)
             if ($invoicePartPayment->getInvoice() === $this) {
                 $invoicePartPayment->setInvoice(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transaction $transaction): static
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions->add($transaction);
+            $transaction->setInvoice($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): static
+    {
+        if ($this->transactions->removeElement($transaction)) {
+            // set the owning side to null (unless already changed)
+            if ($transaction->getInvoice() === $this) {
+                $transaction->setInvoice(null);
             }
         }
 

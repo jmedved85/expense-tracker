@@ -3,8 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\BudgetItem;
+use App\Entity\Invoice;
+use App\Entity\Purchase;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @extends ServiceEntityRepository<BudgetItem>
@@ -21,85 +24,80 @@ class BudgetItemRepository extends ServiceEntityRepository
         parent::__construct($registry, BudgetItem::class);
     }
 
-    // /**
-    //  * @throws Exception
-    //  */
-    // public function findBudgetItemInvoices(string $objectId): array
-    // {
-    //     /** @var InvoiceRepository $invoiceRepository */
-    //     $invoiceRepository = $this->getEntityManager()->getRepository(Invoice::class);
+    /**
+     * @throws Exception
+     */
+    public function findBudgetItemInvoices(string $objectId): array
+    {
+        /** @var InvoiceRepository $invoiceRepository */
+        $invoiceRepository = $this->getEntityManager()->getRepository(Invoice::class);
 
-    //     $budgetItem = $this->findOneBy(['id' => $objectId]);
+        $budgetItem = $this->findOneBy(['id' => $objectId]);
 
-    //     $budget = $budgetItem->getBudget();
-    //     $budgetMainCategory = $budgetItem->getBudgetMainCategory();
-    //     $budgetCategory = $budgetItem->getBudgetCategory();
-    //     $budgetCurrency = $budgetItem->getCurrency();
+        $budget = $budgetItem->getBudget();
+        $budgetSubCategory = $budgetItem->getBudgetSubCategory();
+        $budgetCurrency = $budgetItem->getCurrency();
 
-    //     try {
-    //         $budgetItemInvoices = $invoiceRepository->createQueryBuilder('i')
-    //             ->join('i.invoiceLines', 'il')
-    //             ->where('i.invoicePaymentStatus = :paid')
-    //             ->andWhere('i.currency = :currency')
-    //             ->andWhere('i.budget = :budget')
-    //             ->andWhere('il.budgetMainCategory = :budgetMainCategory')
-    //             ->andWhere('il.budgetCategory = :budgetCategory')
-    //             ->setParameter('paid', 'Paid')
-    //             ->setParameter('currency', $budgetCurrency)
-    //             ->setParameter('budget', $budget->getId())
-    //             ->setParameter('budgetMainCategory', $budgetMainCategory->getId())
-    //             ->setParameter('budgetCategory', $budgetCategory->getId())
-    //             ->orderBy('i.invoiceDate', 'ASC')
-    //             ->getQuery()
-    //             ->getResult()
-    //         ;
+        try {
+            $budgetItemInvoices = $invoiceRepository->createQueryBuilder('i')
+                ->join('i.invoiceLines', 'il')
+                ->where('i.invoicePaymentStatus = :paid')
+                ->andWhere('i.currency = :currency')
+                ->andWhere('i.budget = :budget')
+                ->andWhere('il.budgetMainCategory = :budgetMainCategory')
+                ->andWhere('il.budgetCategory = :budgetCategory')
+                ->setParameter('paid', 'Paid')
+                ->setParameter('currency', $budgetCurrency)
+                ->setParameter('budget', $budget->getId())
+                ->setParameter('budgetSubCategory', $budgetSubCategory->getId())
+                ->orderBy('i.invoiceDate', 'ASC')
+                ->getQuery()
+                ->getResult()
+            ;
 
-    //         return $budgetItemInvoices;
-    //     } catch (Exception $e) {
-    //         error_log($e->getMessage());
+            return $budgetItemInvoices;
+        } catch (Exception $e) {
+            error_log($e->getMessage());
 
-    //         return [];
-    //     }
-    // }
+            return [];
+        }
+    }
 
-    // /**
-    //  * @throws Exception
-    //  */
-    // public function findBudgetItemPurchases(string $objectId): array
-    // {
-    //     /** @var PurchaseRepository $purchaseRepository */
-    //     $purchaseRepository = $this->getEntityManager()->getRepository(Purchase::class);
+    /**
+     * @throws Exception
+     */
+    public function findBudgetItemPurchases(string $objectId): array
+    {
+        /** @var PurchaseRepository $purchaseRepository */
+        $purchaseRepository = $this->getEntityManager()->getRepository(Purchase::class);
 
-    //     $budgetItem = $this->findOneBy(['id' => $objectId]);
+        $budgetItem = $this->findOneBy(['id' => $objectId]);
 
-    //     $budget = $budgetItem->getBudget();
-    //     $budgetMainCategory = $budgetItem->getBudgetMainCategory();
-    //     $budgetCategory = $budgetItem->getBudgetCategory();
-    //     $budgetCurrency = $budgetItem->getCurrency();
+        $budget = $budgetItem->getBudget();
+        $budgetSubCategory = $budgetItem->getBudgetSubCategory();
+        $budgetCurrency = $budgetItem->getCurrency();
 
-    //     try {
-    //         $budgetItemPurchases = $purchaseRepository->createQueryBuilder('p')
-    //             ->join('p.purchaseLines', 'pl')
-    //             ->where('p.budget = :budget')
-    //             ->andWhere('p.currency = :currency')
-    //             ->andWhere('pl.budgetMainCategory = :budgetMainCategory')
-    //             ->andWhere('pl.budgetCategory = :budgetCategory')
-    //             ->setParameter('currency', $budgetCurrency)
-    //             ->setParameter('budget', $budget->getId())
-    //             ->setParameter('budgetMainCategory', $budgetMainCategory->getId())
-    //             ->setParameter('budgetCategory', $budgetCategory->getId())
-    //             ->orderBy('p.dateOfPurchase', 'ASC')
-    //             ->getQuery()
-    //             ->getResult()
-    //         ;
+        try {
+            $budgetItemPurchases = $purchaseRepository->createQueryBuilder('p')
+                ->join('p.purchaseLines', 'pl')
+                ->where('p.budget = :budget')
+                ->andWhere('p.currency = :currency')
+                ->andWhere('pl.budgetSubCategory = :budgetSubCategory')
+                ->setParameter('currency', $budgetCurrency)
+                ->setParameter('budget', $budget->getId())
+                ->setParameter('budgetSubCategory', $budgetSubCategory->getId())
+                ->orderBy('p.dateOfPurchase', 'ASC')
+                ->getQuery()
+                ->getResult()
+            ;
 
-    //         return $budgetItemPurchases;
-    //     } catch (Exception $e) {
-    //         error_log($e->getMessage());
+            return $budgetItemPurchases;
+        } catch (Exception $e) {
+            error_log($e->getMessage());
 
-    //         return [];
-    //     }
-    // }
+            return [];
+        }
+    }
 
 //    /**
 //     * @return BudgetItem[] Returns an array of BudgetItem objects
