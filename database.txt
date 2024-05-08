@@ -69,7 +69,7 @@ public function getEndDate(): \DateTime
   - unit_id                       int
 
 
-COMMENT
+* COMMENT
   - id                        int
   - datetime                  datetime
   - message                   text
@@ -77,9 +77,9 @@ COMMENT
   - added_by_user_deleted     varchar(64)
   - invoice_id                int
   - purchase_id               int
-  - supplier_id               int *
-  - budget_item_id            int *
-  - unit_id                   int *
+  - supplier_id               int
+  - budget_item_id            int
+  - unit_id                   int
 
 
 * DEPARTMENT
@@ -212,7 +212,7 @@ COMMENT
   - unit_id               int
 
 
-TRANSACTION
+* TRANSACTION
   - id                                int
   - transaction_number                int
   - transaction_type                  int
@@ -238,18 +238,18 @@ TRANSACTION
   - balance_main_account              decimal(20,2)
   - balance_transfer_from_account     decimal(20,2)
   - balance_transfer_to_account       decimal(20,2)
-  - main_account_id                   int *
-  - transfer_from_account_id          int *
-  - transfer_to_account_id            int *
-  - invoice_id                        int *
-  - invoice_part_payment_id           int *
-  - purchase_id                       int *
-  - transaction_id                    int *
-  - added_by_user_id                  int *
-  - edited_by_user_id                 int *
+  - main_account_id                   int
+  - transfer_from_account_id          int
+  - transfer_to_account_id            int
+  - invoice_id                        int
+  - invoice_part_payment_id           int
+  - purchase_id                       int
+  - transaction_id                    int
+  - added_by_user_id                  int
+  - edited_by_user_id                 int
   - added_by_user_deleted             varchar(64)
   - edited_by_user_deleted            varchar(64)
-  - unit_id                           int *
+  - unit_id                           int
 
 
 * UNIT

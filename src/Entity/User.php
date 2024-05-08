@@ -56,6 +56,12 @@ class User extends BaseUser
     #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'editedByUser')]
     private Collection $editedTransactions;
 
+    /**
+     * @var Collection<int, Comment>
+     */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'addedByUser')]
+    private Collection $comments;
+
     public function __construct()
     {
         $this->addedBudgets = new ArrayCollection();
@@ -69,6 +75,7 @@ class User extends BaseUser
         $this->editedInvoices = new ArrayCollection();
         $this->addedTransactions = new ArrayCollection();
         $this->editedTransactions = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     /**
@@ -395,6 +402,36 @@ class User extends BaseUser
             // set the owning side to null (unless already changed)
             if ($editedTransaction->getEditedByUser() === $this) {
                 $editedTransaction->setEditedByUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setAddedByUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getAddedByUser() === $this) {
+                $comment->setAddedByUser(null);
             }
         }
 

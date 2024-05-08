@@ -72,6 +72,11 @@ services:
             - { name: sonata.admin, model_class: App\Entity\BudgetMainCategory, controller: App\Controller\BudgetMainCategoryAdminController, manager_type: orm, group: Categories, label: Budget Main Categories }
             # - { name: sonata.admin, model_class: App\Entity\BudgetMainCategory, controller: App\Controller\BudgetMainCategoryAdminController, manager_type: orm, group: Admin, label: Budget Categories }
 
+    admin.comment:
+        class: App\Admin\CommentAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Comment, controller: App\Controller\CommentAdminController, manager_type: orm, group: admin, label: Comment, show_in_dashboard: false }
+
     admin.department:
         class: App\Admin\DepartmentAdmin
         calls:

@@ -118,11 +118,18 @@ class Invoice
     #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'invoice')]
     private Collection $transactions;
 
+    /**
+     * @var Collection<int, Comment>
+     */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'invoice')]
+    private Collection $comments;
+
     public function __construct()
     {
         $this->invoiceLines = new ArrayCollection();
         $this->invoicePartPayments = new ArrayCollection();
         $this->transactions = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function __toString()
@@ -676,6 +683,36 @@ class Invoice
             // set the owning side to null (unless already changed)
             if ($transaction->getInvoice() === $this) {
                 $transaction->setInvoice(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setInvoice($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getInvoice() === $this) {
+                $comment->setInvoice(null);
             }
         }
 
