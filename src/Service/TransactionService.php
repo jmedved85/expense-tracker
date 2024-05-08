@@ -56,7 +56,7 @@ class TransactionService
             }
             $transaction->setDate($datePaid);
             $transaction->setUnit($unit);
-            // $transaction->setTransactionType($bankPaymentTransactionType);
+            $transaction->setTransactionType(TransactionType::BANK_PAYMENT);
             $transaction->setMainAccount($account);
             if (!empty($object->getInvoicePartPayments()->toArray())) {
                 $transaction->setDescription($object->getDescription() . ' - Part-Payment');
@@ -224,7 +224,7 @@ class TransactionService
             }
             $bankFeeTransaction->setDate($date);
             $bankFeeTransaction->setUnit($unit);
-            // $bankFeeTransaction->setTransactionType($bankFeeTransactionType);
+            $bankFeeTransaction->setTransactionType(TransactionType::BANK_PAYMENT);
             $bankFeeTransaction->setMainAccount($account);
             if ($transaction->getInvoice()) {
                 $bankFeeTransaction->setDescription(
@@ -292,7 +292,7 @@ class TransactionService
             $transaction->setDate($date);
             $transaction->setTransactionNumber($this->getAutoTransactionNumber($unit));
             $transaction->setUnit($unit);
-            // $transaction->setTransactionType($transactionType);
+            $transaction->setTransactionType($transactionType);
             $transaction->setDescription($description);
             /* NOTE: Auto-generated description */
             // $transaction->setShortDescription('Bank transfer to ' . $accountTo->getName());

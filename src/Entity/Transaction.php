@@ -135,24 +135,26 @@ class Transaction
         $this->transactions = new ArrayCollection();
     }
 
-    // public function __toString()
-    // {
-    //     $transactionType = $this->getTransactionType();
+    public function __toString()
+    {
+        $transactionType = $this->getTransactionType();
 
-    //     if ($transactionType == 'From other account' || $transactionType == 'To other account') {
-    //         return $this->getTransferFromAccount()->getNameWithCurrency()
-    //         . ' to ' . $this->getTransferToAccount()->getNameWithCurrency()
-    //         . ' - Transfer';
-    //     } else if ($transactionType == 'Currency exchange'
-    //         && $this->getTransferFromAccount()
-    //         && $this->getTransferToAccount()) {
-    //         return $this->getTransferFromAccount()->getNameWithCurrency()
-    //         . ' to ' . $this->getTransferToAccount()->getNameWithCurrency()
-    //         . ' - Currency exchange';
-    //     } else {
-    //         return $this->getTransactionType() ? $this->getTransactionType()->getName() : '';
-    //     }
-    // }
+        if ($transactionType::FROM_ACCOUNT || $transactionType::TO_ACCOUNT) {
+            return $this->getTransferFromAccount()->getNameWithCurrency()
+            . ' to ' . $this->getTransferToAccount()->getNameWithCurrency()
+            . ' - Transfer';
+        } elseif (
+            $transactionType::CURRENCY_EXCHANGE
+            && $this->getTransferFromAccount()
+            && $this->getTransferToAccount()
+        ) {
+            return $this->getTransferFromAccount()->getNameWithCurrency()
+            . ' to ' . $this->getTransferToAccount()->getNameWithCurrency()
+            . ' - Currency exchange';
+        } else {
+            return $this->getTransactionTypeName() ? $this->getTransactionTypeName() : '';
+        }
+    }
 
     public function getId(): ?int
     {
@@ -186,14 +188,19 @@ class Transaction
         return $this;
     }
 
-    public function getTransactionType(): ?int
+    public function getTransactionType(): TransactionType
     {
-        return $this->transactionType;
+        return TransactionType::from($this->transactionType);
     }
 
-    public function setTransactionType(int $transactionType): static
+    public function getTransactionTypeName(): string
     {
-        $this->transactionType = $transactionType;
+        return TransactionType::getName($this->transactionType);
+    }
+
+    public function setTransactionType(TransactionType $transactionType): self
+    {
+        $this->transactionType = $transactionType->value;
 
         return $this;
     }

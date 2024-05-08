@@ -15,6 +15,8 @@ enum TransactionType: int
     case ACCOUNT_CHARGE = 9;
     case FUNDS_TRANSFER = 10;
     case MONEY_RETURN = 11;
+    case FROM_ACCOUNT = 12;
+    case TO_ACCOUNT = 13;
 
     public const NAMES = [
         'Bank Payment' => self::BANK_PAYMENT,
@@ -28,6 +30,8 @@ enum TransactionType: int
         'Account Charge' => self::ACCOUNT_CHARGE,
         'Funds Transfer' => self::FUNDS_TRANSFER,
         'Money Return' => self::MONEY_RETURN,
+        'From Account' => self::FROM_ACCOUNT,
+        'To Account' => self::TO_ACCOUNT,
     ];
 
     public static function getName(int $value): string
@@ -44,6 +48,8 @@ enum TransactionType: int
             self::ACCOUNT_CHARGE->value => 'Account Charge',
             self::FUNDS_TRANSFER->value => 'Funds Transfer',
             self::MONEY_RETURN->value => 'Money Return',
+            self::FROM_ACCOUNT->value => 'From Account',
+            self::TO_ACCOUNT->value => 'To Account',
 
             default => 'Unknown',
         };

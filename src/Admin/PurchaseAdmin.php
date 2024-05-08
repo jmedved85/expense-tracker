@@ -562,7 +562,7 @@ final class PurchaseAdmin extends AbstractAdmin
             ])
         ;
 
-        if ($subject->getTransactionType() == 'Card payment') {
+        if ($subject->getTransactionType()::CREDIT_CARD_PAYMENT) {
             $show
                 ->add('realAmountPaid', MoneyType::class, [
                     'label' => 'Real Amount Paid',
