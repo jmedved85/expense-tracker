@@ -692,7 +692,7 @@ class InvoiceAdmin extends AbstractAdmin
                     //     'sortable'  => 'position',
                     // ])
                 ->end()
-                ->with('Invoice Lines', ['class' => 'col-sm-12 inlineFormFieldsets3 sepBefore'])
+                ->with('Invoice Lines', ['class' => 'col-sm-12'])
                     ->add('invoiceLines', CollectionType::class, [
                         'label' => false,
                         'constraints' => [
@@ -705,7 +705,7 @@ class InvoiceAdmin extends AbstractAdmin
                         'sortable' => 'position',
                     ])
                 ->end()
-                ->with('Comments', ['class' => 'col-sm-12 sepBefore'])
+                ->with('Comments', ['class' => 'col-sm-12'])
                     ->add('comments', CollectionType::class, [
                         'label' => false,
                         'required' => false,
@@ -881,7 +881,7 @@ class InvoiceAdmin extends AbstractAdmin
 
         if ($subject->getComments()->count() > 0) {
             $show
-                ->with('Comments', ['label' => 'Comments', 'class' => 'col-sm-12 sepBefore'])
+                ->with('Comments', ['label' => 'Comments', 'class' => 'col-sm-12'])
                     ->add('comments', CollectionType::class, [
                         'template' => 'Invoice/comments_show_field.html.twig',
                     ])

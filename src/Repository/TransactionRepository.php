@@ -56,7 +56,7 @@ class TransactionRepository extends ServiceEntityRepository
         return $accountRepository->getAccount($accountId[0][1]);
     }
 
-    public function getTransferToAccount(string $id): ?Account
+    public function getTransferToAccount(int $id): ?Account
     {
         /** @var AccountRepository $accountRepository */
         $accountRepository = $this->getEntityManager()->getRepository(Account::class);
@@ -71,7 +71,7 @@ class TransactionRepository extends ServiceEntityRepository
         return $accountRepository->getAccount($accountId[0][1]);
     }
 
-    public function getOldDate(string $id): ?DateTime
+    public function getOldDate(int $id): ?DateTime
     {
         $oldDateQuery = $this->createQueryBuilder('t')
             ->select('t.date')
@@ -83,7 +83,7 @@ class TransactionRepository extends ServiceEntityRepository
         return $oldDateQuery[0]['date'];
     }
 
-    public function getOldAmountFromAccount(string $id): ?string
+    public function getOldAmountFromAccount(int $id): ?string
     {
         $oldAmountFromAccountQuery = $this->createQueryBuilder('t')
             ->select('t.amountFromAccount')
@@ -95,7 +95,7 @@ class TransactionRepository extends ServiceEntityRepository
         return $oldAmountFromAccountQuery[0]['amountFromAccount'];
     }
 
-    public function getOldAmount(string $id): ?string
+    public function getOldAmount(int $id): ?string
     {
         $oldAmountQuery = $this->createQueryBuilder('t')
             ->select('t.amount')
@@ -107,7 +107,7 @@ class TransactionRepository extends ServiceEntityRepository
         return $oldAmountQuery[0]['amount'];
     }
 
-    public function getOldCurrentNewValue(string $id): ?string
+    public function getOldCurrentNewValue(int $id): ?string
     {
         $currentNewValueQuery = $this->createQueryBuilder('t')
             ->select('t.newValue')

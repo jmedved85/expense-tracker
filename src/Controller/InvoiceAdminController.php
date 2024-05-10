@@ -135,7 +135,7 @@ final class InvoiceAdminController extends CRUDController
 
         $template = 'Invoice/add_bank_fee_modal_form.html.twig';
 
-        return $this->renderWithExtraParams($template, [
+        return $this->render($template, [
             'object' => $object,
         ]);
     }
@@ -158,7 +158,7 @@ final class InvoiceAdminController extends CRUDController
 
         $invoice = $this->admin->getSubject();
         $invoiceTransactions = $invoice->getTransactions()->toArray();
-        $ship = $invoice->getShip();
+        $unit = $invoice->getUnit();
         $account = $invoice->getAccount();
         $funds = $request->request->get('addBankFeeInput');
         $dateInput = $request->request->get('addBankFeeDate');
@@ -195,7 +195,7 @@ final class InvoiceAdminController extends CRUDController
                 /* New record in transaction table */
                 $bankFeeTransaction = $this->transactionService->createOrUpdateBankFeeTransaction(
                     $date,
-                    $ship,
+                    $unit,
                     $bankFeeTransactionType,
                     $account,
                     $invoiceTransaction,

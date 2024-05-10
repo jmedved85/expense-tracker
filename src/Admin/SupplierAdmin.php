@@ -228,7 +228,7 @@ final class SupplierAdmin extends AbstractAdmin
                 ->add('bicCode')
                 ->add('supplierTerms')
             ->end()
-            // ->with('Comments',['class' => 'col-sm-12 sepBefore'])
+            // ->with('Comments',['class' => 'col-sm-12'])
             //     ->add('comments', CollectionType::class, [
             //         'label' => false,
             //         'required' => false,

@@ -58,7 +58,7 @@ trait AdminTrait
             $unitObject = null;
 
             if ($unitId) {
-                $unitObject = $this->getShipById($unitId);
+                $unitObject = $this->getUnitById($unitId);
             }
 
             /* Get user's role */
@@ -79,6 +79,25 @@ trait AdminTrait
         } else {
             return null;
         }
+    }
+
+    public function getAutoTransactionNumber(object $unit): ?int
+    {
+        /** @var TransactionRepository $transactionRepository */
+        $transactionRepository = $this->getEm()->getRepository(Transaction::class);
+
+        $transactionNumber = 0;
+
+        $lastTransaction = $transactionRepository->findOneBy(['unit' => $unit], ['transactionNumber' => 'DESC']);
+
+        if ($lastTransaction) {
+            $lastTransactionNumber = $lastTransaction->getTransactionNumber();
+            $transactionNumber = ++$lastTransactionNumber;
+        } else {
+            $transactionNumber++;
+        }
+
+        return $transactionNumber;
     }
 
     /* TODO: refactor to transaction service class */

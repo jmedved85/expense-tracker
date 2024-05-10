@@ -466,7 +466,7 @@ final class PurchaseAdmin extends AbstractAdmin
             $form
                 ->end()
                 ->with('File Uploads', [
-                    'class' => 'col-sm-12 sepBefore'
+                    'class' => 'col-sm-12'
                 ])
                     // ->add('file', CollectionType::class, [
                     //     'label' => 'Upload file(s)',
@@ -478,7 +478,7 @@ final class PurchaseAdmin extends AbstractAdmin
                     //     'sortable'  => 'position',
                     // ])
                 ->end()
-                ->with('Purchase Lines', ['class' => 'col-sm-12 inlineFormFieldsets3 sepBefore'])
+                ->with('Purchase Lines', ['class' => 'col-sm-12'])
                     ->add('purchaseLines', CollectionType::class, [
                         'label' => false,
                         'constraints' => [
