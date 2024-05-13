@@ -64,25 +64,14 @@ class InvoiceAdmin extends AbstractAdmin
 {
     use AdminTrait;
 
-    private ErrorHandler $errorHandler;
-    protected TransactionService $transactionService;
-    protected BudgetCalculationService $budgetCalculationService;
-    protected EntityManagerInterface $entityManager;
-    protected TokenStorageInterface $tokenStorage;
-
     public function __construct(
-        ErrorHandler $errorHandler,
-        TransactionService $transactionService,
-        BudgetCalculationService $budgetCalculationService,
-        EntityManagerInterface $entityManager,
-        TokenStorageInterface $tokenStorage
+        private ErrorHandler $errorHandler,
+        private TransactionService $transactionService,
+        private BudgetCalculationService $budgetCalculationService,
+        private EntityManagerInterface $entityManager,
+        private TokenStorageInterface $tokenStorage
     ) {
         parent::__construct(null, Invoice::class, null);
-        $this->errorHandler = $errorHandler;
-        $this->transactionService = $transactionService;
-        $this->budgetCalculationService = $budgetCalculationService;
-        $this->entityManager = $entityManager;
-        $this->tokenStorage = $tokenStorage;
     }
 
     protected function configureRoutes(RouteCollectionInterface $collection): void
@@ -1128,16 +1117,6 @@ class InvoiceAdmin extends AbstractAdmin
 
         $object->setAmount($amountTotal);
 
-        /* Setting Invoice Line Collection Order */
-        $collectionNumberInvoiceLines = 0;
-
-        foreach ($invoiceLines as $invoiceLine) {
-            $collectionNumberInvoiceLines++;
-
-            $invoiceLine->setCollectionOrderNumber($collectionNumberInvoiceLines);
-            $invoiceLineRepository->add($invoiceLine);
-        }
-
         // /* Adding comment(s) management */
         // $this->manageEmbeddedCommentAdmin($object);
     }
@@ -1777,7 +1756,6 @@ class InvoiceAdmin extends AbstractAdmin
 
                                     $transaction->setDate($datePaid);
                                     $transaction->setDateTimeEdited($dateTime);
-                                    $transaction->setSupplier($object->getSupplier());
                                     $transaction->setAmount($amountTotal);
                                     $transaction->setCurrency($object->getCurrency());
                                     $transaction->setMoneyOut($amountTotal);
@@ -1792,7 +1770,6 @@ class InvoiceAdmin extends AbstractAdmin
                                         false
                                     );
                                 } else {
-                                    $transaction->setDepartment($object->getDepartment());
                                     $transaction->setDateTimeEdited($dateTime);
                                     $transaction->setAmount($amountTotal);
                                     $transaction->setMoneyOut($amountTotal);
@@ -1857,7 +1834,7 @@ class InvoiceAdmin extends AbstractAdmin
                     $transactions = $object->getTransactions()->toArray();
 
                     foreach ($transactions as $transaction) {
-                        if ($transaction->getTransactionTypName() == 'Bank payment') {
+                        if ($transaction->getTransactionTypeName() == 'Bank payment') {
                             /* If there is a change in date of invoice */
                             if ($originalInvoiceDatePaid !== $datePaid) {
                                 $this->updateLaterTransactionsBalancesTransaction(
@@ -1901,7 +1878,6 @@ class InvoiceAdmin extends AbstractAdmin
                                     false
                                 );
                             } else {
-                                $transaction->setDepartment($object->getDepartment());
                                 $transaction->setDateTimeEdited($dateTime);
                                 $transaction->setAmount($amountTotal);
                                 $transaction->setMoneyOut($amountTotal);
@@ -2023,7 +1999,7 @@ class InvoiceAdmin extends AbstractAdmin
                     $allBankFeesAddedInPartPayments = true;
 
                     foreach ($invoicePartPayments as $partPayment) {
-                        if (!$partPayment->isBankFeeAdded() && !$partPayment->isBankFeeNotAppplicable()) {
+                        if (!$partPayment->isBankFeeAdded() && !$partPayment->isBankFeeNotApplicable()) {
                             $allBankFeesAddedInPartPayments = false;
                         }
                     }
@@ -2044,7 +2020,7 @@ class InvoiceAdmin extends AbstractAdmin
                         }
 
                         if ($partPayment->isBankFeeAdded()) {
-                            if (!$bankFeeTransaction && !$partPayment->isBankFeeNotAppplicable()) {
+                            if (!$bankFeeTransaction && !$partPayment->isBankFeeNotApplicable()) {
                                 $lastTransactionBalance =
                                     $this->getLastTransactionBalance($partPaymentTransaction->getDate(), $account);
                                 $balance = floatval($lastTransactionBalance) - floatval($partPaymentBankFeeAmount);
@@ -2086,7 +2062,7 @@ class InvoiceAdmin extends AbstractAdmin
                                 ) {
                                     $object->setBankFeeAdded(true);
                                 }
-                            } elseif ($partPayment->isBankFeeNotAppplicable()) {
+                            } elseif ($partPayment->isBankFeeNotApplicable()) {
                                 $account->setBalance($partPaymentBankFeeAmount, true);
 
                                 $this->updateLaterTransactionsBalancesTransaction(
@@ -2112,10 +2088,10 @@ class InvoiceAdmin extends AbstractAdmin
                             }
 
                             /* TODO: If user inputs bankFee amount & clicks on Bank Fee N/A simultaneously */
-                            // else if ($partPayment->isBankFeeAdded() && $partPayment->isBankFeeNotAppplicable()) {
+                            // else if ($partPayment->isBankFeeAdded() && $partPayment->isBankFeeNotApplicable()) {
                             //     $partPayment->setBankFeeAdded(false);
                             //     $partPayment->setBankFeeAmount(null);
-                            //     $partPayment->setBankFeeNotAppplicable(false);
+                            //     $partPayment->isBankFeeNotApplicable(false);
                             // }
                         } elseif ($originalPartPaymentData['bankFeeAmount'] !== $partPayment->getBankFeeAmount()) {
                             $bankFeeAmount = floatval($partPayment->getBankFeeAmount());
@@ -2196,7 +2172,7 @@ class InvoiceAdmin extends AbstractAdmin
 
                     if ($object->isBankFeeNotApplicable()) {
                         $object->setBankFeeNotApplicable(false);
-                        $transaction->setBankFeeNotAppplicable(false);
+                        $transaction->isBankFeeNotApplicable();
 
                         $invoiceRepository->add($object, true);
                         $transactionRepository->add($transaction, true);
@@ -2474,7 +2450,6 @@ class InvoiceAdmin extends AbstractAdmin
                 }
 
                 /* Calculate in the Part-Payments from scratch */
-                $collectionNumber = 0;
                 $restPaymentTotalCurrent = $object->getRestPaymentTotal();
 
                 foreach ($invoicePartPayments as $partPayment) {
@@ -2484,11 +2459,9 @@ class InvoiceAdmin extends AbstractAdmin
                     $object->setTotalPaid($amount, true);
 
                     $restPaymentTotalCurrent -= $amount;
-                    $collectionNumber++;
 
-                    $partPayment->setRestPayment(strval($restPaymentTotalCurrent));
+                    $partPayment->getRestPaymentAmount();
                     $partPayment->setCurrency($currency);
-                    $partPayment->setCollectionOrderNumber($collectionNumber);
                     $invoicePartPaymentRepository->add($partPayment);
 
                     $lastTransactionBalance =
@@ -2592,7 +2565,7 @@ class InvoiceAdmin extends AbstractAdmin
                 $allBankFeesAddedInPartPayments = true;
 
                 foreach ($invoicePartPayments as $partPayment) {
-                    if (!$partPayment->isBankFeeAdded() && !$partPayment->isBankFeeNotAppplicable()) {
+                    if (!$partPayment->isBankFeeAdded() && !$partPayment->isBankFeeNotApplicable()) {
                         $allBankFeesAddedInPartPayments = false;
                     }
                 }
@@ -2663,14 +2636,14 @@ class InvoiceAdmin extends AbstractAdmin
                                     $object->setBankFeeAdded(true);
                                 }
 
-                                if ($partPayment->isBankFeeAdded() && $partPayment->isBankFeeNotAppplicable()) {
-                                    $partPayment->setBankFeeNotAppplicable(false);
+                                if ($partPayment->isBankFeeAdded() && $partPayment->isBankFeeNotApplicable()) {
+                                    $partPayment->isBankFeeNotApplicable();
                                 }
                             }
                         }
                     }
 
-                    if (empty($invoicePartPayments)) {
+                    if (!$invoicePartPayments) {
                         $object->setAccount(null);
                         $object->setRealAmountPaid(null);
                         $object->setPaymentStatus('Unpaid');
@@ -2849,7 +2822,7 @@ class InvoiceAdmin extends AbstractAdmin
 
                                 $account->setBalance($amount, false);
 
-                                $partPayment->setRestPayment($differenceAmount, false);
+                                $partPayment->getRestPaymentAmount($differenceAmount, false);
 
                                 $object->setRestPaymentTotal($differenceAmount, false);
                                 $object->setTotalPaid($differenceAmount, true);
@@ -2954,13 +2927,13 @@ class InvoiceAdmin extends AbstractAdmin
 
                             $account->setBalance($amount, false);
 
-                            $partPayment->setRestPayment($differenceAmount, false);
+                            $partPayment->getRestPaymentAmount($differenceAmount, false);
 
                             $object->setRestPaymentTotal($differenceAmount, false);
                             $object->setTotalPaid($differenceAmount, true);
                             /* TODO: refactor this in the one function in TRAIT */
                             if (
-                                $partPayment->isBankFeeNotAppplicable()
+                                $partPayment->isBankFeeNotApplicable()
                                 && !$originalPartPaymentData['bankFeeNotAdded']
                             ) {
                                 $bankFeeTransaction = $partPaymentTransaction->getTransactions()->toArray()[0];
@@ -2989,9 +2962,9 @@ class InvoiceAdmin extends AbstractAdmin
                                 $transactionRepository->add($partPaymentTransaction, true);
                                 $transactionRepository->remove($bankFeeTransaction, true);
                             }
-                        } elseif ($partPayment->isBankFeeNotAppplicable()) {
+                        } elseif ($partPayment->isBankFeeNotApplicable()) {
                             $partPaymentTransactions = $partPaymentTransaction->getTransactions()->toArray();
-                            $partPaymentTransaction->setBankFeeNotAppplicable(true);
+                            $partPaymentTransaction->isBankFeeNotApplicable(true);
 
                             if (!empty($partPaymentTransactions)) {
                                 $bankFeeTransaction = $partPaymentTransaction->getTransactions()->toArray()[0];
@@ -3022,8 +2995,8 @@ class InvoiceAdmin extends AbstractAdmin
                                     $transactionRepository->remove($bankFeeTransaction, true);
                                 }
                             }
-                        } elseif (!$partPayment->isBankFeeNotAppplicable()) {
-                            $partPaymentTransaction->setBankFeeNotAppplicable(false);
+                        } elseif (!$partPayment->isBankFeeNotApplicable()) {
+                            $partPaymentTransaction->isBankFeeNotApplicable(false);
                         }
 
                         if ($object->getTotalPaid() == $object->getAmount()) {
@@ -3056,23 +3029,6 @@ class InvoiceAdmin extends AbstractAdmin
                 }
 
                 // $invoiceTransaction->setBudget($object->getBudget());
-            }
-        }
-
-        /* Setting Invoice Line Collection Order */
-        $collectionNumberInvoiceLines = 0;
-
-        $invoiceLines = $object->getInvoiceLines()->toArray();
-
-        if ($invoiceLines) {
-            foreach ($invoiceLines as $invoiceLine) {
-                if ($invoiceLine->getId()) {
-                    $collectionNumberInvoiceLines++;
-                } else {
-                    $invoiceLine->setCollectionOrderNumber(++$collectionNumberInvoiceLines);
-
-                    $invoiceLineRepository->add($invoiceLine);
-                }
             }
         }
 
@@ -3531,7 +3487,7 @@ class InvoiceAdmin extends AbstractAdmin
                 $restPaymentTotalCurrent -= $amount;
                 $lastCollectionOrderNumber++;
 
-                $partPayment->setRestPayment(strval($restPaymentTotalCurrent));
+                $partPayment->getRestPaymentAmount(strval($restPaymentTotalCurrent));
                 $partPayment->setCurrency($invoiceCurrency);
                 $partPayment->setCollectionOrderNumber($lastCollectionOrderNumber);
                 $invoicePartPaymentRepository->add($partPayment);
@@ -3656,7 +3612,7 @@ class InvoiceAdmin extends AbstractAdmin
 
                 foreach ($invoicePartPayments as $partPayment) {
                     if ($partPayment->getCollectionOrderNumber() > $row->getCollectionOrderNumber()) {
-                        $partPayment->setRestPayment($rowAmount, true);
+                        $partPayment->getRestPaymentAmount($rowAmount, true);
                     }
                 }
             }

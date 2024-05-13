@@ -20,11 +20,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 final class DepartmentAdmin extends AbstractAdmin
 {
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager)
     {
-        $this->entityManager = $entityManager;
     }
 
     /* Remove batch delete action from the list */

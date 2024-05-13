@@ -22,11 +22,8 @@ use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
 
 final class BudgetMainCategoryAdmin extends AbstractAdmin
 {
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager)
     {
-        $this->entityManager = $entityManager;
     }
 
     /* Remove batch delete action from the list */

@@ -53,25 +53,14 @@ final class PurchaseAdmin extends AbstractAdmin
 {
     use AdminTrait;
 
-    private EntityManagerInterface $entityManager;
-    private TokenStorageInterface $tokenStorage;
-    // private ErrorHandler $errorHandler;
-    // protected TransactionService $transactionService;
-    // protected BudgetCalculationService $budgetCalculationService;
-
     public function __construct(
-        EntityManagerInterface $entityManager,
-        TokenStorageInterface $tokenStorage,
-        // ErrorHandler $errorHandler,
-        // TransactionService $transactionService,
-        // BudgetCalculationService $budgetCalculationService
+        private EntityManagerInterface $entityManager,
+        private TokenStorageInterface $tokenStorage,
+        private ErrorHandler $errorHandler,
+        private TransactionService $transactionService,
+        private BudgetCalculationService $budgetCalculationService
     ) {
-        $this->entityManager = $entityManager;
-        $this->tokenStorage = $tokenStorage;
-        // parent::__construct(null, Purchase::class, null);
-        // $this->errorHandler = $errorHandler;
-        // $this->transactionService = $transactionService;
-        // $this->budgetCalculationService = $budgetCalculationService;
+        parent::__construct(null, Purchase::class, null);
     }
 
     // protected function configureRoutes(RouteCollectionInterface $collection): void

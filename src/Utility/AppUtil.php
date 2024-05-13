@@ -8,8 +8,10 @@ use Twig\Environment;
 
 class AppUtil
 {
-    public function __construct(private Environment $twig, private string $projectDir)
-    {
+    public function __construct(
+        private Environment $twig,
+        private string $projectDir
+    ) {
     }
 
     /**

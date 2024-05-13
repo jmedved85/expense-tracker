@@ -7,6 +7,7 @@ namespace App\Admin;
 use DateTime;
 use App\Entity\InvoicePartPayment;
 use App\Traits\AdminTrait;
+use Doctrine\ORM\EntityManagerInterface;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -16,10 +17,17 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\Form\Type\DatePickerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class InvoicePartPaymentAdmin extends AbstractAdmin
 {
     use AdminTrait;
+
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private TokenStorageInterface $tokenStorage
+    ) {
+    }
 
     // MARK: - Datagrid Filters
     protected function configureDatagridFilters(DatagridMapper $filter): void

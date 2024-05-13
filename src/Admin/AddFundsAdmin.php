@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityRepository;
 use Sonata\AdminBundle\Form\FormMapper;
 use App\Entity\TransactionType;
 use App\Entity\Unit;
+use App\Repository\UnitRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sonata\Form\Type\CollectionType;
 use Sonata\Form\Type\DatePickerType;
@@ -48,7 +49,7 @@ final class AddFundsAdmin extends TransactionAdmin
 
         $form
             ->with('Add Funds', [
-                'label' => isset($unit) ? 'Add Funds to ' . $unit->getName() : '',
+                // 'label' => isset($unit) ? 'Add Funds to ' . $unit->getName() : '',
                 'class' => 'col-md-4'
             ])
                 ->add('mainAccount', EntityType::class, [

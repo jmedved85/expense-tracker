@@ -14,6 +14,7 @@ use App\Repository\AccountRepository;
 use App\Repository\AccountTypeRepository;
 use App\Repository\InvoicePartPaymentRepository;
 use App\Repository\TransactionRepository;
+use App\Repository\UnitRepository;
 use App\Service\ErrorHandler;
 use App\Service\TransactionService;
 use App\Traits\AdminTrait;
@@ -45,26 +46,20 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Intl\Currencies;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use TypeError;
 
 class TransactionAdmin extends AbstractAdmin
 {
     use AdminTrait;
 
-    protected TransactionService $transactionService;
-
-    private ErrorHandler $errorHandler;
-    private EntityManagerInterface $entityManager;
-
     public function __construct(
-        ErrorHandler $errorHandler,
-        TransactionService $transactionService,
-        EntityManagerInterface $entityManager
+        private ErrorHandler $errorHandler,
+        private TransactionService $transactionService,
+        private TokenStorageInterface $tokenStorage,
+        private EntityManagerInterface $entityManager
     ) {
         parent::__construct(null, Transaction::class, null);
-        $this->transactionService = $transactionService;
-        $this->errorHandler = $errorHandler;
-        $this->entityManager = $entityManager;
     }
 
     protected function configureRoutes(RouteCollectionInterface $collection): void
@@ -347,9 +342,6 @@ class TransactionAdmin extends AbstractAdmin
     // MARK: - Form Fields
     protected function configureFormFields(FormMapper $form): void
     {
-        /** @var AccountTypeRepository $accountTypeRepository */
-        $accountTypeRepository = $this->entityManager->getRepository(AccountType::class);
-
         $now = new DateTime();
 
         $editRoute = $this->isCurrentRoute('edit');
@@ -619,7 +611,7 @@ class TransactionAdmin extends AbstractAdmin
                         ])
                         ->add('transactionNumber', NumberType::class, [
                             'label' => 'Bank Payment Transaction No',
-                            'data' => $bankPaymentTransaction->getTransactionNumber(),
+                            // 'data' => $bankPaymentTransaction->getTransactionNumber(),
                             'mapped' => false,
                             'required' => false,
                             'attr' => [
@@ -3205,7 +3197,7 @@ class TransactionAdmin extends AbstractAdmin
                     $allBankFeesAddedInPartPayments = true;
 
                     foreach ($invoicePartPayments as $partPayment) {
-                        if (!$partPayment->isBankFeeAdded() && !$partPayment->isBankFeeNotAppplicable()) {
+                        if (!$partPayment->isBankFeeAdded() && !$partPayment->isBankFeeNotApplicable()) {
                             $allBankFeesAddedInPartPayments = false;
                         }
                     }

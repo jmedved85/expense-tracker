@@ -27,15 +27,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SendMailController extends AbstractController
 {
-    private EntityManagerInterface $entityManager;
-    private GeneratePdfDocumentService $generatePdfDocumentService;
-
     public function __construct(
-        EntityManagerInterface $entityManager,
-        GeneratePdfDocumentService $generatePdfDocumentService
+        private EntityManagerInterface $entityManager,
+        private GeneratePdfDocumentService $generatePdfDocumentService
     ) {
-        $this->entityManager = $entityManager;
-        $this->generatePdfDocumentService = $generatePdfDocumentService;
     }
 
     // /**

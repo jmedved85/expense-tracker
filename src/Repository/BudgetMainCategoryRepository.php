@@ -21,6 +21,24 @@ class BudgetMainCategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, BudgetMainCategory::class);
     }
 
+    public function add(BudgetMainCategory $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(BudgetMainCategory $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     //    /**
     //     * @return BudgetMainCategory[] Returns an array of BudgetMainCategory objects
     //     */

@@ -8,6 +8,8 @@ use App\Entity\Account;
 use App\Entity\AccountType;
 use App\Entity\Transaction;
 use App\Entity\TransactionType;
+use App\Entity\User;
+use App\Repository\TransactionRepository;
 use DateTime;
 use DateTimeInterface;
 use Exception;
@@ -51,15 +53,15 @@ trait AdminTrait
 
             $currentUserId = $currentUser->getId();
             $currentUserName = $currentUser->getUsername();
-            $unitId = $this->getUnitId();
+            // $unitId = $this->getUnitId();
 
             $bankAccountType = AccountType::BANK->value;
 
             $unitObject = null;
 
-            if ($unitId) {
-                $unitObject = $this->getUnitById($unitId);
-            }
+            // if ($unitId) {
+            //     $unitObject = $this->getUnitById($unitId);
+            // }
 
             /* Get user's role */
             $userRoles = $currentUser->getRoles();
@@ -68,8 +70,8 @@ trait AdminTrait
             $data['user'] = $currentUser;
             $data['userId'] = $currentUserId;
             $data['userName'] = $currentUserName;
-            $data['unitId'] = $unitId ?? null;
-            $data['unitObject'] = isset($unitObject) ? $unitId : null;
+            // $data['unitId'] = $unitId ?? null;
+            // $data['unitObject'] = isset($unitObject) ? $unitId : null;
             $data['bankAccountTypeId'] = $bankAccountType;
             $data['userRoles'] = $userRoles;
             $data['isSuperAdmin'] = in_array("ROLE_SUPER_ADMIN", $data['userRoles']);
@@ -84,7 +86,7 @@ trait AdminTrait
     public function getAutoTransactionNumber(object $unit): ?int
     {
         /** @var TransactionRepository $transactionRepository */
-        $transactionRepository = $this->getEm()->getRepository(Transaction::class);
+        $transactionRepository = $this->entityManager->getRepository(Transaction::class);
 
         $transactionNumber = 0;
 
@@ -177,7 +179,7 @@ trait AdminTrait
         string $amount,
         bool $increase
     ): void {
-        $transactions = $this->getTransactionsForUpdateTransaction(
+        $transactions = $this->getTransactionsForUpdate(
             $account,
             $date,
             $transaction->getTransactionNumber()
@@ -236,7 +238,7 @@ trait AdminTrait
         string $amount,
         bool $increase
     ): void {
-        $transactions = $this->getTransactionsForUpdateTransaction(
+        $transactions = $this->getTransactionsForUpdate(
             $account,
             $date,
             $transaction->getTransactionNumber()
@@ -305,5 +307,46 @@ trait AdminTrait
         $allTransactions = $query->getQuery()->getResult();
 
         return $allTransactions;
+    }
+
+    public function getTransactionsForUpdate(
+        Account $account,
+        DateTimeInterface $date,
+        int $transactionNumber
+    ): ?array {
+        /** @var TransactionRepository $transactionRepository */
+        $transactionRepository = $this->entityManager->getRepository(Transaction::class);
+
+        $qb = $transactionRepository->createQueryBuilder('t');
+
+        $query = $qb
+            ->where('t.mainAccount = :account')
+            ->orWhere('t.transferFromAccount = :account')
+            ->orWhere('t.transferToAccount = :account')
+            ->andWhere('t.date >= :date')
+            ->orderBy('t.date', 'ASC')
+            ->addOrderBy('t.transactionNumber', 'ASC')
+            ->setParameter('account', $account->getId())
+            ->setParameter('date', $date->format('Y-m-d'))
+        ;
+
+        $transactions = $query->getQuery()->getResult();
+        $transactionsForUpdate = [];
+
+        foreach ($transactions as $transaction) {
+            if (
+                $transaction->getDate()->format('Y-m-d') == $date->format('Y-m-d')
+                && $transaction->getTransactionNumber() > $transactionNumber
+            ) {
+                $transactionsForUpdate[] = $transaction;
+            } elseif (
+                $transaction->getDate()->format('Y-m-d') > $date->format('Y-m-d')
+                && $transaction->getTransactionNumber() !== $transactionNumber
+            ) {
+                $transactionsForUpdate[] = $transaction;
+            }
+        }
+
+        return $transactionsForUpdate;
     }
 }

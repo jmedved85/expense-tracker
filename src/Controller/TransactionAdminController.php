@@ -28,20 +28,13 @@ use TypeError;
 
 class TransactionAdminController extends CRUDController
 {
-    protected EntityManagerInterface $entityManager;
     protected SessionInterface $session;
-    protected TransactionService $transactionService;
-
-    private ErrorHandler $errorHandler;
 
     public function __construct(
-        TransactionService $transactionService,
-        ErrorHandler $errorHandler,
-        EntityManagerInterface $entityManager
+        private TransactionService $transactionService,
+        private ErrorHandler $errorHandler,
+        private EntityManagerInterface $entityManager
     ) {
-        $this->transactionService = $transactionService;
-        $this->errorHandler = $errorHandler;
-        $this->entityManager = $entityManager;
     }
 
     /**
@@ -221,8 +214,8 @@ class TransactionAdminController extends CRUDController
                         $partPayment = $transaction->getInvoicePartPayment();
                         $partPayment->setBankFeeAmount($funds);
 
-                        if ($partPayment->isBankFeeNotAppplicable()) {
-                            $partPayment->setBankFeeNotAppplicable(false);
+                        if ($partPayment->isBankFeeNotApplicable()) {
+                            $partPayment->isBankFeeNotApplicable(false);
                         }
 
                         $invoicePartPaymentRepository->add($partPayment, true);
@@ -390,7 +383,7 @@ class TransactionAdminController extends CRUDController
                 $session->getFlashBag()->add('error', 'Please, enter a value, pick a date and select an account');
             }
         } else {
-            if (!$transaction->isBankFeeNotAppplicable()) {
+            if (!$transaction->isBankFeeNotApplicable()) {
                 if ($transaction->getInvoice()) {
                     $invoice = $transaction->getInvoice();
 
@@ -400,8 +393,8 @@ class TransactionAdminController extends CRUDController
                         try {
                             $this->entityManager->beginTransaction(); // Start a transaction
 
-                            $partPayment->setBankFeeNotAppplicable(true);
-                            $transaction->setBankFeeNotAppplicable(true);
+                            $partPayment->isBankFeeNotApplicable(true);
+                            $transaction->isBankFeeNotApplicable(true);
 
                             $invoicePartPaymentRepository->add($partPayment, true);
                             $transactionRepository->add($transaction, true);
@@ -412,15 +405,15 @@ class TransactionAdminController extends CRUDController
                                 $allBankFeesNotAddedInPartPayments = true;
 
                                 foreach ($invoicePartPayments as $partPayment) {
-                                    if (!$partPayment->isBankFeeNotAppplicable()) {
+                                    if (!$partPayment->isBankFeeNotApplicable()) {
                                         $allBankFeesNotAddedInPartPayments = false;
                                     }
                                 }
 
                                 if ($allBankFeesNotAddedInPartPayments) {
-                                    $invoice->setBankFeeNotAppplicable(true);
+                                    $invoice->isBankFeeNotApplicable(true);
                                 } else {
-                                    $invoice->setBankFeeNotAppplicable(false);
+                                    $invoice->isBankFeeNotApplicable(false);
                                 }
 
                                 $invoiceRepository->add($invoice, true);
@@ -437,8 +430,8 @@ class TransactionAdminController extends CRUDController
                             try {
                                 $this->entityManager->beginTransaction(); // Start a transaction
 
-                                $invoice->setBankFeeNotAppplicable(true);
-                                $transaction->setBankFeeNotAppplicable(true);
+                                $invoice->isBankFeeNotApplicable(true);
+                                $transaction->isBankFeeNotApplicable(true);
 
                                 $invoiceRepository->add($invoice, true);
                                 $transactionRepository->add($transaction, true);
@@ -455,7 +448,7 @@ class TransactionAdminController extends CRUDController
                     try {
                         $this->entityManager->beginTransaction(); // Start a transaction
 
-                        $transaction->setBankFeeNotAppplicable(true);
+                        $transaction->isBankFeeNotApplicable(true);
 
                         $transactionRepository->add($transaction, true);
 

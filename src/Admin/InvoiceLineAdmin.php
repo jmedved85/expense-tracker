@@ -7,6 +7,7 @@ namespace App\Admin;
 use App\Entity\BudgetSubCategory;
 use App\Entity\InvoiceLine;
 use App\Traits\AdminTrait;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -18,10 +19,17 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\PercentType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class InvoiceLineAdmin extends AbstractAdmin
 {
     use AdminTrait;
+
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private TokenStorageInterface $tokenStorage
+    ) {
+    }
 
     // MARK: - Datagrid Filters
     protected function configureDatagridFilters(DatagridMapper $filter): void

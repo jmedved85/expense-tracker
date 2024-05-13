@@ -14,15 +14,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 trait ControllerTrait
 {
-    protected EntityManagerInterface $entityManager;
-    protected TokenStorageInterface $tokenStorage;
-
     public function __construct(
-        EntityManagerInterface $entityManager,
-        TokenStorageInterface $tokenStorage
+        private EntityManagerInterface $entityManager,
+        private TokenStorageInterface $tokenStorage
     ) {
-        $this->entityManager = $entityManager;
-        $this->tokenStorage = $tokenStorage;
     }
 
     public function getUserAndDateTime(): array

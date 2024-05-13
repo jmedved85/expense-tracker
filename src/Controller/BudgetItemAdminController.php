@@ -4,35 +4,31 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\GeneratePdfDocumentService;
 use Sonata\AdminBundle\Controller\CRUDController;
+use Symfony\Component\HttpFoundation\Response;
 
 final class BudgetItemAdminController extends CRUDController
 {
-    // /** @var BudgetItemAdmin */
-    // protected $admin;
+    public function __construct(private GeneratePdfDocumentService $generatePdfDocumentService)
+    {
+    }
 
-    // private GeneratePdfDocumentService $generatePdfDocumentService;
+    /**
+     * @param string $id
+    *
+    * @return Response
+    */
+    public function emailModalAction(string $id): Response
+    {
+        $object = $this->admin->getSubject();
 
-    // public function __construct(GeneratePdfDocumentService $generatePdfDocumentService)
-    // {
-    //     $this->generatePdfDocumentService = $generatePdfDocumentService;
-    // }
+        $template = 'email/email_modal_form.html.twig';
 
-    // /**
-    //  * @param string $id
-    // *
-    // * @return Response
-    // */
-    // public function emailModalAction(string $id): Response
-    // {
-    //     $object = $this->admin->getSubject();
-
-    //     $template = 'email/email_modal_form.html.twig';
-
-    //     return $this->renderWithExtraParams($template, [
-    //         'object' => $object,
-    //     ]);
-    // }
+        return $this->render($template, [
+            'object' => $object,
+        ]);
+    }
 
     // /**
     //  * @throws NotFoundHttpException|Exception

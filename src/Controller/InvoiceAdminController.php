@@ -29,21 +29,13 @@ use TypeError;
 
 final class InvoiceAdminController extends CRUDController
 {
-    // use ControlerTrait;
-
-    private TransactionService $transactionService;
-    private ErrorHandler $errorHandler;
-    private EntityManagerInterface $entityManager;
-
+    use ControllerTrait;
 
     public function __construct(
-        TransactionService $transactionService,
-        ErrorHandler $errorHandler,
-        EntityManagerInterface $entityManager
+        private TransactionService $transactionService,
+        private ErrorHandler $errorHandler,
+        private EntityManagerInterface $entityManager
     ) {
-        $this->transactionService = $transactionService;
-        $this->errorHandler = $errorHandler;
-        $this->entityManager = $entityManager;
     }
 
     /** @var InvoiceAdmin */
@@ -223,9 +215,9 @@ final class InvoiceAdminController extends CRUDController
                     $invoiceTransaction->setBankFeeAmount($funds);
                     $invoiceTransaction->setBankFeeCurrency($bankFeeTransaction->getCurrency());
 
-                    if ($invoice->isBankFeeNotAppplicable()) {
-                        $invoice->setBankFeeNotAppplicable(false);
-                        $invoiceTransaction->setBankFeeNotAppplicable(false);
+                    if ($invoice->isBankFeeNotApplicable()) {
+                        $invoice->isBankFeeNotApplicable(false);
+                        $invoiceTransaction->isBankFeeNotApplicable(false);
                         $transactionRepository->add($invoiceTransaction, true);
                     }
 
@@ -247,15 +239,15 @@ final class InvoiceAdminController extends CRUDController
                 $session->getFlashBag()->add('error', 'Please, enter a value and pick a date');
             }
         } else {
-            if (!$invoice->isBankFeeNotAppplicable()) {
+            if (!$invoice->isBankFeeNotApplicable()) {
                 if (!empty($invoiceTransactions)) {
                     $invoiceTransaction = $invoiceTransactions[0];
 
                     try {
                         $this->entityManager->beginTransaction(); // Start a transaction
 
-                        $invoice->setBankFeeNotAppplicable(true);
-                        $invoiceTransaction->setBankFeeNotAppplicable(true);
+                        $invoice->isBankFeeNotApplicable(true);
+                        $invoiceTransaction->isBankFeeNotApplicable(true);
 
                         $invoiceRepository->add($invoice, true);
                         $transactionRepository->add($invoiceTransaction, true);

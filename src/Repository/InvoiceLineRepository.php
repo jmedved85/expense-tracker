@@ -21,6 +21,24 @@ class InvoiceLineRepository extends ServiceEntityRepository
         parent::__construct($registry, InvoiceLine::class);
     }
 
+    public function add(InvoiceLine $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(InvoiceLine $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     public function getCurrentLineTotal(string $invoiceLineId): ?string
     {
         $query = $this->createQueryBuilder('lt')

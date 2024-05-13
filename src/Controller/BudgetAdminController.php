@@ -5,38 +5,37 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Admin\BudgetAdmin;
+use App\Entity\Budget;
+use App\Repository\BudgetRepository;
+use App\Service\GeneratePdfDocumentService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sonata\AdminBundle\Controller\CRUDController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class BudgetAdminController extends CRUDController
 {
-    // protected BudgetAdmin $admin;
+    private EntityManagerInterface $entityManager;
 
-    // private EntityManagerInterface $entityManager;
+    public function __construct(private GeneratePdfDocumentService $generatePdfDocumentService)
+    {
+    }
 
-    // private GeneratePdfDocumentService $generatePdfDocumentService;
+    /**
+     * @param string $id
+     *
+     * @return Response
+     */
+    public function emailModalAction(string $id): Response
+    {
+        $object = $this->admin->getSubject();
 
-    // public function __construct(GeneratePdfDocumentService $generatePdfDocumentService)
-    // {
-    //     $this->generatePdfDocumentService = $generatePdfDocumentService;
-    // }
+        $template = 'email/email_modal_form.html.twig';
 
-    // /**
-    //  * @param string $id
-    //  *
-    //  * @return Response
-    //  */
-    // public function emailModalAction(string $id): Response
-    // {
-    //     $object = $this->admin->getSubject();
-
-    //     $template = 'email/email_modal_form.html.twig';
-
-    //     return $this->renderWithExtraParams($template, [
-    //         'object' => $object,
-    //     ]);
-    // }
+        return $this->render($template, [
+            'object' => $object,
+        ]);
+    }
 
     // /**
     //  * @throws NotFoundHttpException|Exception
@@ -77,17 +76,17 @@ final class BudgetAdminController extends CRUDController
     //     );
     // }
 
-    // protected function preShow(Request $request, object $object): ?Response
-    // {
-    //     /** @var BudgetRepository $budgetRepository */
-    //     $budgetRepository = $this->entityManager->getRepository(Budget::class);
+    protected function preShow(Request $request, object $object): ?Response
+    {
+        /** @var BudgetRepository $budgetRepository */
+        $budgetRepository = $this->entityManager->getRepository(Budget::class);
 
-    //     if ($object instanceof Budget) {
-    //         $budget = $budgetRepository->findWithTotals($object->getId());
+        if ($object instanceof Budget) {
+            $budget = $budgetRepository->findWithTotals($object->getId());
 
-    //         $this->admin->setSubject($budget);
-    //     }
+            $this->admin->setSubject($budget);
+        }
 
-    //     return null;
-    // }
+        return null;
+    }
 }

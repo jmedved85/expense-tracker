@@ -17,8 +17,10 @@ use Twig\Environment;
 
 class GeneratePdfDocumentService
 {
-    public function __construct(private EntityManagerInterface $entityManager, private Environment $twig)
-    {
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private Environment $twig
+    ) {
     }
 
     public function generatePdfDocument(object $object, AppUtil $appUtil, bool $download = false): array

@@ -22,11 +22,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 final class BudgetSubCategoryAdmin extends AbstractAdmin
 {
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager)
     {
-        $this->entityManager = $entityManager;
     }
 
     /* Remove Download button from bottom of the list */

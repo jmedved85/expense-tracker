@@ -11,20 +11,17 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class CommentAdminController extends CRUDController
 {
-    // private EntityManagerInterface $entityManager;
+    public function __construct(private EntityManagerInterface $entityManager)
+    {
+    }
 
-    // public function __construct(EntityManagerInterface $entityManager)
-    // {
-    //     $this->entityManager = $entityManager;
-    // }
+    public function getComments(string $unitId = null): array
+    {
+        /** @var CommentRepository $commentRepository */
+        $commentRepository = $this->entityManager->getRepository(Comment::class);
 
-    // public function getComments(string $unitId = null): array
-    // {
-    //     /** @var CommentRepository $commentRepository */
-    //     $commentRepository = $this->entityManager->getRepository(Comment::class);
+        $comments = [];
 
-    //     $comments = [];
-
-    //     return $comments;
-    // }
+        return $comments;
+    }
 }

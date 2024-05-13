@@ -28,7 +28,7 @@ class BudgetRepository extends ServiceEntityRepository
     /**
      * @throws Exception
      */
-    public function findWithTotals(string $id): ?Budget
+    public function findWithTotals(int $id): ?Budget
     {
         $budget = $this->find($id);
 
@@ -69,7 +69,7 @@ class BudgetRepository extends ServiceEntityRepository
     /**
      * @throws Exception
      */
-    public function findBudgetInvoices(string $objectId): array
+    public function findBudgetInvoices(int $objectId): array
     {
         /** @var InvoiceRepository $invoiceRepository */
         $invoiceRepository = $this->getEntityManager()->getRepository(Invoice::class);
@@ -118,7 +118,7 @@ class BudgetRepository extends ServiceEntityRepository
     /**
      * @throws Exception
      */
-    public function findBudgetPurchases(string $objectId): array
+    public function findBudgetPurchases(int $objectId): array
     {
         /** @var PurchaseRepository $purchaseRepository */
         $purchaseRepository = $this->getEntityManager()->getRepository(Purchase::class);

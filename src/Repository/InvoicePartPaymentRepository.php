@@ -21,6 +21,24 @@ class InvoicePartPaymentRepository extends ServiceEntityRepository
         parent::__construct($registry, InvoicePartPayment::class);
     }
 
+    public function add(InvoicePartPayment $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(InvoicePartPayment $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     //    /**
     //     * @return InvoicePartPayment[] Returns an array of InvoicePartPayment objects
     //     */

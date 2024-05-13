@@ -27,7 +27,7 @@ class BudgetItemRepository extends ServiceEntityRepository
     /**
      * @throws Exception
      */
-    public function findBudgetItemInvoices(string $objectId): array
+    public function findBudgetItemInvoices(int $objectId): array
     {
         /** @var InvoiceRepository $invoiceRepository */
         $invoiceRepository = $this->getEntityManager()->getRepository(Invoice::class);
@@ -66,7 +66,7 @@ class BudgetItemRepository extends ServiceEntityRepository
     /**
      * @throws Exception
      */
-    public function findBudgetItemPurchases(string $objectId): array
+    public function findBudgetItemPurchases(int $objectId): array
     {
         /** @var PurchaseRepository $purchaseRepository */
         $purchaseRepository = $this->getEntityManager()->getRepository(Purchase::class);
