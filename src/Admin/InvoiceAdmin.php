@@ -2023,7 +2023,7 @@ class InvoiceAdmin extends AbstractAdmin
                     $allBankFeesAddedInPartPayments = true;
 
                     foreach ($invoicePartPayments as $partPayment) {
-                        if (!$partPayment->isBankFeeAdded() && !$partPayment->isBankFeeNotAdded()) {
+                        if (!$partPayment->isBankFeeAdded() && !$partPayment->isBankFeeNotAppplicable()) {
                             $allBankFeesAddedInPartPayments = false;
                         }
                     }
@@ -2044,7 +2044,7 @@ class InvoiceAdmin extends AbstractAdmin
                         }
 
                         if ($partPayment->isBankFeeAdded()) {
-                            if (!$bankFeeTransaction && !$partPayment->isBankFeeNotAdded()) {
+                            if (!$bankFeeTransaction && !$partPayment->isBankFeeNotAppplicable()) {
                                 $lastTransactionBalance =
                                     $this->getLastTransactionBalance($partPaymentTransaction->getDate(), $account);
                                 $balance = floatval($lastTransactionBalance) - floatval($partPaymentBankFeeAmount);
@@ -2086,7 +2086,7 @@ class InvoiceAdmin extends AbstractAdmin
                                 ) {
                                     $object->setBankFeeAdded(true);
                                 }
-                            } elseif ($partPayment->isBankFeeNotAdded()) {
+                            } elseif ($partPayment->isBankFeeNotAppplicable()) {
                                 $account->setBalance($partPaymentBankFeeAmount, true);
 
                                 $this->updateLaterTransactionsBalancesTransaction(
@@ -2112,10 +2112,10 @@ class InvoiceAdmin extends AbstractAdmin
                             }
 
                             /* TODO: If user inputs bankFee amount & clicks on Bank Fee N/A simultaneously */
-                            // else if ($partPayment->isBankFeeAdded() && $partPayment->isBankFeeNotAdded()) {
+                            // else if ($partPayment->isBankFeeAdded() && $partPayment->isBankFeeNotAppplicable()) {
                             //     $partPayment->setBankFeeAdded(false);
                             //     $partPayment->setBankFeeAmount(null);
-                            //     $partPayment->setBankFeeNotAdded(false);
+                            //     $partPayment->setBankFeeNotAppplicable(false);
                             // }
                         } elseif ($originalPartPaymentData['bankFeeAmount'] !== $partPayment->getBankFeeAmount()) {
                             $bankFeeAmount = floatval($partPayment->getBankFeeAmount());
@@ -2196,7 +2196,7 @@ class InvoiceAdmin extends AbstractAdmin
 
                     if ($object->isBankFeeNotApplicable()) {
                         $object->setBankFeeNotApplicable(false);
-                        $transaction->setBankFeeNotAdded(false);
+                        $transaction->setBankFeeNotAppplicable(false);
 
                         $invoiceRepository->add($object, true);
                         $transactionRepository->add($transaction, true);
@@ -2592,7 +2592,7 @@ class InvoiceAdmin extends AbstractAdmin
                 $allBankFeesAddedInPartPayments = true;
 
                 foreach ($invoicePartPayments as $partPayment) {
-                    if (!$partPayment->isBankFeeAdded() && !$partPayment->isBankFeeNotAdded()) {
+                    if (!$partPayment->isBankFeeAdded() && !$partPayment->isBankFeeNotAppplicable()) {
                         $allBankFeesAddedInPartPayments = false;
                     }
                 }
@@ -2663,8 +2663,8 @@ class InvoiceAdmin extends AbstractAdmin
                                     $object->setBankFeeAdded(true);
                                 }
 
-                                if ($partPayment->isBankFeeAdded() && $partPayment->isBankFeeNotAdded()) {
-                                    $partPayment->setBankFeeNotAdded(false);
+                                if ($partPayment->isBankFeeAdded() && $partPayment->isBankFeeNotAppplicable()) {
+                                    $partPayment->setBankFeeNotAppplicable(false);
                                 }
                             }
                         }
@@ -2959,7 +2959,10 @@ class InvoiceAdmin extends AbstractAdmin
                             $object->setRestPaymentTotal($differenceAmount, false);
                             $object->setTotalPaid($differenceAmount, true);
                             /* TODO: refactor this in the one function in TRAIT */
-                            if ($partPayment->isBankFeeNotAdded() && !$originalPartPaymentData['bankFeeNotAdded']) {
+                            if (
+                                $partPayment->isBankFeeNotAppplicable()
+                                && !$originalPartPaymentData['bankFeeNotAdded']
+                            ) {
                                 $bankFeeTransaction = $partPaymentTransaction->getTransactions()->toArray()[0];
                                 $partPaymentBankFeeAmount = $bankFeeTransaction->getAmount();
 
@@ -2986,9 +2989,9 @@ class InvoiceAdmin extends AbstractAdmin
                                 $transactionRepository->add($partPaymentTransaction, true);
                                 $transactionRepository->remove($bankFeeTransaction, true);
                             }
-                        } elseif ($partPayment->isBankFeeNotAdded()) {
+                        } elseif ($partPayment->isBankFeeNotAppplicable()) {
                             $partPaymentTransactions = $partPaymentTransaction->getTransactions()->toArray();
-                            $partPaymentTransaction->setBankFeeNotAdded(true);
+                            $partPaymentTransaction->setBankFeeNotAppplicable(true);
 
                             if (!empty($partPaymentTransactions)) {
                                 $bankFeeTransaction = $partPaymentTransaction->getTransactions()->toArray()[0];
@@ -3019,8 +3022,8 @@ class InvoiceAdmin extends AbstractAdmin
                                     $transactionRepository->remove($bankFeeTransaction, true);
                                 }
                             }
-                        } elseif (!$partPayment->isBankFeeNotAdded()) {
-                            $partPaymentTransaction->setBankFeeNotAdded(false);
+                        } elseif (!$partPayment->isBankFeeNotAppplicable()) {
+                            $partPaymentTransaction->setBankFeeNotAppplicable(false);
                         }
 
                         if ($object->getTotalPaid() == $object->getAmount()) {

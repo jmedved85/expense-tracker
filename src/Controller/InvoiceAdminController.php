@@ -223,9 +223,9 @@ final class InvoiceAdminController extends CRUDController
                     $invoiceTransaction->setBankFeeAmount($funds);
                     $invoiceTransaction->setBankFeeCurrency($bankFeeTransaction->getCurrency());
 
-                    if ($invoice->isBankFeeNotAdded()) {
-                        $invoice->setBankFeeNotAdded(false);
-                        $invoiceTransaction->setBankFeeNotAdded(false);
+                    if ($invoice->isBankFeeNotAppplicable()) {
+                        $invoice->setBankFeeNotAppplicable(false);
+                        $invoiceTransaction->setBankFeeNotAppplicable(false);
                         $transactionRepository->add($invoiceTransaction, true);
                     }
 
@@ -247,15 +247,15 @@ final class InvoiceAdminController extends CRUDController
                 $session->getFlashBag()->add('error', 'Please, enter a value and pick a date');
             }
         } else {
-            if (!$invoice->isBankFeeNotAdded()) {
+            if (!$invoice->isBankFeeNotAppplicable()) {
                 if (!empty($invoiceTransactions)) {
                     $invoiceTransaction = $invoiceTransactions[0];
 
                     try {
                         $this->entityManager->beginTransaction(); // Start a transaction
 
-                        $invoice->setBankFeeNotAdded(true);
-                        $invoiceTransaction->setBankFeeNotAdded(true);
+                        $invoice->setBankFeeNotAppplicable(true);
+                        $invoiceTransaction->setBankFeeNotAppplicable(true);
 
                         $invoiceRepository->add($invoice, true);
                         $transactionRepository->add($invoiceTransaction, true);

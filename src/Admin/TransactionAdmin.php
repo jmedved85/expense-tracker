@@ -3205,7 +3205,7 @@ class TransactionAdmin extends AbstractAdmin
                     $allBankFeesAddedInPartPayments = true;
 
                     foreach ($invoicePartPayments as $partPayment) {
-                        if (!$partPayment->isBankFeeAdded() && !$partPayment->isBankFeeNotAdded()) {
+                        if (!$partPayment->isBankFeeAdded() && !$partPayment->isBankFeeNotAppplicable()) {
                             $allBankFeesAddedInPartPayments = false;
                         }
                     }

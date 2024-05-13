@@ -33,26 +33,26 @@ services:
         tags:
             - { name: sonata.admin, model_class: App\Entity\Account, controller: App\Controller\AccountAdminController, manager_type: orm, group: Banking, label: Accounts }
 
-    # admin.add_funds:
-    #     class: App\Admin\AddFundsAdmin
-    #     calls:
-    #         # - [ setTemplate, ['list', 'CRUD\base_list.html.twig'] ]
-    #         - [ setTemplate, ['edit', 'Transaction\transaction_edit.html.twig'] ]
-    #         - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
-    #         - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
-    #         - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
-    #     tags:
-    #         - { name: sonata.admin, model_class: App\Entity\Transaction, controller: App\Controller\AddFundsAdminController, manager_type: orm, group: admin, label: AddFunds, show_in_dashboard: false }
+    admin.add_funds:
+        class: App\Admin\AddFundsAdmin
+        calls:
+            # - [ setTemplate, ['list', 'CRUD\base_list.html.twig'] ]
+            - [ setTemplate, ['edit', 'Transaction\transaction_edit.html.twig'] ]
+            - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
+            - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
+            - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Transaction, controller: App\Controller\AddFundsAdminController, manager_type: orm, group: admin, label: AddFunds, show_in_dashboard: false }
 
-#     admin.bank_transfer:
-#         class: App\Admin\BankTransferAdmin
-#         calls:
-#             - [ setTemplate, ['edit', 'Transaction\transaction_edit.html.twig'] ]
-# #            - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
-#             - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
-#             - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
-#         tags:
-#             - { name: sonata.admin, model_class: App\Entity\Transaction, controller: App\Controller\BankTransferAdminController, manager_type: orm, group: admin, label: BankTransfer, show_in_dashboard: false }
+    admin.bank_transfer:
+        class: App\Admin\BankTransferAdmin
+        calls:
+            - [ setTemplate, ['edit', 'Transaction\transaction_edit.html.twig'] ]
+#            - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
+            - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
+            - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Transaction, controller: App\Controller\BankTransferAdminController, manager_type: orm, group: admin, label: BankTransfer, show_in_dashboard: false }
 
     admin.budget:
         class: App\Admin\BudgetAdmin
@@ -93,41 +93,41 @@ services:
             - { name: sonata.admin, model_class: App\Entity\BudgetMainCategory, controller: App\Controller\BudgetMainCategoryAdminController, manager_type: orm, group: Categories, label: Budget Main Categories }
             # - { name: sonata.admin, model_class: App\Entity\BudgetMainCategory, controller: App\Controller\BudgetMainCategoryAdminController, manager_type: orm, group: Admin, label: Budget Categories }
 
-#     admin.cash_transfer:
-#         class: App\Admin\CashTransferAdmin
-#         calls:
-#             # - [ setTemplate, ['list', 'CRUD\base_list.html.twig'] ]
-#             - [ setTemplate, ['edit', 'Transaction\transaction_edit.html.twig'] ]
-#             - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
-#             - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
-#             - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
-#         tags:
-#             - { name: sonata.admin, model_class: App\Entity\Transaction, controller: App\Controller\CashTransferAdminController, manager_type: orm, group: admin, label: Cash Transfer, show_in_dashboard: false }
+    admin.cash_transfer:
+        class: App\Admin\CashTransferAdmin
+        calls:
+            # - [ setTemplate, ['list', 'CRUD\base_list.html.twig'] ]
+            - [ setTemplate, ['edit', 'Transaction\transaction_edit.html.twig'] ]
+            - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
+            - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
+            - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Transaction, controller: App\Controller\CashTransferAdminController, manager_type: orm, group: admin, label: Cash Transfer, show_in_dashboard: false }
 
-#     admin.cash_withdrawal:
-#         class: App\Admin\CashWithdrawalAdmin
-#         calls:
-#             - [ setTemplate, ['edit', 'Transaction\transaction_edit.html.twig'] ]
-# #            - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
-#             - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
-#             - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
-#         tags:
-#             - { name: sonata.admin, model_class: App\Entity\Transaction, controller: App\Controller\CashWithdrawalAdminController, manager_type: orm, group: admin, label: Cash Withdrawal, show_in_dashboard: false }
+    admin.cash_withdrawal:
+        class: App\Admin\CashWithdrawalAdmin
+        calls:
+            - [ setTemplate, ['edit', 'Transaction\transaction_edit.html.twig'] ]
+#            - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
+            - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
+            - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Transaction, controller: App\Controller\CashWithdrawalAdminController, manager_type: orm, group: admin, label: Cash Withdrawal, show_in_dashboard: false }
 
     admin.comment:
         class: App\Admin\CommentAdmin
         tags:
             - { name: sonata.admin, model_class: App\Entity\Comment, controller: App\Controller\CommentAdminController, manager_type: orm, group: admin, label: Comment, show_in_dashboard: false }
 
-#     admin.currency_exchange:
-#         class: App\Admin\CurrencyExchangeAdmin
-#         calls:
-#             - [ setTemplate, ['edit', 'Transaction\transaction_edit.html.twig'] ]
-# #            - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
-#             - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
-#             - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
-#         tags:
-#             - { name: sonata.admin, model_class: App\Entity\Transaction, controller: App\Controller\CurrencyExchangeAdminController, manager_type: orm, group: admin, label: CurrencyExchange, show_in_dashboard: false }
+    admin.currency_exchange:
+        class: App\Admin\CurrencyExchangeAdmin
+        calls:
+            - [ setTemplate, ['edit', 'Transaction\transaction_edit.html.twig'] ]
+#            - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
+            - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
+            - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Transaction, controller: App\Controller\CurrencyExchangeAdminController, manager_type: orm, group: admin, label: CurrencyExchange, show_in_dashboard: false }
 
     admin.department:
         class: App\Admin\DepartmentAdmin
@@ -169,16 +169,15 @@ services:
         tags:
             - { name: sonata.admin, model_class: App\Entity\InvoicePartPayment, controller: App\Controller\InvoicePartPaymentAdminController, manager_type: orm, group: admin, label: InvoicePartPayment, show_in_dashboard: false }
 
-#     admin.money_return:
-#         class: App\Admin\MoneyReturnAdmin
-#         calls:
-#             - [ setTemplate, ['edit', 'Transaction\transaction_edit.html.twig'] ]
-# #            - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
-#             - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
-#             - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
-#         tags:
-#             - { name: sonata.admin, model_class: App\Entity\Transaction, controller: App\Controller\MoneyReturnAdminController, manager_type: orm, group: admin, label: MoneyReturn, show_in_dashboard: false }
-
+    admin.money_return:
+        class: App\Admin\MoneyReturnAdmin
+        calls:
+            - [ setTemplate, ['edit', 'Transaction\transaction_edit.html.twig'] ]
+#            - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
+            - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
+            - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Transaction, controller: App\Controller\MoneyReturnAdminController, manager_type: orm, group: admin, label: MoneyReturn, show_in_dashboard: false }
 
     admin.purchase:
         class: App\Admin\PurchaseAdmin
