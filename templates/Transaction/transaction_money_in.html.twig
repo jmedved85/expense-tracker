@@ -1,0 +1,16 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{% block field %}
+ 
+    {% if object.moneyIn %}
+        {% if object.amountFromAccount %}
+            <div>{{ object.moneyIn|format_currency(object.mainAccount.currency) }}</div>
+            <div style="font-size: 12px; color: green;">{{ object.amountFromAccount|format_currency(object.transferFromAccount.currency) }}</div>
+        {% elseif object.mainAccount %}
+            <div>{{ object.moneyIn|format_currency(object.mainAccount.currency) }}</div>
+        {% endif %}
+    {% else %}
+        {{ '-' }}
+    {% endif %}
+
+{% endblock %}

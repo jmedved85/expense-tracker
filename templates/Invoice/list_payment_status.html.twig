@@ -1,0 +1,13 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{%- block field %}
+    {% if value == 'Paid' %}
+        <span style="color:green">{{ value }}</span>
+    {% elseif value == 'Unpaid' %}
+        <span style="color:red">{{ value }}</span>
+    {% elseif value == 'Part-Paid' %}
+        <span style="color:blue">{{ value }}</span>
+    {% else %}
+        {{ value }}
+    {% endif %}
+{% endblock -%}

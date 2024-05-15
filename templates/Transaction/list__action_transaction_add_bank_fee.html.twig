@@ -1,0 +1,63 @@
+{%- block add_funds_modal -%}
+
+{# Link to modal #}
+{# {% if app.user and is_granted(sonata_config.getOption('role_super_admin')) %} #}
+    {% if object.transactionType != 'Account charge' and object.transactionType != 'Card payment' and object.transactionType != 'Cash payment' %}
+        {% if object.invoice and object.invoicePartPayment == null %}
+            {% if object.bankFeeAdded %}
+                <a class="btn btn-sm btn-success" href="#" data-toggle="modal" title="{{ 'bank_fee_added'|trans({}, 'SonataAdminBundle') }}">
+                {# <a class="btn btn-sm btn-success" href="{{ admin.generateObjectUrl('addBankFeeLinkToModal', object) }}" data-toggle="modal" data-target="#addBankFeeModal"> #}
+                    <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
+                </a>
+            {% else %}
+                {% if object.bankFeeNotAdded %}
+                    <a class="btn btn-sm btn-default" href="{{ admin.generateObjectUrl('addBankFeeLinkToModal', object) }}" data-toggle="modal" data-target="#addBankFeeModal" title="{{ 'bank_fee_not_applicable_short'|trans({}, 'SonataAdminBundle') }}">
+						<span class="fa-cross-icon"><i class="fas fa-money-bill-wave" aria-hidden="true"></i></span>
+                    </a>
+                {% else %}
+                    <a class="btn btn-sm btn-danger" href="{{ admin.generateObjectUrl('addBankFeeLinkToModal', object) }}" data-toggle="modal" data-target="#addBankFeeModal" title="{{ 'add_bank_fee_button'|trans({}, 'SonataAdminBundle') }}">
+						<i class="fas fa-money-bill-wave" aria-hidden="true"></i>
+                </a>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            {# {% if object.transactionType.name != 'Funds transfer' %} #}
+                {% if object.bankFeeAdded %}
+                    <a class="btn btn-sm btn-success" href="#" data-toggle="modal" title="{{ 'bank_fee_added'|trans({}, 'SonataAdminBundle') }}">
+                    {# <a class="btn btn-sm btn-success" href="{{ admin.generateObjectUrl('addBankFeeLinkToModal', object) }}" data-toggle="modal" data-target="#addBankFeeModal"> #}
+                        <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
+                    </a>
+                {% else %}
+                    {% if object.bankFeeNotAdded %}
+                        <a class="btn btn-sm btn-default" href="#" data-toggle="modal" data-target="#" title="{{ 'bank_fee_not_applicable_short'|trans({}, 'SonataAdminBundle') }}">
+							<span class="fa-cross-icon"><i class="fas fa-money-bill-wave" aria-hidden="true"></i></span>
+                        </a>
+                    {% else %}
+                        <a class="btn btn-sm btn-danger" href="{{ admin.generateObjectUrl('addBankFeeLinkToModal', object) }}" data-toggle="modal" data-target="#addBankFeeModal" title="{{ 'add_bank_fee_button'|trans({}, 'SonataAdminBundle') }}">
+                            <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
+                        </a>
+                    {% endif %}
+                {% endif %}
+            {# {% endif %} #}
+        {% endif %}
+    {% endif %}
+{# {% endif %} #}
+
+{# Modal add_funds_modal_form.html.twig #}
+<div class="modal fade" id="addBankFeeModal" tabindex="-1" role="dialog" aria-labelledby="addBankFeeModal" aria-hidden="true">
+    <div id="modalDialog" class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius:6px; background-color:#D1D6E6;">
+            {# {% include 'Block/add_bank_fee_modal_form.html.twig' %} #}
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#addBankFeeModal').on('shown.bs.modal', function () {
+            $(this).removeData('bs.modal');
+        });
+    });
+</script>
+
+{%- endblock -%}

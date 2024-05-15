@@ -1,0 +1,11 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{%- block field %}
+    {% if value == 'Approved' %}
+        <span style="color:green">{{ value }}</span>
+    {% elseif value == 'Denied' %}
+        <span style="color:red">{{ value }}</span>
+    {% else %}
+        {{ value }}
+    {% endif %}
+{% endblock -%}

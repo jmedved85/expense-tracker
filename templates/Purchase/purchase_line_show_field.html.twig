@@ -1,0 +1,62 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+{# {% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %} #}
+{# TODO: try to render invoiceLine & purchaseLine from one twig template #}
+
+{# {%- block name -%}
+    <table class="table">
+        <tbody>
+            <tr style="background-color:#f9f9f9">
+                <th>{{ 'purchase_lines_title'|trans({}, 'SonataAdminBundle') }}</th>
+            </tr>
+        </tbody>
+    </table>
+{%- endblock -%} #}
+
+{%- block field -%}
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">{{ 'description'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'main_category'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'sub_category'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'net'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'vat'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'line_total'|trans({}, 'SonataAdminBundle') }}</th>
+            </tr>
+        </thead>
+        {% set num = 1 %}
+        <tbody>
+            {% for purchaseLine in value %}
+                    <tr>
+                        <th scope="row">{{ num }}</th> 
+                        <td>{{ purchaseLine.shortDescription ?? null }}</td>
+                        <td>{{ purchaseLine.budgetMainCategory.name ?? null }}</td>
+                        <td>{{ purchaseLine.budgetCategory.name ?? null }}</td>
+                        <td>{%- include '/CRUD/display_currency.html.twig' with {
+                            value: purchaseLine.netValue|number_format(2, '.', ','),
+                            currency: field_description.option('currency'),
+                        } only -%}</td>
+                        <td>{%- include '/CRUD/display_currency.html.twig' with {
+                            value: purchaseLine.vatValue|number_format(2, '.', ','),
+                            currency: field_description.option('currency'),
+                        } only -%}</td>
+                        <td>{%- include '/CRUD/display_currency.html.twig' with {
+                            value: purchaseLine.lineTotal|number_format(2, '.', ','),
+                            currency: field_description.option('currency'),
+                        } only -%}</td>
+                    </tr>
+                {% set num = num + 1 %}
+            {% endfor %}
+        </tbody>
+    </table>
+{%- endblock -%}

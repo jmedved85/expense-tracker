@@ -1,0 +1,70 @@
+{% set lastTransaction = get_last_transaction() %}
+{% set user = get_user() %}
+
+{# TODO: Refactor this #}
+{% if object is not null and admin.id(object) is not null and admin.hasAccess('edit', object) and admin.hasRoute('edit') %}
+    {% if object.purchase %}
+        <a href="/admin/app/purchase/{{ object.purchase.id }}/edit" class="btn btn-sm btn-default edit_link" title="{{ 'action_check'|trans({},'SonataAdminBundle') }}">
+            <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+            {# {{ 'action_check'|trans({}, 'SonataAdminBundle') }} #}
+        </a>
+    {% elseif object.invoice %}
+        {# {% if user['isSuperAdmin'] != false %} #}
+            {% if object.transactionType == "Account charge" %}
+                <a href="/admin/app/transaction/{{ object.id }}/edit" class="btn btn-sm btn-default edit_link" title="{{ 'action_check'|trans({},'SonataAdminBundle') }}">
+                    <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                    {# {{ 'action_check'|trans({}, 'SonataAdminBundle') }} #}
+                </a>
+            {% elseif object.transactionType == "Money returned"%}
+                <a href="/admin/money_return/{{ object.id }}/edit" class="btn btn-sm btn-default edit_link" title="{{ 'action_check'|trans({},'SonataAdminBundle') }}">
+                    <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                    {# {{ 'action_check'|trans({}, 'SonataAdminBundle') }} #}
+                </a>
+            {% else %}
+                {% if object.invoicePartPayment %}
+                    <a href="/admin/app/transaction/{{ object.id }}/edit" class="btn btn-sm btn-default edit_link" title="{{ 'action_check'|trans({},'SonataAdminBundle') }}">
+                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                        {# {{ 'action_check'|trans({}, 'SonataAdminBundle') }} #}
+                    </a>
+                {% else %}
+                    <a href="/admin/app/invoice/{{ object.invoice.id }}/edit" class="btn btn-sm btn-default edit_link" title="{{ 'action_check'|trans({},'SonataAdminBundle') }}">
+                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                        {# {{ 'action_check'|trans({}, 'SonataAdminBundle') }} #}
+                    </a>
+                {% endif %}
+            {% endif %}
+        {# {% endif %} #}
+    {% elseif object.transactionType == 'Cash withdrawal' %}
+            <a href="/admin/cash_withdrawal/{{ object.id }}/edit" class="btn btn-sm btn-default edit_link" title="{{ 'action_check'|trans({},'SonataAdminBundle') }}">
+                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                {# {{ 'action_check'|trans({}, 'SonataAdminBundle') }} #}
+            </a>
+    {% elseif object.transactionType == 'Bank transfer' %}
+            <a href="/admin/bank_transfer/{{ object.id }}/edit" class="btn btn-sm btn-default edit_link" title="{{ 'action_check'|trans({},'SonataAdminBundle') }}">
+                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                {# {{ 'action_check'|trans({}, 'SonataAdminBundle') }} #}
+            </a>
+    {% elseif object.transactionType == 'Account charge' or object.transactionType == 'Funds transfer' %}
+        {# {% if user['isSuperAdmin'] != false %} #}
+            <a href="/admin/app/transaction/{{ object.id }}/edit" class="btn btn-sm btn-default edit_link" title="{{ 'action_check'|trans({},'SonataAdminBundle') }}">
+                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                {# {{ 'action_check'|trans({}, 'SonataAdminBundle') }} #}
+            </a>
+        {# {% endif %} #}
+    {% elseif object.transactionType == 'Currency exchange' %}
+            <a href="/admin/currency_exchange/{{ object.id }}/edit" class="btn btn-sm btn-default edit_link" title="{{ 'action_check'|trans({},'SonataAdminBundle') }}">
+                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                {# {{ 'action_check'|trans({}, 'SonataAdminBundle') }} #}
+            </a>
+    {% elseif object.transactionType == 'Cash transfer' %}
+            <a href="/admin/cash_transfer/{{ object.id }}/edit" class="btn btn-sm btn-default edit_link" title="{{ 'action_check'|trans({},'SonataAdminBundle') }}">
+                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                {# {{ 'action_check'|trans({}, 'SonataAdminBundle') }} #}
+            </a>
+    {% else %}
+        <a href="{{ admin.generateObjectUrl('edit', object) }}" class="btn btn-sm btn-default edit_link" title="{{ 'action_check'|trans({},'SonataAdminBundle') }}">
+            <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+            {# {{ 'action_check'|trans({}, 'SonataAdminBundle') }} #}
+        </a>
+    {% endif %}
+{% endif %}

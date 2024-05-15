@@ -1,0 +1,65 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{% block field %}
+ 
+    {% if object.moneyOut %}
+        {% if object.mainAccount == object.transferToAccount %}
+            {{ '-' }}
+        {% else %}
+            {% if object.transactionType == 'Currency exchange' %}
+                <div>{{ object.moneyOut|format_currency(object.currency) }}</div>
+                <div style="font-size: 12px; color: green;">({{ object.newValue|format_currency(object.toCurrency) }})</div>
+                {% if object.bankFeeAdded %}
+
+                    {% set bankFeeCurrency = '' %}
+                    {% for transaction in object.transactions.toArray %}
+                        {% if transaction.transactionType.name == 'Account charge' %}
+                            {% if not bankFeeCurrency %}
+                                {% set bankFeeCurrency = transaction.currency %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+
+                    <span>+ {{ object.bankFeeAmount|format_currency(bankFeeCurrency) }}</span>
+                    <span class="bank-fee-note"><i style="font-size:10px;">{{ 'bank_fee'|trans({}, 'SonataAdminBundle') }}</i></span>
+                {% endif %}
+            {% elseif object.transactionType == 'Bank transfer' %}
+                {% if object.currency %}
+                    <div>{{ object.moneyOut|format_currency(object.currency) }}</div>
+                {% else %}
+                    <div>{{ object.moneyOut }}</div>
+                {% endif %}
+                {% if object.newValue %}
+                    <div style="font-size: 12px; color: green;">({{ object.newValue|format_currency(object.transferToAccount.currency) }})</div>
+                {% endif %}
+                {% if object.bankFeeAdded %}
+
+                    {% set bankFeeCurrency = '' %}
+                    {% for transaction in object.transactions.toArray %}
+                        {% if transaction.transactionType.name == 'Account charge' %}
+                            {% if not bankFeeCurrency %}
+                                {% set bankFeeCurrency = transaction.currency %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+
+                    <span>+ {{ object.bankFeeAmount|format_currency(bankFeeCurrency) }}</span>
+                    <span class="bank-fee-note"><i style="font-size:10px;">{{ 'bank_fee'|trans({}, 'SonataAdminBundle') }}</i></span>
+                {% endif %}
+            {% elseif object.transactionType == 'Account charge' %}
+                <div>{{ object.moneyOut|format_currency(object.currency) }}</div>
+            {% else %}
+                {% if object.invoice %}
+                    {% if object.invoice.realAmountPaid %} 
+                        <div>{{ object.moneyOut|format_currency(object.mainAccount.currency) }}</div>
+                    {% else %}
+                        <div>{{ object.moneyOut|format_currency(object.currency) }}</div>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    {% else %}
+        {{ '-' }}
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,65 @@
+{%- block add_funds_modal -%}
+
+{# Link to modal #}
+{% if object.bankFeeAdded %}
+	{# TODO JASMIN #}
+    <a class="btn btn-sm btn-success" href="#" data-toggle="modal" title="{{ 'bank_fee_added'|trans({}, 'SonataAdminBundle') }}">
+    {# <a class="btn btn-sm btn-success" href="{{ admin.generateObjectUrl('addBankFeeLinkToModal', object) }}" data-toggle="modal" data-target="#addBankFeeModal"> #}
+        <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
+    </a>
+{% else %}
+    {% if object.invoicePaymentStatus == 'Paid' %}
+        {% if object.bankFeeNotAdded %}
+            <a class="btn btn-sm btn-default" href="{{ admin.generateObjectUrl('addBankFeeLinkToModal', object) }}" data-toggle="modal" data-target="#addBankFeeModal" title="{{ 'bank_fee_not_applicable_short'|trans({}, 'SonataAdminBundle') }}">
+				<span class="fa-cross-icon"><i class="fas fa-money-bill-wave" aria-hidden="true"></i></span>
+            </a>
+        {% else %}
+            {% if object.invoicePartPayments is iterable and object.invoicePartPayments|length > 0 and object.bankFeeAdded == false and object.restPaymentTotal == '0' %}
+                {% set bankFeeAddedRows = 0 %}
+                {% set bankFeeNotAddedRows = 0 %}
+                {% set totalRows = 0 %}
+
+                {% for row in object.invoicePartPayments %}
+                    {% set totalRows = totalRows + 1 %}
+                    {% if row.bankFeeAdded == false and row.bankFeeNotAdded == false %}
+                        {% set bankFeeNotAddedRows = bankFeeNotAddedRows + 1 %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if bankFeeNotAddedRows == 0 %}
+                    <a class="btn btn-sm btn-default" href="#" data-toggle="modal" title="{{ 'bank_fee_not_applicable_short'|trans({}, 'SonataAdminBundle') }}">
+						<span class="fa-cross-icon"><i class="fas fa-money-bill-wave" aria-hidden="true"></i></span>
+                    </a>
+                {% else %}
+                    {# LINK TO INVOICE EDIT #}
+                    <a class="btn btn-sm btn-danger" href="/admin/app/invoice/{{ object.id }}/edit" title="{{ 'bank_fee_not_added'|trans({}, 'SonataAdminBundle') }}&nbsp;{{ bankFeeNotAddedRows }}&nbsp;/&nbsp;{{ totalRows }}">
+                        <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
+                    </a>
+                {% endif %}
+            {% else %}
+                <a class="btn btn-sm btn-danger" href="{{ admin.generateObjectUrl('addBankFeeLinkToModal', object) }}" data-toggle="modal" data-target="#addBankFeeModal" title="{{ 'add_bank_fee_button'|trans({}, 'SonataAdminBundle') }}">
+                    <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
+                </a>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+{# Modal add_funds_modal_form.html.twig #}
+<div class="modal fade" id="addBankFeeModal" tabindex="-1" role="dialog" aria-labelledby="addBankFeeModal" aria-hidden="true">
+    <div id="modalDialog" class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius:6px; background-color:#D1D6E6;">
+            {# {% include 'Block/add_bank_fee_modal_form.html.twig' %} #}
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#addBankFeeModal').on('shown.bs.modal', function () {
+            $(this).removeData('bs.modal');
+        });
+    });
+</script>
+
+{%- endblock -%}

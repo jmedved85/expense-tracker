@@ -1,0 +1,57 @@
+{%- block field -%}
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">{{ 'date'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'transaction_number_short'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'account'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'description'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'amount'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'file'|trans({}, 'SonataAdminBundle') }}</th>
+            </tr>
+        </thead>
+        {% set num = 1 %}
+        <tbody>
+            {% for transaction in value %}
+                {% if transaction.transactionType.name == 'Money returned' %}
+                    <tr class="link-row" onclick="window.location='/admin/app/transaction/{{ transaction.id }}/show';">
+                        <th scope="row">{{ num }}</th> 
+                        <td>{{ transaction.date.format('d/m/Y') }}</td>
+                        <td>{{ transaction.transactionNumberString ?? '-' }}</td>
+                        <td>{{ transaction.mainAccount ?? '-' }}</td>
+                        <td>{{ transaction.shortDescription ?? '-' }}</td>
+                        <td>
+                            {% if transaction.amount is defined and transaction.amount != null %}
+                                {%- include '/CRUD/display_currency.html.twig' with {
+                                    value: transaction.amount|number_format(2, '.', ','),
+                                    currency: transaction.currency,
+                                } only -%}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% for file in transaction.file %}
+                                {% if file is defined and file is not null %}
+                                    {% if file.contentType != 'application/pdf' %}
+                                        <a href="{{ asset('uploads/') ~ file.hashedFileName }}" target="_blank" onclick="event.stopPropagation();">
+                                            <img src="{{ asset('uploads/') ~ file.hashedFileName }}" alt="Image thumbnail" style="width:30px">
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ asset('uploads/') ~ file.hashedFileName }}" target="_blank" onclick="event.stopPropagation();">
+                                            <i class="fa fa-file-pdf-o" style='font-size:24px; color:red' aria-hidden="true"></i>
+                                        </a>
+                                    {% endif %}
+                                {% else %}
+                                    {{ '-' }}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% set num = num + 1 %}
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{%- endblock -%}

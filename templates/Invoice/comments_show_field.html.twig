@@ -1,0 +1,47 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+{# {% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %} #}
+{# TODO: try to render invoiceLine & purchaseLine from one twig template #}
+
+{# {%- block name -%}
+    <table class="table">
+        <tbody>
+            <tr style="background-color:#f9f9f9">
+                <th>{{ 'comment_title'|trans({}, 'SonataAdminBundle') }}</th>
+            </tr>
+        </tbody>
+    </table>
+{%- endblock -%} #}
+
+{%- block field -%}
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">{{ 'comment'|trans({}, 'SonataAdminBundle') }}</th>
+                    <th scope="col">{{ 'author'|trans({}, 'SonataAdminBundle') }}</th>
+                </tr>
+            </thead>
+            {% set num = 1 %}
+            <tbody>
+                {% for comment in value %}
+                        <tr>
+                            <th scope="row">{{ num }}</th> 
+                            <td>{{ comment.message }}</td>
+                            <td>{{ comment.userDateTime }}</td>
+                        </tr>
+                    {% set num = num + 1 %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{%- endblock -%}

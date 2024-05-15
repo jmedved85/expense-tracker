@@ -1,0 +1,84 @@
+{#{%- block name -%}#}
+{#    <table class="table">#}
+{#        <tbody>#}
+{#            <tr style="background-color:#f9f9f9">#}
+{#                <th>{{ 'invoice_title'|trans({}, 'SonataAdminBundle') }}</th>#}
+{#            </tr>#}
+{#        </tbody>#}
+{#    </table>#}
+{#{%- endblock -%}#}
+
+{% block field %}
+    {% set route_name = field_description.option('route').name|default(sonata_config.getOption('default_admin_route')) %}
+    {% set route_parameters = field_description.option('route').parameters|default([]) %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">{{ 'document_number'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'date'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'date_due'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'budget'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'description'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'priority'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'approval_status'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'payment_status'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'invoice_date_paid'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'currency'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'amount'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'actions'|trans({}, 'SonataAdminBundle') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set num = 1 %}
+
+            {% for invoice in value %}
+                {% if field_description.hasassociationadmin
+                    and field_description.associationadmin.hasRoute(route_name)
+                    and field_description.associationadmin.hasAccess(route_name, invoice)
+                %}
+                    <tr>
+                        <th scope="row">{{ num }}</th>
+                        <td>{{ invoice|render_relation_element(field_description) }}</td>
+                        <td>{{ invoice.invoiceDate.format('d/m/Y') }}</td> 
+                        <td>{{ invoice.invoiceDateDue.format('d/m/Y') }}</td>
+                        <td>{{ invoice.budget ?? '-' }}</td>
+                        <td>{{ invoice.shortDescription }}</td>
+                        <td>{{ invoice.priority }}</td>
+                        <td>
+                            {% if invoice.invoiceApprovalStatus == 'Approved' %}
+                                <span style="color: green">{{ invoice.invoiceApprovalStatus }}</span>
+                            {% elseif invoice.invoiceApprovalStatus == 'Denied' %}
+                                <span style="color: red">{{ invoice.invoiceApprovalStatus }}</span>
+                            {% else %}
+                                {{ invoice.invoiceApprovalStatus }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if invoice.invoicePaymentStatus == 'Paid' %}
+                                <span style="color: green">{{ invoice.invoicePaymentStatus }}</span>
+                            {% elseif invoice.invoicePaymentStatus == 'Unpaid' %}
+                                <span style="color: red">{{ invoice.invoicePaymentStatus }}</span>
+                            {% else %}
+                                {{ invoice.invoicePaymentStatus }}
+                            {% endif %}
+                        </td>
+                        <td>{{ invoice.invoiceDatePaid ? invoice.invoiceDatePaid.format('d/m/Y') : '-' }}</td>
+                        <td>{{ invoice.currency }}</td>
+                        <td>{{ invoice.amount|number_format(2, '.', ',') }}</td>
+                        <td>
+                            <a target="_blank" href="{{ path('admin_app_invoice_edit', {'id': invoice.id}) }}"
+                               class="btn btn-sm btn-default view_link" title="Check">
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% set num = num + 1 %}
+                {% else %}
+                    <li>{{ element|render_relation_element(field_description) }}</li>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

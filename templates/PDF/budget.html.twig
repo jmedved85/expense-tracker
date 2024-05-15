@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        .page_break_class {
+            page-break-after: always;
+        }
+
+        .avoid_page_break_class {
+            page-break-inside: avoid !important;
+        }
+
+        h3, h2, h1 {
+            text-align: center;
+        }
+
+        table {
+            font-size: 14px;
+            margin: auto;
+            text-align: left;
+            width: 100%;
+        }
+
+        table td, table th {
+            border: 1px solid black;
+            padding: 8px;
+            page-break-inside: avoid !important;
+        }
+
+        table tr {
+            page-break-inside: avoid !important;
+        }
+
+        table tr.center {
+            text-align: center;
+        }
+
+        table {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        table tr.tr_no_bot_top_border td {
+            border-bottom: none;
+            border-top: none;
+        }
+
+        table th {
+            background-color: lightgray;
+            width: 22%
+        }
+
+        table thead tr > *:nth-child(1) {
+            width: 12%
+        }
+
+        #budget_table th {
+            background-color: lightgray;
+            width: 35%
+        }
+
+        tr.tr_gray {
+            background-color: lightgray;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+        .text-center {
+            text-align: center;
+        }
+
+        .budget-title-box {
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+            border-top: 1px solid black;
+            padding: 8px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body style="{{ page_format=="A4" ? "width:210mm; max-height:297mm;" : "width:297mm; max-height:210mm;" }} "
+      onload="load ();">
+
+<h1>{{ title }}</h1>
+
+
+{% if get_class(object)|split('\\')|last == 'BudgetItem' %}
+    <div class="tableBorderTop"></div>
+    <table id="budget_table">
+        <tr>
+            <th>{{ "Budget" | trans }}</th>
+            <td>{{ object.budget }}</td>
+        </tr>
+        <tr>
+            <th>{{ "Main Category" | trans }}</th>
+            <td>{{ object.budgetMainCategory }}</td>
+        </tr>
+        <tr>
+            <th>{{ "Sub Category" | trans }}</th>
+            <td>{{ object.budgetCategory }}</td>
+        </tr>
+        <tr>
+            <th>{{ "Currency" | trans }}</th>
+            <td>{{ object.currency }}</td>
+        </tr>
+        <tr>
+            <th>{{ "Budgeted" | trans }}</th>
+            <td>
+                {% if object.budgeted %}
+                    {{ object.budgeted|format_currency(object.currency, {fraction_digit: 2}) }}
+                {% else %}
+                    {{ '-' }}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>{{ "Actual Expenses" | trans }}</th>
+            <td>
+                {% if object.actualAvg %}
+                    {# NOTE: (optional) Show the actual vs budgeted amount in different colors
+
+                    {% if object.actualAvg < object.budgeted %}
+                        <span style="color:green;">{{ object.actualAvg|format_currency(object.currency) }}</span>
+                    {% elseif object.actualAvg > object.budgeted %}
+                        <span style="color:red;">{{ object.actualAvg|format_currency(object.currency) }}</span>
+                    {% else %}
+                        <span>{{ object.actualAvg|format_currency(object.currency) }}</span>
+                    {% endif %} #}
+                    <span>{{ object.actualAvg|format_currency(object.currency) }}</span>
+                {% else %}
+                    {{ '-' }}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>{{ "Left / Over" | trans }}</th>
+            <td>
+                {% if object.leftOver is defined and object.leftOver is not empty %}
+                    {% if object.leftOver > 0 %}
+                        <span style="color:green;">{{ object.leftOver|format_currency(object.currency) }}</span>
+                    {% elseif object.leftOver < 0 %}
+                        <span style="color:red;">+&nbsp;{{ object.leftOver|abs|format_currency(object.currency) }}</span>
+                    {% else %}
+                        <span>{{ object.leftOver|format_currency(object.currency) }}</span>
+                    {% endif %}
+                {% else %}
+                    {{ '-' }}
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+{% elseif get_class(object)|split('\\')|last == 'Budget' %}
+    <div class="tableBorderTop"></div>
+    <table id="budget_table">
+        <tr>
+            <th>{{ "Month" | trans }}</th>
+            <td>{{ object.month }}</td>
+        </tr>
+        <tr>
+            <th>{{ "Year" | trans }}</th>
+            <td>{{ object.year }}</td>
+        </tr>
+        <tr>
+            <th>{{ "Total Budgeted" | trans }}</th>
+            <td>{{ object.getTotalBudgetedString }}</td>
+        </tr>
+        <tr>
+            <th>{{ "Total Actual" | trans }}</th>
+            <td>{{ object.getTotalActualString }}</td>
+        </tr>
+        <tr>
+            <th>{{ "Left / Over" | trans }}</th>
+            <td>
+                {% if object.leftOver is defined and object.leftOver is not empty %}
+                    {% for key, value in object.leftOver %}
+                        {% if value > 0 %}
+                            <span style="color:green;">{{ value|format_currency(key) }}</span>
+                        {% elseif value < 0 %}
+                            <span style="color:red;">+&nbsp;{{ value|abs|format_currency(key) }}</span>
+                        {% else %}
+                            <span>{{ value|format_currency(key) }}</span>
+                        {% endif %}
+
+                        {{ not loop.last ? ' | ' : '' }}
+                    {% endfor %}
+                {% else %}
+                    {{ '-' }}
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+{% endif %}
+
+{% if budgetInvoices is not empty %}
+    <div class="tableBorderTop"></div>
+    <div class="budget-title-box">{{ 'invoices'|trans({}, 'SonataAdminBundle') }}</div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">{{ 'document_number'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'date'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'date_due'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'budget'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'description'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'priority'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'invoice_date_paid'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'currency'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'amount'|trans({}, 'SonataAdminBundle') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set num = 1 %}
+
+            {% for invoice in budgetInvoices %}
+                <tr>
+                    <th scope="row">{{ num }}</th>
+                    <td>{{ invoice.invoiceNumber }}</td>
+                    <td>{{ invoice.invoiceDate.format('d/m/Y') }}</td>
+                    <td>{{ invoice.invoiceDateDue.format('d/m/Y') }}</td>
+                    <td>{{ invoice.budget ?? '-' }}</td>
+                    <td>{{ invoice.shortDescription }}</td>
+                    <td>{{ invoice.priority }}</td>
+                    <td>{{ invoice.invoiceDatePaid ? invoice.invoiceDatePaid.format('d/m/Y') : '-' }}</td>
+                    <td>{{ invoice.currency }}</td>
+                    <td>{{ invoice.amount|number_format(2, '.', ',') }}</td>
+                </tr>
+
+                {% set num = num + 1 %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% if budgetPurchases is not empty %}
+    <div class="tableBorderTop"></div>
+    <div class="budget-title-box">{{ 'purchases'|trans({}, 'SonataAdminBundle') }}</div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">{{ 'date_of_purchase'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'account'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'type_of_payment'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'budget'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'description'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'currency'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'amount'|trans({}, 'SonataAdminBundle') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set num = 1 %}
+
+            {% for purchase in budgetPurchases %}
+                <tr>
+                    <th scope="row">{{ num }}</th>
+                    <td>
+                        {{ purchase.dateOfPurchase.format('d/m/Y') }}
+                    </td>
+                    <td>{{ purchase.account.name }}</td>
+                    <td>{{ purchase.transactionType.name }}</td>
+                    <td>{{ purchase.budget ?? '-' }}</td>
+                    <td>{{ purchase.shortDescription }}</td>
+                    <td>{{ purchase.currency }}</td>
+                    <td>{{ purchase.amount|number_format(2, '.', ',') }}</td>
+                </tr>
+
+                {% set num = num + 1 %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+{% endif %}
+
+</body>
+
+</html>

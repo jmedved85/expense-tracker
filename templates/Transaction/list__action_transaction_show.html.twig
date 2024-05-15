@@ -1,0 +1,47 @@
+{% if admin.hasAccess('show', object) and admin.hasRoute('show') %}
+    {% set button_content = sonata_config.getOption('list_action_button_content') %}
+    {% if object.purchase %}
+        <a
+            href="/admin/app/purchase/{{ object.purchase.id }}/show"
+            class="btn btn-sm btn-default view_link"
+            title="{{ 'action_show'|trans({}, 'SonataAdminBundle') }}"
+        >
+    {% elseif object.invoice or object.invoicePartPayment %}
+        {% if object.transactionType.name == 'Money returned' %}
+            <a
+                href="{{ admin.generateObjectUrl('show', object, actions.link_parameters|default([])) }}"
+                class="btn btn-sm btn-default view_link"
+                title="{{ 'action_show'|trans({}, 'SonataAdminBundle') }}"
+            >
+        {% else %}
+            <a
+                href="/admin/app/invoice/{{ object.invoice.id }}/show"
+                class="btn btn-sm btn-default view_link"
+                title="{{ 'action_show'|trans({}, 'SonataAdminBundle') }}"
+            >
+        {% endif %}
+    {% elseif object.transactionType == 'Funds transfer' %}
+            <a
+                href="/admin/app/transaction/{{ object.id }}/show"
+                class="btn btn-sm btn-default view_link"
+                title="{{ 'action_show'|trans({}, 'SonataAdminBundle') }}"
+            >
+    {% else %}
+        <a
+            href="{{ admin.generateObjectUrl('show', object, actions.link_parameters|default([])) }}"
+            class="btn btn-sm btn-default view_link"
+            title="{{ 'action_show'|trans({}, 'SonataAdminBundle') }}"
+        >
+    {% endif %}
+            {% if button_content == 'icon' or button_content == 'all' %}
+                <i class="fas fa-eye" aria-hidden="true"></i>
+            {% endif %}
+            {# {% if button_content == 'text' or button_content == 'all' %}
+                {{ 'action_show'|trans({}, 'SonataAdminBundle') }}
+            {% else %}
+                <span class="sr-only">
+                    {{ 'action_show'|trans({}, 'SonataAdminBundle') }}
+                </span>
+            {% endif %} #}
+        </a>
+{% endif %}

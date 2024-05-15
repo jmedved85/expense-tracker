@@ -1,0 +1,15 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{%- block field %}
+    {% apply spaceless %}
+        {% set transactionTypes = ['Account charge', 'Bank payment', 'Card payment', 'Cash payment'] %}
+
+        {% if object.getTransferFromAccount %}
+            {{ object.getTransferFromAccount.nameWithCurrency }}
+        {% elseif object.getTransactionType.name in transactionTypes %}
+            {{ object.getMainAccount.nameWithCurrency }}
+        {% else %}
+            {{ '-' }}
+        {% endif %}
+    {% endapply %}
+{% endblock -%}

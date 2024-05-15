@@ -1,0 +1,52 @@
+{% block field %}
+    {% set route_name = field_description.option('route').name|default(sonata_config.getOption('default_admin_route')) %}
+    {% set route_parameters = field_description.option('route').parameters|default([]) %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">{{ 'date_of_purchase'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'account'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'type_of_payment'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'budget'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'description'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'currency'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'amount'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'actions'|trans({}, 'SonataAdminBundle') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% set num = 1 %}
+
+        {% for purchase in value %}
+            {% if field_description.hasassociationadmin
+                and field_description.associationadmin.hasRoute(route_name)
+                and field_description.associationadmin.hasAccess(route_name, purchase)
+            %}
+                <tr>
+                    <th scope="row">{{ num }}</th>
+                    <td>
+                        {{ purchase.dateOfPurchase.format('d/m/Y') }}
+                    </td>
+                    <td>{{ purchase.account.name }}</td>
+                    <td>{{ purchase.transactionType.name }}</td>
+                    <td>{{ purchase.budget ?? '-' }}</td>
+                    <td>{{ purchase.shortDescription }}</td>
+                    <td>{{ purchase.currency }}</td>
+                    <td>{{ purchase.amount|number_format(2, '.', ',') }}</td>
+                    <td>
+                        <a target="_blank" href="{{ path('admin_app_purchase_edit', {'id': purchase.id}) }}"
+                           class="btn btn-sm btn-default view_link" title="Check">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% set num = num + 1 %}
+            {% else %}
+                <li>{{ element|render_relation_element(field_description) }}</li>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

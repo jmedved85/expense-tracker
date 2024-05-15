@@ -1,0 +1,63 @@
+{%- block field -%}
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">{{ 'date'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'amount'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'real_amount'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'rest_to_pay'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'bank_fee_added'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'bank_fee'|trans({}, 'SonataAdminBundle') }}</th>
+            </tr>
+        </thead>
+        {% set num = 1 %}
+        <tbody>
+            {% for partPayment in value %}
+                {% if partPayment.moneyReturnedAmount == null and partPayment.moneyReturnedDate == null %}
+                    <tr class="link-row" onclick="window.location='/admin/app/transaction/{{ partPayment.transaction.id }}/show';">
+                        <th scope="row">{{ num }}</th>
+                        <td>{{ partPayment.datePaid.format('d/m/Y') }}</td>
+                        <td>{%- include '/CRUD/display_currency.html.twig' with {
+                            value: partPayment.amount|number_format(2, '.', ','),
+                            currency: partPayment.currency,
+                        } only -%}</td>
+                         <td>{%- include '/CRUD/display_currency.html.twig' with {
+                            value: partPayment.realAmountPaid|number_format(2, '.', ','),
+                            currency: partPayment.realCurrency,
+                        } only -%}</td>
+                        <td>{%- include '/CRUD/display_currency.html.twig' with {
+                            value: partPayment.restPayment|number_format(2, '.', ','),
+                            currency: partPayment.currency,
+                        } only -%}</td>
+                        {% if partPayment.isBankFeeNotAdded and (partPayment.isBankFeeAdded == null or partPayment.isBankFeeAdded == false) %}
+                            <td>{{ 'bank_fee_not_applicable_short'|trans({}, 'SonataAdminBundle') }}</td>
+                        {% elseif partPayment.isBankFeeAdded == true and partPayment.isBankFeeNotAdded == false %}
+                            <td style="color:green">{{ 'Yes'|trans({}, 'SonataAdminBundle') }}</td>
+                        {% else %}
+                            <td style="color:red">{{ 'No'|trans({}, 'SonataAdminBundle') }}</td>
+                        {% endif %}
+                        {% if partPayment.isBankFeeNotAdded and (partPayment.isBankFeeAdded == null or partPayment.isBankFeeAdded == false) %}
+                            <td>{{ 'bank_fee_not_applicable_short'|trans({}, 'SonataAdminBundle') }}</td>
+                        {% else %}
+                            <td>
+                                {% if partPayment.realCurrency %}
+                                    {%- include '/CRUD/display_currency.html.twig' with {
+                                    value: partPayment.bankFeeAmount|number_format(2, '.', ','),
+                                    currency: partPayment.realCurrency,
+                                    } only -%}
+                                {% else %}
+                                    {%- include '/CRUD/display_currency.html.twig' with {
+                                    value: partPayment.bankFeeAmount|number_format(2, '.', ','),
+                                    currency: partPayment.currency,
+                                    } only -%}
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endif %}
+                {% set num = num + 1 %}
+            {% endfor %}
+        </tbody>
+    </table>
+{%- endblock -%}

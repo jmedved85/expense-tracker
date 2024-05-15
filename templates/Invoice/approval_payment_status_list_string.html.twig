@@ -1,0 +1,38 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{%- block field %}
+    {% apply spaceless %}
+        {% if field_description.option('collapse') is not null %}
+            {% set collapse = field_description.option('collapse') %}
+            <div class="sonata-readmore" data-readmore-height="{{ collapse.height|default(40) }}" data-readmore-more="{{ collapse.more|default('read_more')|trans({}, 'SonataAdminBundle') }}" data-readmore-less="{{ collapse.less|default('read_less')|trans({}, 'SonataAdminBundle') }}">
+                {% if value == 'Approved' or value == 'Paid' %}
+                    <span style="color:green">{{ value }}</span>
+                {% elseif value == 'Denied' or value == 'Unpaid' %}
+                    <span style="color:red">{{ value }}</span>
+                {% else %}
+                    {{ value }}
+                {% endif %}
+            </div>
+        {% else %}
+            {% if value == 'Approved' or value == 'Paid' %}
+                <span style="color:green">{{ value }}</span>
+            {% elseif value == 'Denied' or value == 'Unpaid' %}
+                <span style="color:red">{{ value }}</span>
+            {% else %}
+                {{ value }}
+            {% endif %} 
+        {% endif %}
+    {% endapply %}
+{% endblock -%}
+

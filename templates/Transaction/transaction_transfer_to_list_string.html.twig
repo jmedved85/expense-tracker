@@ -1,0 +1,11 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{%- block field %}
+    {% apply spaceless %}
+        {% if object.getTransferToAccount %}
+            {{ object.getTransferToAccount.nameWithCurrency }}
+        {% else %}
+            {{ '-' }}
+        {% endif %}
+    {% endapply %}
+{% endblock -%}

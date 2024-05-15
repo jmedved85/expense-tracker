@@ -1,0 +1,148 @@
+{% macro render_groups(admin, form, groups, has_tab) %}
+    <div class="row">
+
+    {% for code in groups|filter(code => admin.formgroups[code] is defined) %}
+        {% set form_group = admin.formgroups[code] %}
+
+        <div class="{{ form_group.class|default('col-md-12') }}">
+            <div class="{{ form_group.box_class }}">
+                <div class="box-header">
+                    <h4 class="box-title">
+                        {% if form_group.translation_domain is defined and form_group.translation_domain is same as(false) %}
+                            {{ form_group.label }}
+                        {% else %}
+                            {{ form_group.label|trans({}, form_group.translation_domain ?? admin.translationDomain) }}
+                        {% endif %}
+                    </h4>
+                </div>
+                <div class="box-body">
+                    <div class="sonata-ba-collapsed-fields">
+                        {% if form_group.description %}
+                            {% if form_group.translation_domain is defined and form_group.translation_domain is same as(false) %}
+                                <p>{{ form_group.description|raw }}</p>
+                            {% else %}
+                                <p>{{ form_group.description|trans({}, form_group.translation_domain ?? admin.translationDomain)|raw }}</p>
+                            {% endif %}
+                        {% endif %}
+
+                        {% for form_field_name in form_group.fields|filter(form_field_name => form[form_field_name] is defined) %}
+                            {{ form_row(form[form_field_name]) }}
+
+                            {% if form_field_name == 'moneyReturnedButton' %}
+                                {% if form.vars.data is defined and form.vars.data.transactions is defined %}
+                                    {% set object = form.vars.data %}
+
+                                    {% if object.invoicePaymentStatus == 'Paid' or object.invoicePaymentStatus == 'Part-Paid' %}
+                                        {% include 'Invoice/money_returned_button.html.twig' %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+
+                            {% if form_field_name == 'moneyReturns' %}
+                                {% if form.vars.data is defined and form.vars.data.transactions is defined %}
+                                    {% set object = form.vars.data %}
+                                    {% set moneyReturnedTransactions = [] %}
+
+                                    {% for transaction in object.transactions %}
+                                        {% if transaction.transactionType.name == 'Money returned' %}
+                                            {% set moneyReturnedTransactions = moneyReturnedTransactions|merge([transaction]) %}
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {# MONEY RETURNED TRANSACTION LIST ON INVOICE FORM #}
+                                    {% if moneyReturnedTransactions %}
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">{{ 'date'|trans({}, 'SonataAdminBundle') }}</th>
+                                                    <th scope="col">{{ 'transaction_number_short'|trans({}, 'SonataAdminBundle') }}</th>
+                                                    <th scope="col">{{ 'account'|trans({}, 'SonataAdminBundle') }}</th>
+                                                    <th scope="col">{{ 'description'|trans({}, 'SonataAdminBundle') }}</th>
+                                                    <th scope="col">{{ 'amount'|trans({}, 'SonataAdminBundle') }}</th>
+                                                    {# <th scope="col">{{ 'file'|trans({}, 'SonataAdminBundle') }}</th> #}
+                                                </tr>
+                                            </thead>
+                                            {% set num = 1 %}
+                                            <tbody>
+                                                {% for transaction in form.vars.data.transactions %}
+                                                    {% if transaction.transactionType.name == 'Money returned' %}
+                                                        <tr class="link-row" onclick="window.location='/admin/app/transaction/{{ transaction.id }}/show';">
+                                                            <th scope="row">{{ num }}</th> 
+                                                            <td>{{ transaction.date.format('d/m/Y') }}</td>
+                                                            <td>{{ transaction.transactionNumberString ?? '-' }}</td>
+                                                            <td>{{ transaction.mainAccount ?? '-' }}</td>
+                                                            <td>{{ transaction.shortDescription ?? '-' }}</td>
+                                                            <td>
+                                                                {% if transaction.amount is defined and transaction.amount != null %}
+                                                                    {%- include '/CRUD/display_currency.html.twig' with {
+                                                                        value: transaction.amount|number_format(2, '.', ','),
+                                                                        currency: transaction.currency,
+                                                                    } only -%}
+                                                                {% else %}
+                                                                    {{ '-' }}
+                                                                {% endif %}
+                                                            </td>
+                                                            {# <td>
+                                                                {% for file in transaction.file %}
+                                                                    {% if file is defined and file is not null %}
+                                                                        {% set fullFilePath = file.getUploadedFullFilePath(get_project_dir()) %}
+                                                                        {% set fileObject = get_file(fullFilePath) %}
+                                                                        {{ dump(fileObject) }}
+                                                                        {% if fileObject is defined and fileObject is not empty %}
+                                                                            {% set imageType = fileObject.getExtension() %}
+                                                                            {% if imageType == "jpeg" or imageType == 'jpg' or imageType == 'png' %}
+                                                                                                                                            {% set imageType = 'jpeg' %}
+                                                                                {% set fileData = get_image_contents_optimized(fullFilePath) %}
+                                                                                <img alt="{{ file.getOriginalFilename() }}"
+                                                                                    src="{{ 'data:image/' ~ imageType ~ ';base64, ' ~ (fileData | base64_encode) }}"
+                                                                                    style="max-width: 100%;
+                                                                                    max-height: 600px;
+                                                                                    display: block;
+                                                                                    margin-left: auto;
+                                                                                    margin-right: auto;"
+                                                                                />
+                                                                            {% elseif imageType == "pdf" %}
+                                                                                <embed src="{{ path('display_file', {'subdir': file.subdir is defined and file.subdir is not null ? file.subdir : 'noSubdir', 'filename': file.path}) }}#toolbar=0" type="application/pdf" width="100%" height="900px">
+                                                                            {% endif %}
+                                                                        {% endif %} #}
+                                                                        {# {% if file.contentType != 'application/pdf' %}
+                                                                            <a href="{{ asset('uploads/') ~ file.hashedFileName }}" target="_blank" onclick="event.stopPropagation();">
+                                                                                <img src="{{ asset('uploads/') ~ file.hashedFileName }}" alt="Image thumbnail" style="width:30px">
+                                                                            </a>
+                                                                        {% else %}
+                                                                            <a href="{{ asset('uploads/') ~ file.hashedFileName }}" target="_blank" onclick="event.stopPropagation();">
+                                                                                <i class="fa fa-file-pdf-o" style='font-size:24px; color:red' aria-hidden="true"></i>
+                                                                            </a>
+                                                                        {% endif %} #}
+                                                                    {# {% else %}
+                                                                        {{ '-' }}
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </td> #}
+                                                        </tr>
+                                                        {% set num = num + 1 %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% endif %}
+
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            {% if form_group.empty_message != false %}
+                                {% if form_group.empty_message_translation_domain is defined and form_group.empty_message_translation_domain is same as(false) %}
+                                    <em>{{ form_group.empty_message }}</em>
+                                {% else %}
+                                    <em>{{ form_group.empty_message|trans({}, form_group.empty_message_translation_domain ?? admin.translationDomain) }}</em>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+{% endmacro %}

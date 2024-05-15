@@ -1,0 +1,24 @@
+{% extends '@SonataAdmin/CRUD/base_edit.html.twig' %}
+
+{% block content %}
+    {# {% include 'CRUD/go_back_button.html.twig' %} #}
+{% endblock %}
+
+{% block actions %}
+    <ul class="nav navbar-nav navbar-left desktop-only" role="menu">
+        {% if object is not null and admin.id(object) is not null and admin.hasAccess('show', object) and admin.hasRoute('show') %}
+            <li>
+                <a href="{{ path('admin_app_supplier_show', {'id': object.id})  }}" class="btn btn-primary sonata-action-element" title="{{ 'action_show'|trans({},'SonataAdminBundle') }}">
+                    <i class="fas fa-eye" aria-hidden="true"></i>
+                    {{ 'action_show'|trans({}, 'SonataAdminBundle') }}
+                </a>
+            </li>
+        {% endif %}
+        <li>
+            <a class="btn btn-default sonata-action-element" href="{{ path('admin_app_supplier_list') }}">
+                <i class="fas fa-list" aria-hidden="true"></i>
+                Return to list
+            </a>
+        </li>
+    </ul>
+{% endblock %}
