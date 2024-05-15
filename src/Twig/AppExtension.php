@@ -73,7 +73,7 @@ class AppExtension extends AbstractExtension
         if ($currentUserData['isSuperAdmin']) {
             $units = $unitRepository->findBy([
                 'active' => true
-            ],['name' => 'ASC']);
+            ], ['name' => 'ASC']);
         } else {
             $units = $currentUserData['userUnits'];
         }
