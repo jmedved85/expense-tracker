@@ -1,0 +1,62 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{% block field %}
+    {% set route_name = field_description.option('route').name|default(sonata_config.getOption('default_admin_route')) %}
+    {% set route_parameters = field_description.option('route').parameters|default([]) %}
+    {% set comment = false %}
+
+    {% for element in value %}
+        {% if element %}
+            {% set comment = true %}
+        {% endif %}
+    {% endfor %}
+
+    <div style="display:flex; justify-content:center">
+        {% if field_description.hasassociationadmin and field_description.associationadmin.hasRoute(route_name) %}
+            {% if comment %}
+                {{ block('link_to_comment_view_list') }}
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{%- block link_to_comment_view_list -%}
+    <style>
+        .modal-backdrop {
+            z-index: 600;
+        }
+    </style>
+
+    {# Link to modal #}
+    <a href="{{ admin.generateObjectUrl('comments', object)}}" data-toggle="modal" data-target="#commentModal">
+        <i class="fas fa-comment-alt" style="font-size:15px" aria-hidden="true"></i>
+    </a>
+
+    <!-- Modal -->
+    <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="border-radius:6px">
+ 
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#commentModal').on('shown.bs.modal', function () {
+                $(this).removeData('bs.modal');
+            });
+        });
+    </script>
+{%- endblock -%}

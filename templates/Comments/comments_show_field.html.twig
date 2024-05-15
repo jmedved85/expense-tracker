@@ -1,0 +1,24 @@
+{%- block field -%}
+    <div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">{{ 'comment'|trans({}, 'SonataAdminBundle') }}</th>
+                <th scope="col">{{ 'author'|trans({}, 'SonataAdminBundle') }}</th>
+            </tr>
+            </thead>
+            {% set num = 1 %}
+            <tbody>
+            {% for comment in value %}
+                <tr>
+                    <th scope="row">{{ num }}</th>
+                    <td>{{ comment.message }}</td>
+                    <td>{{ comment.userDateTime }}</td>
+                </tr>
+                {% set num = num + 1 %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{%- endblock -%}

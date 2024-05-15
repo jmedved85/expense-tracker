@@ -1,0 +1,43 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{% macro show_standard_amount(object, value) %}
+    {% if object.amount is defined %}
+        {% set amount_to_show = object.amount %}
+    {% else %}
+        {% set amount_to_show = value %}
+    {% endif %}
+    {% if amount_to_show is defined %}
+        {% if object.currency %}
+            {{ amount_to_show|format_currency(object.currency) }}
+        {% else %}
+            {{ amount_to_show }}
+        {% endif %}
+    {% endif %}
+{% endmacro %}
+{% if macros is not defined %}
+    {% import _self as macros %}
+{% endif %}
+
+{% block field %}
+    {# Invoice list #}
+    {% if object.invoiceNumber is defined %}
+        {% include 'CRUD/list_amount_invoices.html.twig' %}
+    {# Transactions list #}
+    {% else %}
+        {% if object.transactionType is defined %}
+            {% include 'CRUD/list_amount_transactions.html.twig' %}
+        {% else %}
+            {% if object.realAmountPaid is defined and object.realCurrency is defined %}
+                {{ macros.show_standard_amount(object, value) }}
+                {% if object.realCurrency is not null %}
+                    <span style="font-size: 12px; color: green;">({{ object.realAmountPaid|format_currency(object.realCurrency) }})</span>
+                {% elseif object.realAmountPaid is not null %}
+                    <span style="font-size: 12px; color: green;">({{ object.realAmountPaid }})</span>
+                {% endif %}
+            {% else %}
+                {{ macros.show_standard_amount(object, value) }}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endblock %}
+

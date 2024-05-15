@@ -1,0 +1,58 @@
+{% if object.invoicePaymentStatus == 'Part-Paid' %}
+    {% if object.currency %}
+        {{ object.amount|format_currency(object.currency) }}
+    {% else %}
+        {{ object.amount }}
+    {% endif %}
+    <div class="total-paid-note">
+        <i>{{ 'paid'|trans({}, 'SonataAdminBundle') }}:&nbsp;{{ object.totalPaid|format_currency(object.currency) }}</i>
+    </div>
+    {% if object.realAmountPaid != null and object.realCurrency != null %}
+        <div class="real-amount-paid-note">
+            <i>({{ object.realAmountPaid|format_currency(object.realCurrency) }})</i>
+        </div>
+    {% endif %}
+    <div class="total-paid-note">
+        <i>{{ 'due'|trans({}, 'SonataAdminBundle') }}:&nbsp;{{ object.restPaymentTotal|format_currency(object.currency) }}</i>
+    </div>
+{% else %}
+    {% if (object.realAmountPaid is defined and object.realAmountPaid != null) and (object.realCurrency is defined and object.realCurrency != null) %}
+        {% if object.currency %}
+            {{ object.amount|format_currency(object.currency) }}
+        {% else %}
+            {{ object.amount }}
+        {% endif %}
+        {% if object.realCurrency is not null %}
+            <span style="font-size: 12px; color: green;">({{ object.realAmountPaid|format_currency(object.realCurrency) }})</span>
+            {% if object.bankFeeAdded %}
+                <br>
+                <span>+ {{ object.bankFeeAmount|format_currency(object.realCurrency) }}</span>
+                <span class="bank-fee-note"><i style="font-size:10px;">{{ 'bank_fee'|trans({}, 'SonataAdminBundle') }}</i></span>
+            {% endif %}
+        {% elseif object.realAmountPaid is not null %}
+            <span style="font-size: 12px; color: green;">({{ object.realAmountPaid }})</span>
+        {% endif %}
+        {# <br> #}
+        {# {% if object.bankFeeAdded %}
+                    {% set realCurrency = object.realCurrency %}
+                    {{ dump(realCurrency) }}
+                    <span>+ {{ object.bankFeeAmount|format_currency(object.currency) }}</span>
+                    <span class="bank-fee-note"><i style="font-size:10px;">{{ 'bank_fee'|trans({}, 'SonataAdminBundle') }}</i></span>
+                {% endif %} #}
+    {% else %}
+        {% if object.currency %}
+            {{ object.amount|format_currency(object.currency) }}
+        {% else %}
+            {{ object.amount }}
+        {% endif %}
+        <br>
+        {% if object.bankFeeAdded %}
+            {% if object.currency %}
+                <span>+ {{ object.bankFeeAmount|format_currency(object.currency) }}</span>
+            {% else %}
+                <span>+ {{ object.bankFeeAmount }}</span>
+            {% endif %}
+            <span class="bank-fee-note"><i style="font-size:10px;">{{ 'bank_fee'|trans({}, 'SonataAdminBundle') }}</i></span>
+        {% endif %}
+    {% endif %}
+{% endif %}

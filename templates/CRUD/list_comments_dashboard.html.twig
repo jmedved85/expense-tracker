@@ -1,0 +1,37 @@
+{% block field %}
+    {% set comment = false %}
+
+    {% for element in invoice.comments %}
+        {% if element %}
+            {% set comment = true %}
+        {% endif %}
+    {% endfor %}
+
+    {% if comment %}
+        {%- block link_to_comment_view_list -%}
+            <div class="text-center">
+                {# Link to modal #}
+                <a href="/admin/app/invoice/{{ invoice.id }}/comments" data-toggle="modal" data-target="#commentModal">
+                    <i class="fas fa-comment-alt" style="font-size:15px" aria-hidden="true"></i>
+                </a>    
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModal" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content" style="border-radius:4px; top:4em; left:8em;">
+        
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                $(document).ready(function() {
+                    $('#commentModal').on('shown.bs.modal', function () {
+                        $(this).removeData('bs.modal');
+                    });
+                });
+            </script>
+        {%- endblock -%}
+    {% endif %}
+{% endblock %}

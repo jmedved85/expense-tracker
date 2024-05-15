@@ -1,0 +1,39 @@
+{% block field %}
+    {% if value is not empty %}
+        {% for element in value %}
+            {% if element.path is not null %}
+                {# Show image/pdf preview #}
+                {% set fullFilePath = element.getUploadedFullFilePath(get_project_dir()) %}
+                {% set fileObject = null %}
+
+                {% if file_exists(fullFilePath) %}
+                    {% set fileObject = get_file(fullFilePath) %}
+                {% endif %}
+
+                {% if fileObject is defined and fileObject is not empty %}
+                    {% set imageType = fileObject.getExtension() %}
+                    {% if imageType == "jpeg" or imageType == 'jpg' or imageType == 'png' %}
+                        {% set imageType = 'jpeg' %}
+                        {% set fileData = get_image_contents_optimized(fullFilePath) %}
+                        <img alt="{{ element.getOriginalFilename() }}"
+                            src="{{ 'data:image/' ~ imageType ~ ';base64, ' ~ (fileData | base64_encode) }}"
+                            style="max-width: 100%;
+                            max-height: 600px;
+                            display: block;
+                            margin-left: auto;
+                            margin-right: auto;"
+                        />
+                    {% elseif imageType == "pdf" %}
+                        <embed src="{{ path('display_file', {'subdir': element.subdir is defined and element.subdir is not null ? element.subdir : 'noSubdir', 'filename': element.path}) }}#toolbar=0" type="application/pdf" width="100%" height="900px">
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <div class="panel panel-default" style="margin-bottom:0;">
+            <div class="panel-heading">
+                <h4 style="padding:10px;"><i>No file uploaded.</i></h4>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

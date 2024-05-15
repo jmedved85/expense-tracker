@@ -1,0 +1,101 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{% block field %}
+    {% set route_name = field_description.option('route').name|default(sonata_config.getOption('default_admin_route')) %}
+    {% set route_parameters = field_description.option('route').parameters|default([]) %}
+
+    <div class="btn-group-list">
+        {% if value %}
+            {% if value is not iterable %}
+                <a class="btn btn-sm btn-default" href="{{ asset('uploads/') ~ value.hashedFileName }}" target="_blank">
+                    <i class="fa fa-file" title="View" aria-hidden="true"></i>
+                </a>
+                <a class="btn btn-sm btn-default" href="{{ asset('uploads/') ~ value.hashedFileName }}" download>
+                    <i class="fa fa-download" title="Download" aria-hidden="true"></i>
+                </a>
+            {% else %}
+                {% set filePaths = [] %}
+                {% set archiveName = null %}
+
+                {% if value.owner.invoice is defined and value.owner.invoice is not null %}
+                    {% set file = value.owner.invoice.file %}
+                    {% set archiveName = value.owner.invoice.invoiceNumber %}
+
+                    {% for element in file %}
+                        {% if element.path is not null %}
+                            {% set fullFilePath = element.getUploadedFullFilePath(get_project_dir()) %}
+
+                            {% if file_exists(fullFilePath) %}
+                                {% set filePaths = filePaths|merge([fullFilePath]) %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% elseif value.owner.purchase is defined and value.owner.purchase is not null %}
+                    {% set file = value.owner.purchase.file %}
+                    {% set archiveName = value.owner.purchase.shortDescription %}
+                    
+                    {% for element in file %}
+                        {% if element.path is not null %}
+                            {% set fullFilePath = element.getUploadedFullFilePath(get_project_dir()) %}
+
+                            {% if file_exists(fullFilePath) %}
+                                {% set filePaths = filePaths|merge([fullFilePath]) %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% elseif value.owner is defined and value.owner is not null %}
+                    {% set file = value.owner.file %}
+
+                    {% if value.owner.shortDescription is defined %}
+                        {% set archiveName = value.owner.shortDescription %}
+                    {% else %}
+                        {% set archiveName = value.owner.name %}
+                    {% endif %}
+
+                    {% for element in file %}
+                        {% if element.path is not null %}
+                            {% set fullFilePath = element.getUploadedFullFilePath(get_project_dir()) %}
+
+                            {% if file_exists(fullFilePath) %}
+                                {% set filePaths = filePaths|merge([fullFilePath]) %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                {# {% for element in value %}
+                    {# IMAGE/PDF links #}
+                    {# {%- if field_description.associationadmin.hasAccess(route_name, element) -%}
+                        {{ block('relation_link') }}
+                    {%- else -%}
+                        {{ block('relation_value') }}
+                    {%- endif -%}
+                    {% if not loop.last %}&nbsp;&nbsp;{% endif %} #}
+                {# {% endfor %} #}
+
+                {% if filePaths is not empty %}
+                    <a href="{{ path('generate_zip', {'filePaths': filePaths, 'archiveName': archiveName}) }}" class="btn btn-sm btn-default" target="_blank">
+                        <i class="fa fa-download" title="Download All" aria-hidden="true"></i>
+                    </a>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{%- block relation_link -%}
+    {# TODO: View original filename instead of hashed #}
+    {% if element.contentType != 'application/pdf' %}
+        <a href="{{ asset('uploads/') ~ element.hashedFileName }}" target="_blank">
+            <img src="{{ asset('uploads/') ~ element.hashedFileName }}" alt="Image thumbnail" style="width:30px">
+        </a>
+    {% else %}
+        <a href="{{ asset('uploads/') ~ element.hashedFileName }}" target="_blank">
+            <i class="fa fa-file-pdf-o" style='font-size:24px; color:red' aria-hidden="true"></i>
+        </a>
+    {% endif %}
+{%- endblock -%}
+
+{%- block relation_value -%}
+    {{- element|render_relation_element(field_description) -}}
+{%- endblock -%}

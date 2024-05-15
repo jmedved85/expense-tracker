@@ -1,0 +1,150 @@
+{# Purchases fom Card accounts on transactions list #}
+{% if object.transactionType == 'Card payment' %}
+    {% if object.realAmountPaid is defined and object.realCurrency is defined %}
+        {% if object.currency %}
+            {{ object.amount|format_currency(object.currency) }}
+        {% else %}
+            {{ object.amount }}
+        {% endif %}
+        <br>
+        {% if object.realCurrency is not null %}
+            <span style="font-size: 12px; color: green;">({{ object.realAmountPaid|format_currency(object.realCurrency) }})</span>
+        {% elseif object.realAmountPaid is not null %}
+            <span style="font-size: 12px; color: green;">({{ object.realAmountPaid }})</span>
+        {% endif %}
+    {% elseif object.purchase.realAmountPaid is defined and object.purchase.realCurrency is defined %}
+        {% if object.currency %}
+            {{ object.amount|format_currency(object.currency) }}
+        {% else %}
+            {{ object.amount }}
+        {% endif %}
+        <br>
+        {% if object.purchase.realCurrency is not null %}
+            <span style="font-size: 12px; color: green;">
+                {% if object.purchase.realCurrency %}
+                    ({{ object.purchase.realAmountPaid|format_currency(object.purchase.realCurrency) }})
+                {% else %}
+                    ({{ object.purchase.realAmountPaid }})
+                {% endif %}
+            </span>
+        {% elseif object.purchase.realAmountPaid is not null %}
+            <span style="font-size: 12px; color: green;">({{ object.purchase.realAmountPaid }})</span>
+        {% endif %}
+    {% else %}
+        {% if object.currency %}
+            {{ object.amount|format_currency(object.currency) }}
+        {% else %}
+            {{ object.amount }}
+        {% endif %}
+    {% endif %}
+{# Invoices on transactions list #}
+{% elseif object.transactionType == 'Bank payment' %}
+    {% if object.invoice.bankFeeAdded %}
+        {# {% if (object.invoice.realAmountPaid is defined and object.invoice.realAmountPaid is not null) and (object.invoice.realCurrency is defined and object.invoice.realCurrency is not null) %}
+            {% if object.invoice.currency %}
+                {{ object.amount|format_currency(object.invoice.currency) }}
+            {% else %}
+                {{ object.amount }}
+            {% endif %}
+            {% if object.invoice.realCurrency is not null and object.invoice.realAmountPaid is not null %}
+                <br>
+                <span style="font-size: 12px; color: green;">
+                    {% if object.invoice.realCurrency %}
+                        ({{ object.invoice.realAmountPaid|format_currency(object.invoice.realCurrency) }})
+                    {% else %}
+                        ({{ object.invoice.realAmountPaid }})
+                    {% endif %}
+                </span>
+            {% endif %}
+            <br>
+            {% if object.transaction.invoicePartPayment is defined and object.transaction.invoicePartPayment != null %}
+                {% if object.invoice.account.currency %}
+                    <span>+ {{ object.bankFeeAmount|format_currency(object.invoice.account.currency) }}</span>
+                {% else %}
+                    <span>+ {{ object.bankFeeAmount }}</span>
+                {% endif %}
+            {% else %}
+                <span>
+                    {% if object.invoice.currency %}
+                        + {{ object.invoice.bankFeeAmount|format_currency(object.invoice.account.currency) }}
+                    {% else %}
+                        + {{ object.invoice.bankFeeAmount }}
+                    {% endif %}
+                </span>
+            {% endif %}
+            <span class="bank-fee-note"><i style="font-size:10px;">{{ 'bank_fee'|trans({}, 'SonataAdminBundle') }}</i></span>
+        {% else %} #}
+            {% if object.currency %}
+                {{ object.amount|format_currency(object.currency) }}
+            {% else %}
+                {{ object.amount }}
+            {% endif %}
+            <br>
+            <span>
+                {% if object.currency %}
+                    + {{ object.invoice.bankFeeAmount|format_currency(object.currency) }}
+                {% else %}
+                    + {{ object.invoice.bankFeeAmount }}
+                {% endif %}
+            </span>
+            <span class="bank-fee-note"><i style="font-size:10px;">{{ 'bank_fee'|trans({}, 'SonataAdminBundle') }}</i></span>
+        {# {% endif %} #}
+    {% else %}
+        {# {% if object.invoice.realAmountPaid is defined and object.invoice.realCurrency is defined %}
+            {% if object.invoice.currency %}
+                {{ object.amount|format_currency(object.invoice.currency) }}
+            {% else %}
+                {{ object.amount }}
+            {% endif %}
+            {% if object.invoice.realCurrency is not null %}
+                <br>
+                <span style="font-size: 12px; color: green;">
+                    {% if object.invoice.realCurrency %}
+                        ({{ object.invoice.realAmountPaid|format_currency(object.invoice.realCurrency) }})
+                    {% else %}
+                        {{ object.invoice.realAmountPaid }}
+                    {% endif %}
+                </span>
+            {% elseif object.invoice.realAmountPaid is not null %}
+                <br>
+                <span style="font-size: 12px; color: green;">({{ object.invoice.realAmountPaid }})</span>
+            {% endif %}
+        {% else %} #}
+            {% if object.currency %}
+                {{ object.amount|format_currency(object.currency) }}
+            {% else %}
+                {{ object.amount }}
+            {% endif %}
+        {# {% endif %} #}
+    {% endif %}
+{% else %}
+    {% if object.currency %}
+        {% if object.realAmountPaid is defined and object.realAmountPaid != null %}
+            {{ object.amount|format_currency(object.currency) }}
+            <br>
+            <span style="font-size: 12px; color: green;">({{ object.realAmountPaid|format_currency(object.realCurrency) }})</span>
+            {% if object.bankFeeAdded %}
+                <br>
+                {% if object.bankFeeCurrency %}
+                    <span>+ {{ object.bankFeeAmount|format_currency(object.bankFeeCurrency) }}</span>
+                {% else %}
+                    <span>+ {{ object.bankFeeAmount|format_currency(object.currency) }}</span>
+                {% endif %}
+                <span class="bank-fee-note"><i style="font-size:10px;">{{ 'bank_fee'|trans({}, 'SonataAdminBundle') }}</i></span>
+            {% endif %}
+        {% else %}
+            {{ object.amount|format_currency(object.currency) }}
+            {% if object.bankFeeAdded %}
+                <br>
+                {% if object.bankFeeCurrency %}
+                    <span>{{ object.transactionType == 'Funds transfer' ? '-' : '+'}} {{ object.bankFeeAmount|format_currency(object.bankFeeCurrency) }}</span>
+                {% else %}
+                    <span>{{ object.transactionType == 'Funds transfer' ? '-' : '+'}}1 {{ object.bankFeeAmount|format_currency(object.currency) }}</span>
+                {% endif %}
+                <span class="bank-fee-note"><i style="font-size:10px;">{{ 'bank_fee'|trans({}, 'SonataAdminBundle') }}</i></span>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        {{ object.amount }}
+    {% endif %}
+{% endif %}
