@@ -1,0 +1,26 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{% set totalBudgetedActual = get_total_budgeted_actual(object) %}
+
+{% block field %}
+    {% if totalBudgetedActual['actual'] is not empty %}
+        {% for key, actual in totalBudgetedActual['actual'] %}
+            {# NOTE: (optional) Show the actual vs budgeted amount in different colors
+            {% set budgeted = totalBudgetedActual['budgeted'][key] ?? null %}
+
+            {% if actual < budgeted %}
+                <span style="color:green;">{{ actual|format_currency(key) }}</span>
+            {% elseif actual > budgeted %}
+                <span style="color:red;">{{ actual|format_currency(key) }}</span>
+            {% else %}
+                <span>{{ actual|format_currency(key) }}</span>
+            {% endif %} #}
+
+            <span>{{ actual|format_currency(key) }}</span>
+
+            {{ not loop.last ? ' | ' : '' }}
+        {% endfor %}
+    {% else %}
+        <span>{{ '-' }}</span>
+    {% endif %}
+{% endblock %}

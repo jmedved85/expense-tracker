@@ -1,0 +1,65 @@
+{% set budgetItemInvoices = get_budget_item_invoices(object.id) %}
+
+{% if budgetItemInvoices is not empty %}
+    <div class="col-md-12 sepBefore" style="padding:0;">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h4 class="box-title">
+                    {{ 'invoices'|trans({}, 'SonataAdminBundle') }}
+                </h4>
+            </div>
+
+            <table class="table">
+                <tbody>
+                    <tr class="sonata-ba-view-container"></tr>
+                </tbody>
+            </table>
+
+            <div class="box-body table-responsive" style="padding:0; max-height: 500px;">
+                <table class="table">
+                    <thead class="sticky-header">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">{{ 'document_number'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'date'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'date_due'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'budget'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'description'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'priority'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'invoice_date_paid'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'currency'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'amount'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'actions'|trans({}, 'SonataAdminBundle') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set num = 1 %}
+
+                        {% for invoice in budgetItemInvoices %}
+                            <tr>
+                                <th scope="row">{{ num }}</th>
+                                <td>{{ invoice.invoiceNumber }}</td>
+                                <td>{{ invoice.invoiceDate.format('d/m/Y') }}</td>
+                                <td>{{ invoice.invoiceDateDue.format('d/m/Y') }}</td>
+                                <td>{{ invoice.budget ?? '-' }}</td>
+                                <td>{{ invoice.shortDescription }}</td>
+                                <td>{{ invoice.priority }}</td>
+                                <td>{{ invoice.invoiceDatePaid ? invoice.invoiceDatePaid.format('d/m/Y') : '-' }}</td>
+                                <td>{{ invoice.currency }}</td>
+                                <td>{{ invoice.amount|number_format(2, '.', ',') }}</td>
+                                <td>
+                                    <a target="_blank" href="{{ path('admin_app_invoice_edit', {'id': invoice.id}) }}"
+                                        class="btn btn-sm btn-default view_link" title="Check">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+
+                            {% set num = num + 1 %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endif %}

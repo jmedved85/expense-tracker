@@ -1,0 +1,57 @@
+{% set budgetItemPurchases = get_budget_item_purchases(object.id) %}
+
+{% if budgetItemPurchases is not empty %}
+    <div class="col-md-12 sepBefore" style="padding:0 0 30px; 0">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h4 class="box-title">
+                    {{ 'purchases'|trans({}, 'SonataAdminBundle') }}
+                </h4>
+            </div>
+
+            <div class="box-body table-responsive" style="padding:0; max-height: 500px;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">{{ 'date_of_purchase'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'account'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'type_of_payment'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'budget'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'description'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'currency'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'amount'|trans({}, 'SonataAdminBundle') }}</th>
+                            <th scope="col">{{ 'actions'|trans({}, 'SonataAdminBundle') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set num = 1 %}
+
+                        {% for purchase in budgetItemPurchases %}
+                            <tr>
+                                <th scope="row">{{ num }}</th>
+                                <td>
+                                    {{ purchase.dateOfPurchase.format('d/m/Y') }}
+                                </td>
+                                <td>{{ purchase.account.name }}</td>
+                                <td>{{ purchase.transactionType.name }}</td>
+                                <td>{{ purchase.budget ?? '-' }}</td>
+                                <td>{{ purchase.shortDescription }}</td>
+                                <td>{{ purchase.currency }}</td>
+                                <td>{{ purchase.amount|number_format(2, '.', ',') }}</td>
+                                <td>
+                                    <a target="_blank" href="{{ path('admin_app_purchase_edit', {'id': purchase.id}) }}"
+                                        class="btn btn-sm btn-default view_link" title="Check">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+
+                            {% set num = num + 1 %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endif %}

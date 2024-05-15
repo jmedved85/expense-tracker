@@ -1,0 +1,11 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{% block field %}
+    {% if value > 0 %}
+        <span style="color:green;">{{ value|format_currency(object.currency) }}</span>
+    {% elseif value < 0 %}
+        <span style="color:red;">+&nbsp;{{ value|abs|format_currency(object.currency) }}</span>
+    {% else %}
+        <span>{{ value|format_currency(object.currency) }}</span>
+    {% endif %}
+{% endblock %}

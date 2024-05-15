@@ -9,6 +9,7 @@ use App\Entity\Transaction;
 use App\Entity\Unit;
 use App\Repository\AccountRepository;
 use App\Repository\InvoiceRepository;
+use App\Repository\UnitRepository;
 use App\Utility\AppUtil;
 use Doctrine\ORM\EntityManagerInterface;
 use Sonata\AdminBundle\Admin\Pool;
@@ -34,7 +35,9 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFunction('get_user', [$this, 'getUser']),
             new TwigFunction('is_switched_into_unit', [$this, 'isSwitchedIntoUnit']),
+            new TwigFunction('get_switched_unit', [$this, 'getSwitchedUnit']),
             new TwigFunction('get_switched_unit_id', [$this, 'getSwitchedUnitId']),
+            new TwigFunction('get_unit_list', [$this, 'getUnitList']),
             new TwigFunction('get_accounts_totals_menu', [$this, 'getAccountsTotalsMenu']),
             new TwigFunction('get_invoice_list_headers', [$this, 'getInvoiceListHeaders']),
             new TwigFunction('get_approved_invoices', [$this, 'getApprovedInvoices']),
@@ -54,6 +57,28 @@ class AppExtension extends AbstractExtension
     public function getSwitchedUnit(): ?Unit
     {
         return $this->appUtil->getSwitchedUnit();
+    }
+
+    public function getSwitchedUnitId(): ?int
+    {
+        return $this->appUtil->getSwitchedUnitId();
+    }
+
+    public function getUnitList(): array
+    {
+        /** @var UnitRepository $unitRepository */
+        $unitRepository = $this->entityManager->getRepository(Unit::class);
+        $currentUserData = $this->appUtil->getCurrentUserData();
+
+        if ($currentUserData['isSuperAdmin']) {
+            $units = $unitRepository->findBy([
+                'active' => true
+            ],['name' => 'ASC']);
+        } else {
+            $units = $currentUserData['userUnits'];
+        }
+
+        return $units;
     }
 
     public function getAccountsTotalsMenu(): ?array

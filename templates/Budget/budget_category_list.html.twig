@@ -1,0 +1,106 @@
+{% extends base_template %}
+
+{%- set budget_main_category_headers = get_budget_main_category_list_headers() -%}
+{%- set budget_category_headers = get_budget_category_list_headers() -%}
+
+{# {% block sonata_admin_content %} #}
+{% block list_table %}
+
+	<div id="budget-main-category-list" class="col-md-6">
+		<div class="box box-primary">
+			<div class="box-header">
+				<h4 class="box-title">{{ 'main_category'|trans({}, 'SonataAdminBundle') }}</h4>
+				<div class="nav navbar-nav navbar-right">
+					<a class="btn btn-success" href="{{ path('add_new_category_modal', {'type': 'main'}) }}" data-toggle="modal" data-target="#addNewCategoryModal">
+						<i class="fas fa-plus-circle"></i> {{ 'add_new_button'|trans({}, 'SonataAdminBundle') }}
+					</a>
+				</div>
+			</div>
+			<div class="box-body table-responsive no-padding list-overflow" style="max-height: 80vh;">
+				<table class="table table-bordered table-striped table-hover sonata-ba-list">
+					<thead class="sticky-header">
+						<tr class="sonata-ba-list-field-header">
+							{% for header in budget_main_category_headers %}
+								{% if header == 'Actions' %}
+									<th style="width:45%; text-align:center;" class="sonata-ba-list-field-header sonata-ba-list-field-header-batch">
+										{{ header }}
+									</th>
+								{% else %}
+									<th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch">
+										{{ header }}
+									</th>
+								{% endif %}
+							{% endfor %}
+						</tr>
+					</thead>
+					<tbody id="budgetMainCategories">
+						{% if admin.datagrid.results is not empty %}
+							{% include get_admin_template('outer_list_rows_' ~ admin.getListMode(), admin.code) %}
+						{% else %}
+							<tr>
+								<td colspan="2" class="sonata-ba-list-field sonata-ba-list-field-string">
+									<span id="budget-main-category-list-empty-message" class="budget-main-category-list-empty-message">{{ 'budget_main_category_list_empty_message'|trans({}, 'SonataAdminBundle') }}</span>
+								</td>
+							</tr>
+						{% endif %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="budget-category-list" class="col-md-6">
+		<div class="box box-primary">
+			<div class="box-header">
+				<h4 class="box-title">{{ 'sub_category'|trans({}, 'SonataAdminBundle') }}</h4>
+				<div class="nav navbar-nav navbar-right">
+					<a class="btn btn-success" href="{{ path('add_new_category_modal', {'type': 'sub'}) }}" data-toggle="modal" data-target="#addNewCategoryModal">
+						<i class="fas fa-plus-circle"></i> {{ 'add_new_button'|trans({}, 'SonataAdminBundle') }}
+					</a>
+				</div>
+			</div>
+			<div class="box-body table-responsive no-padding list-overflow" style="max-height:80vh;">
+				<table class="table table-bordered table-striped table-hover sonata-ba-list">
+					<thead class="sticky-header">
+						<tr class="sonata-ba-list-field-header">
+							{% for header in budget_category_headers %}
+								{% if header == 'Actions' %}
+									<th style="width:30%; text-align:center;" class="sonata-ba-list-field-header sonata-ba-list-field-header-batch">
+										{{ header }}
+									</th>
+								{% else %}
+									<th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch">
+										{{ header }}
+									</th>
+								{% endif %}
+							{% endfor %}
+						</tr>
+					</thead>
+					<tbody id="budgetCategories">
+						<tr>
+							<td colspan="2" class="sonata-ba-list-field sonata-ba-list-field-string" style="line-height:2;">
+								<span id="budget-category-list-empty-message" class="budget-category-list-empty-message">{{ 'budget_category_list_empty_message'|trans({}, 'SonataAdminBundle') }}</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	{# Modal budget_category_modal_form.html.twig #}
+	<div class="modal fade" id="addNewCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addNewCategoryModal" aria-hidden="true">
+		<div id="modalDialog" class="modal-dialog" role="document">
+			<div class="modal-content" style="border-radius:4px;background-color:#D1D6E6;">
+
+			</div>
+		</div>
+	</div>
+
+    <script>
+		$(document).ready(function () {
+			$('#addNewCategoryModal').on('shown.bs.modal', function () {
+				$(this).removeData('bs.modal');
+			});
+		});
+    </script>
+{% endblock %}

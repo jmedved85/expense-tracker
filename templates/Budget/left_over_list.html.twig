@@ -1,0 +1,21 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{% set leftOverBudget = get_left_over_budget(object) %}
+
+{% block field %}
+    {% if leftOverBudget is defined and value is not empty %}
+        {% for key, value in leftOverBudget %}
+            {% if value > 0 %}
+                <span style="color:green;">{{ value|format_currency(key) }}</span>
+            {% elseif value < 0 %}
+                <span style="color:red;">+&nbsp;{{ value|abs|format_currency(key) }}</span>
+            {% else %}
+                <span>{{ value|format_currency(key) }}</span>
+            {% endif %}
+
+            {{ not loop.last ? ' | ' : '' }}
+        {% endfor %}
+    {% else %}
+        <span>{{ '-' }}</span>
+    {% endif %}
+{% endblock %}

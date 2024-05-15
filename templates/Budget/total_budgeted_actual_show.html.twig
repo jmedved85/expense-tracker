@@ -1,0 +1,13 @@
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    {% if value is not empty %}
+        {{ value }}
+
+        {% if field_description.name == 'totalActualString' %}
+            <span class="pl-1 text-muted font-italic">{{ 'actual_avg_message'|trans({}, 'SonataAdminBundle') }}</span>
+        {% endif %}
+    {% else %}
+        {{ '-' }}
+    {% endif %}
+{% endblock %}

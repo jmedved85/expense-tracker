@@ -1,0 +1,35 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{% macro show_standard_amount(object, value) %}
+    {% if object.amount is defined %}
+        {% set amount_to_show = object.amount %}
+    {% else %}
+        {% set amount_to_show = value %}
+    {% endif %}
+    {% if amount_to_show is defined %}
+        {% if object.currency %}
+            {{ amount_to_show|format_currency(object.currency) }}
+        {% else %}
+            {{ amount_to_show }}
+        {% endif %}
+    {% endif %}
+{% endmacro %}
+{% if macros is not defined %}
+    {% import _self as macros %}
+{% endif %}
+
+{% block field %}
+    {% if object.actualAvg is defined %}
+        {# NOTE: (optional) Show the actual vs budgeted amount in different colors
+
+        {% if object.actualAvg == 0 %}
+            {{ macros.show_standard_amount(object, object.actualAvg) }}
+        {% else %}
+            {% set color = object.actualAvg < object.budgeted ? 'green' : (object.actualAvg > object.budgeted ? 'red' : '') %}
+
+            <span style="color:{{ color }};">{{ macros.show_standard_amount(object, object.actualAvg) }}</span>
+        {% endif %} #}
+
+        {{ macros.show_standard_amount(object, object.actualAvg) }}
+    {% endif %}
+{% endblock %}

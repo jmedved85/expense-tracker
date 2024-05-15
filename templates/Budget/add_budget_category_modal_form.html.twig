@@ -1,0 +1,76 @@
+{%- block add_budget_category_form -%}
+
+{%- set mainCategories = get_main_categories() -%}
+{%- set switchedUnitId = get_switched_unit_id() -%}
+{%- set unitList = get_unit_list() -%}
+
+<style>
+    .modal-backdrop {
+        z-index: 600;
+    }
+</style>
+
+<div class="modal-header">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="modal-title" style="font-size: 20px;">
+                {% if type == 'main' %}
+                    {{ 'add_new_main_category'|trans({}, 'SonataAdminBundle') }}
+                {% else %}
+                    {{ 'add_new_sub_category'|trans({}, 'SonataAdminBundle') }}
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-sm-2 text-right">
+            <button type="button" class="close" style="font-size:50px; font-weight:500" aria-label="Close" data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="modal-body">
+     <div class="container-fluid">
+        <form id="addNewCategoryForm" style="text-align: left;" action="{{ path('add_new_category', {'type': type}) }}" method="POST">
+            {% if type == 'main' %}
+                <div id="addNewCategoryNameInputContainer">
+                    <div class="form-group">
+                        <label id="addNewCategoryNameInputLabel" for="addNewCategoryNameInput">{{ 'name'|trans({}, 'SonataAdminBundle') }}:</label>
+                        <input type="text" class="form-control" id="addNewCategoryNameInput" name="addNewCategoryNameInput" placeholder="Enter a Text">
+                        {% if switchedUnitId is null %}
+                            <label class="mt-3" id="unitSelectLabel" for="unitSelect">{{ 'unit'|trans({}, 'SonataAdminBundle') }}:</label>
+                            <select class="form-control" id="unitSelect" name="unitSelect">
+                                {% for unit in unitList %}
+                                    <option value="{{ unit.id }}">{{ unit.name }}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div id="addNewSubCategoryNameInputContainer">
+                    <div class="form-group">
+                        <label id="addNewCategoryNameInputLabel" for="addNewCategoryNameInput">{{ 'name'|trans({}, 'SonataAdminBundle') }}:</label>
+                        <input type="text" class="form-control" id="addNewCategoryNameInput" name="addNewCategoryNameInput" placeholder="Enter a Text">
+                    </div>
+                </div>
+                <div id="addNewSubCategoryNameInputContainer" style="margin-top:10px;">
+                    <label class="mt-3" for="mainCategorySelect">{{ 'select_main_category'|trans({}, 'SonataAdminBundle') }}:</label>
+                    <select class="form-control" id="mainCategorySelect" name="mainCategorySelect">
+                        {% for mainCategory in mainCategories %}
+                            <option value="{{ mainCategory.id }}">{{ switchedUnitId ? mainCategory.name : mainCategory.nameWithUnit }}</option>
+                        {% endfor %}
+                    </select>
+                </div> 
+            {% endif %}
+            <div class="row text-center">
+                <div class="col-sm-12">
+                    <div style="margin-top:30px;">
+                        <input id="submitButton" type="submit" name="submit_button" value="Submit" class="btn btn-primary btn-lg" type="submit">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

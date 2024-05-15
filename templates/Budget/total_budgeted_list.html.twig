@@ -1,0 +1,13 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{% set totalBudgetedActual = get_total_budgeted_actual(object) %}
+
+{% block field %}
+    {% if totalBudgetedActual['budgeted'] is not empty %}
+        {% for key, value in totalBudgetedActual['budgeted'] %}
+            <span>{{ value|format_currency(key) }}</span>{{ not loop.last ? ' | ' : '' }}
+        {% endfor %}
+    {% else %}
+        <span>{{ '-' }}</span>
+    {% endif %}
+{% endblock %}

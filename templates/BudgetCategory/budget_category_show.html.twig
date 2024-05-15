@@ -1,0 +1,33 @@
+{% extends '@SonataAdmin/CRUD/show.html.twig' %}
+
+{% block content %}
+    {# {% include 'CRUD/go_back_button.html.twig' %} #}
+{% endblock %}
+
+{% block actions %}
+    <ul class="dropdown-menu show" role="menu">
+        {% if object is not null and admin.id(object) is not null and admin.hasAccess('edit', object) and admin.hasRoute('edit') %}
+            <li>
+                <a href="{{ path('admin_app_budgetcategory_edit', {'id': object.id}) }}" class="btn btn-primary sonata-action-element" title="{{ 'action_check'|trans({}, 'SonataAdminBundle') }}">
+                    <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                    {{ 'action_check'|trans({}, 'SonataAdminBundle') }}
+                </a>
+            </li>
+        {% endif %}
+        <li>
+            <a class="btn btn-default sonata-action-element" href="{{ path('admin_app_budgetmaincategory_list') }}">
+                <i class="fas fa-list" aria-hidden="true"></i>
+                {{ 'return_to_list_button' | trans({}, 'SonataAdminBundle') }}
+            </a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block show %}
+    {{ parent() }}
+
+    {# TODO: create invoice/purchase list #}
+    {# {% include 'BudgetCategory/budget_category_invoices_list.html.twig' %}
+
+    {% include 'BudgetCategory/budget_category_purchases_list.html.twig' %} #}
+{% endblock %}
