@@ -1,0 +1,212 @@
+{% extends sonata_block.templates.block_base %}
+
+{% block block %}
+	{%- set user = get_user() -%}
+	{%- set switchedUnitId = get_switched_unit_id() -%}
+	{%- set invoice_list_headers = get_invoice_list_headers() -%}
+	{%- set approved_invoices = get_approved_invoices() -%}
+
+	{# ACCOUNT LIST BLOCK #}
+	<div class="card dashBlock dashBlock-success">
+		<div class="dashBlock-head" data-toggle="collapse" data-parent="#accordion" href="#account-list-table" aria-expanded="true">
+			<div class="dashBlock-title">
+				<i class="far fa-university"></i>
+				{% if unit != null %}
+					{{ 'accounts_list'|trans({}, 'SonataAdminBundle') }} - {{ unit ? unit.name : null }}
+				{% else %}
+					{{ 'accounts_list'|trans({}, 'SonataAdminBundle') }} - {{ 'all_units'|trans({}, 'SonataAdminBundle') }}
+				{% endif %}
+			</div>
+			<div class="dashActions">
+				<a class="btn btn-xs" data-toggle="collapse" data-parent="#accordion" href="#account-list-table" aria-expanded="true">
+					<i class="fas fa-chevron-down"></i>
+				</a>
+			</div>
+		</div>
+
+		<div class="dashBlock-body withCollapse noMargin">
+			<div id="account-list-table" class="collapse in" style="overflow-x:hidden; overflow-y:auto; {{ unit == null ? "max-height:695px;" : "max-height:600px;" }}">
+				<table id="tableTransaction" class="table table-bordered table-striped table-hover sonata-ba-list">
+					{% if accounts is defined and accounts != null %}
+						<thead class="sticky-header">
+							<tr class="sonata-ba-list-field-header">
+								<th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch">{{ 'account_name'|trans({}, 'SonataAdminBundle') }}</th>
+									{% if unit == null %}
+									<th scope="col">{{ 'unit'|trans({}, 'SonataAdminBundle') }}</th>
+									{% endif %}
+								<th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch" scope="col">{{ 'account_type'|trans({}, 'SonataAdminBundle') }}</th>
+								<th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch text-center" scope="col">{{ 'currency'|trans({}, 'SonataAdminBundle') }}</th>
+								<th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch text-right" scope="col">{{ 'balance'|trans({}, 'SonataAdminBundle') }}</th>
+								<th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch text-center" scope="col">{{ 'file'|trans({}, 'SonataAdminBundle') }}</th>
+								<th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch text-center" scope="col">{{ 'actions'|trans({}, 'SonataAdminBundle') }}</th>
+							</tr>
+						</thead>
+						<tbody id="account-transaction-table-body">
+							{% for account in accounts %}
+								{% if account.deactivated == false %}
+									<tr>
+										<td>
+											<a style="font-weight:700;" href="/admin/app/account/{{ account.id }}/show">
+												{{ account.nameWithCurrency ?? '-' }}
+											</a>
+										</td>
+										{% if unit == null %}
+											<td>{{ account.unit.name ?? '-' }}</td>
+										{% endif %}
+										<td>{{ account.accountType.name ?? '-' }}</td>
+										<td class="text-center">{{ account.currency ?? '-' }}</td>
+										<td class="text-right">
+											{% if account.currency %}
+												{{ account.balance|format_currency(account.currency) }}</td>
+											{% else %}
+												{{ account.balance ?? '' }}</td>
+										{% endif %}
+										<td class="text-center">
+											{% if account.file.toArray() is not empty %}
+												{% set filePaths = [] %}
+
+												{% set archiveName = account.nameWithCurrency %}
+
+												{% for element in account.file %}
+													{% set fullFilePath = element.getUploadedFullFilePath(get_project_dir()) %}
+													{% set filePaths = filePaths|merge([fullFilePath]) %}
+												{% endfor %}
+
+												{% if filePaths is not empty %}
+													<a href="{{ path('generate_zip', {'filePaths': filePaths, 'archiveName': archiveName}) }}" class="btn btn-xs btn-default" target="_blank">
+														<i class="fa fa-download" title="Download All" aria-hidden="true"></i>
+													</a>
+												{% endif %}
+											{% endif %}
+										</td>
+										<td class="text-center">
+											{% if account.accountType == 'Cash Account' or account.accountType == 'Card Account' %}
+												<a class="btn btn-xs btn-default" href="{{ path('add_funds_modal', {'id': account.id, 'userId': user.userId }) }}" data-toggle="modal" data-target="#addFundsModal" title="Add Funds">
+													<i class="fas fa-money-bill-wave" aria-hidden="true"></i>
+												</a>
+											{% endif %}
+											<a href="/admin/app/account/{{ account.id }}/show" class="btn btn-xs btn-default view_link" title="Show">
+												<i class="fas fa-eye" aria-hidden="true"></i>
+											</a>
+											<a href="/admin/app/account/{{ account.id }}/edit" class="btn btn-xs btn-default edit_link" title="Edit">
+												<i class="fas fa-pencil-alt" aria-hidden="true"></i>
+											</a>
+											<a href="/admin/app/account/{{ account.id }}/delete" class="btn btn-xs btn-danger delete_link" title="Delete">
+												<i class="fas fa-times" aria-hidden="true"></i>
+											</a>
+										</td>
+									</tr>
+								{% endif %}
+							{% endfor %}
+						</tbody>
+					{% else %}
+						<div class="noContent">
+							{{ 'no_results'|trans({}, 'SonataAdminBundle') }}
+						</div>
+					{% endif %}
+				</table>
+			</div>
+		</div>
+
+	</div>
+
+	<hr />
+
+	{# APPROVALS BLOCK #}
+	{# {% if roleSuperAdmin %} #}
+	<div class="card dashBlock dashBlock-warning">
+
+		<div class="dashBlock-head" data-toggle="collapse" data-parent="#accordion" href="#approvals-list-table" aria-expanded="true">
+			<div class="dashBlock-title">
+				<i class="far fa-university"></i>
+				{% if unit != null %}
+					{{ 'approvals_list'|trans({}, 'SonataAdminBundle') }} - {{ unit ? unit.name : null }}
+				{% else %}
+					{{ 'approvals_list'|trans({}, 'SonataAdminBundle') }} - {{ 'all_units'|trans({}, 'SonataAdminBundle') }}
+				{% endif %}
+			</div>
+			<div class="dashActions">
+				<a class="btn btn-xs" data-toggle="collapse" data-parent="#accordion" href="#approvals-list-table" aria-expanded="true">
+					<i class="fas fa-chevron-down"></i>
+				</a>
+			</div>
+		</div>
+
+		<div class="dashBlock-body withCollapse">
+
+			<div id="approvals-list-table" class="collapse in" style="overflow-x:hidden; overflow-y:auto; {{ unit == null ? "max-height:695px;" : "max-height:600px;" }} padding:0;">
+				{% if approved_invoices is defined and approved_invoices != null %}
+					<table class="table table-bordered table-striped table-hover sonata-ba-list">
+						<thead class="sticky-header">
+							<tr class="sonata-ba-list-field-header">
+								{% for header in invoice_list_headers %}
+									{% if header == ('Actions' | trans) or header == ("Priority" | trans) %}
+										<th {% if header == ('Actions' | trans) %} style="width:16%;" {% endif %}class="sonata-ba-list-field-header sonata-ba-list-field-header-batch text-center">
+											{{ header }}
+										</th>
+									{% elseif header == ("Total" | trans) or header == ("Amount" | trans) %}
+										<th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch text-right">
+											{{ header }}
+										</th>
+									{% else %}
+										<th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch">
+											{{ header }}
+										</th>
+									{% endif %}
+								{% endfor %}
+							</tr>
+						</thead>
+						<tbody>
+							{% for invoice in approved_invoices %}
+								<tr class="link-row">
+									<td>{{ invoice.invoiceNumber }}</td>
+									<td>{{ invoice.invoiceDate.format('d/m/Y') }}</td>
+									{#<td>{{ invoice.currency }}</td>#}
+									<td>{{ invoice.shortDescription }}</td>
+									<td>{{ invoice.supplier }}</td>
+									<td style="color:green;">{{ invoice.invoiceApprovalStatus }}</td>
+									<td style="color:red;">{{ invoice.invoicePaymentStatus }}</td>
+									<td class="text-center">{{ invoice.priority }}</td>
+									{% if invoice.currency %}
+										<td class="text-right">{{ invoice.amount|format_currency(invoice.currency, {fraction_digit: 2}) }}</td>
+									{% else %}
+										<td class="text-right">{{ invoice.amount }}</td>
+									{% endif %}
+									<td class="text-center">
+										<a href="/admin/app/invoice/{{ invoice.id }}/show" class="btn btn-xs btn-default view_link" title="Show"><i class="fas fa-eye" aria-hidden="true"></i> </a>
+										<a href="/admin/app/invoice/{{ invoice.id }}/edit" class="btn btn-xs btn-default edit_link" title="Check"><i class="fas fa-pencil-alt" aria-hidden="true"></i> </a>
+										<a href="/admin/app/invoice/{{ invoice.id }}/delete" class="btn btn-xs btn-danger delete_link" title="Delete"><i class="fas fa-times" aria-hidden="true"></i> </a>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				{% else %}
+					<div class="noContent">
+						{{ 'no_results'|trans({}, 'SonataAdminBundle') }}
+					</div>
+				{% endif %}
+			</div>
+
+		</div>
+
+	</div>
+
+	{# Modal add_funds_modal_form.html.twig #}
+	<div class="modal fade" id="addFundsModal" tabindex="-1" role="dialog" aria-labelledby="addFundsModal" aria-hidden="true">
+		<div id="modalDialog" class="modal-dialog" role="document">
+			<div class="modal-content" style="background-color:#D1D6E6;">
+				{# {% include 'Block/add_funds_modal_form.html.twig' %} #}
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$(document).ready(function () {
+			$('#addFundsModal').on('shown.bs.modal', function () {
+				$(this).removeData('bs.modal');
+			});
+		});
+	</script>
+
+{% endblock %}

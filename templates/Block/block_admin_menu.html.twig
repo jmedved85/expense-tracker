@@ -1,0 +1,142 @@
+{# Calling functions in Twig/AppExtension.php #}
+{# {%- set userUnits = get_user_unit_list() -%} #}
+{%- set user = get_user() -%}
+{%- set accountsTotalsMenu = get_accounts_totals_menu() -%}
+
+<style>
+    /* Adjust the z-index of the modal overlay */
+    .modal-backdrop {
+        z-index: 1020; /* Choose a higher value if necessary */
+    }
+</style>
+
+{# NOT SWITCHED INTO UNIT #}
+{% if user.isSuperAdmin and switchedIntoUnit is empty %}
+    {# SWITCH TO UNIT BUTTON #}
+    <div style="position: absolute; right: 45%;">
+        <div class="dropdown" style="font-size:16px; padding:8px;">
+            <a class="btn btn-success dropdown-toggle" href="#" id="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span style="margin-right:5px;"><strong>{{ 'switch_to_unit_dropdown_title'|trans({}, 'SonataAdminBundle')|upper }}</strong></span>
+                <i class="fas fa-caret-down" aria-hidden="true"></i>
+            </a>
+            <ul class="dropdown-menu" style="">
+                {% for unit in userUnits %}
+                    {% if unit.active == true %}
+                        <li>
+                            <a class="dropdown-item" href="{{ path('admin_app_unit_switchTounit', {'id': unit.id}) }}" title="{{ unit.name }}">
+                                {{ unit.name }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{# SWITCHED INTO UNIT #}
+{% elseif switchedIntoUnit %}
+    <input type="hidden" id="isSuperAdmin" name="isSuperAdmin" value="isSuperAdmin">
+    <div style="position:absolute; left:50%; -webkit-transform:translateX(-50%); font-size:16px; padding:12px; text-align: center;">
+        <a class="text-uppercase" style="font-size:16px;" href="/admin/app/unit/{{ switchedIntoUnit['id'] }}/show">
+            <strong>{{ switchedIntoUnit['name'] }}</strong>
+        </a>
+        <span style="text-align:center; margin-top:5px;">
+            <a href="{{ path('admin_app_unit_exitUnit', {'id': switchedIntoUnit['id']}) }}">
+                <i class="fa fa-window-close" style="color:red; font-size:14px;"></i>
+            </a>
+        </span>
+        <div style="margin-top:4px;">
+            <a class="btn btn-success" href="{{ path('add_funds_create', {'unitId': switchedIntoUnit.id}) }}">
+                <i class="fas fa-money-bill-wave" aria-hidden="true"></i>&nbsp;
+                {{ 'add_funds_button'|trans({}, 'SonataAdminBundle') }}
+            </a>
+        </div>
+    </div>
+    {% if accountsTotalsMenu %}
+        <div style="position:absolute; margin-top:12px; right:5%; text-align:center; font-size:12px;">
+            {# <i>{{ 'unit_accounts_totals'|trans({}, 'SonataAdminBundle') }}:</i> #}
+            <div class="accounts-totals-table">
+                <table class="table table-striped table-responsive">
+                    <thead class="accounts-totals-menu-table-header">
+                        <th class="accounts-totals-menu-table-th"></th>
+                        <th class="accounts-totals-menu-table-th">
+                            <a class="text-uppercase" href="{{ path('account_list_modal', {'type': 'bank'}) }}" data-toggle="modal" data-target="#universalModal">
+                                {{ 'bank'|trans({}, 'SonataAdminBundle') }}
+                            </a>
+                        </th>
+                        <th class="accounts-totals-menu-table-th">
+                            <a class="text-uppercase" href="{{ path('account_list_modal', {'type': 'card'}) }}" data-toggle="modal" data-target="#universalModal">
+                                {{ 'card'|trans({}, 'SonataAdminBundle') }}
+                            </a>
+                        </th>
+                        <th class="accounts-totals-menu-table-th" style="padding-right:20px; border-right: 1px solid lightgray;">
+                            <a class="text-uppercase" href="{{ path('account_list_modal', {'type': 'cash'}) }}" data-toggle="modal" data-target="#universalModal">
+                                {{ 'cash'|trans({}, 'SonataAdminBundle') }}
+                            </a>
+                        </th>
+                        <th class="accounts-totals-menu-table-th" style="padding-left:20px; padding-right:20px; text-align:center;">
+                            <span class="text-uppercase">{{ 'total'|trans({}, 'SonataAdminBundle') }}</span>
+                        </th>
+                    </thead>
+                    <tbody class="accounts-totals-table">
+                        {% for key, value in accountsTotalsMenu %}
+                            {% set currencyTotals = value['bankTotals'] + value['cardTotals'] + value['cashTotals'] %}
+                            <tr>
+                                <td><strong>{{ key }}</strong></td>
+                                <td>
+                                    {% if value['bankTotals'] %}
+                                        {{ value['bankTotals']|number_format(2, '.', ',')}}
+                                    {% else %}
+                                        0.00
+                                    {% endif %}
+                                </td>
+                                <td>{{ value['cardTotals']|number_format(2, '.', ',') }}</td>
+                                <td style="border-right: 1px solid lightgray;">{{ value['cashTotals']|number_format(2, '.', ',') }}</td>
+                                <td>{{ currencyTotals|number_format(2, '.', ',') }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+
+    {# NOTE: Add Funds button modal solution #}
+    {# <a  href="{{ path('add_funds_main_entry_modal') }}" data-toggle="modal" data-target="#addFundsMainEntryModal">
+        <i class="fas fa-money-bill-wave" aria-hidden="true"></i>&nbsp;
+        {{ 'add_funds_button'|trans({}, 'SonataAdminBundle') }} MODAL
+    </a> #}
+{# NON-ADMIN USER #}
+{% else %}
+    {# unit NAME FOR NON-ADMIN USER #}
+    <div style="position:absolute; left:50%; -webkit-transform:translateX(-50%); -moz-transform:translateX(-50%); -ms-transform:translateX(-50%); -o-transform:translateX(-50%); -transform:translateX(-50%);">
+        <div style="font-size:16px; padding:12px;">
+            <div class="text-uppercase" style="font-size:16px;">
+                <strong>{{ user.unitObject.name }}</strong>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{# /*
+<script>
+    $(document).ready(function() {
+        $('#accountListModal').on('shown.bs.modal', function () {
+            $(this).removeData('bs.modal');
+        });
+
+        $('#addFundsMainEntryModal').on('shown.bs.modal', function () {
+            $(this).removeData('bs.modal');
+        });
+    });
+</script>
+*/ #}
+
+{# NOTE: Add Funds button modal solution #}
+{# Modal add_funds_main_entry_modal.html.twig #}
+{# <div class="modal fade" id="addFundsMainEntryModal" tabindex="-1" role="dialog" aria-labelledby="addFundsMainEntryModal" aria-hidden="true">
+    <div id="modalDialog" class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius:6px; width:70%;">
+
+        </div>
+    </div>
+</div> #}

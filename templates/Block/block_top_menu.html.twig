@@ -1,0 +1,150 @@
+{% extends sonata_block.templates.block_base %}
+
+{% block block %}
+
+	{%- if "sonata_admin_dashboard" == app.getRequest.attributes.get('_route')  -%}
+		{% set switchedUnitId = get_switched_unit_id() %}
+		{% set user = get_user() %}
+		{% set accountsTotalsMenu = get_accounts_totals_menu() %}
+
+		{# ADMIN USER #}
+		{% if switchedUnitId %}
+			<input type="hidden" id="isSuperAdmin" name="isSuperAdmin" value="isSuperAdmin">
+
+			{%- set balancesDonut = get_balances_donut() -%}
+			<div class="row">
+				<div class="col-12 dashBlock-wrapper">
+					<div class="card dashBlock dashBlock-default">
+						<div class="dashBlock-head">
+							<div class="dashBlock-title"><i class="far fa-university"></i>
+								{{ 'accounts_totals'|trans({}, 'SonataAdminBundle') }} - {{ unit ? unit.name : null }}
+							</div>
+							<div class="dashActions">
+								<a class="btn btn-xs btn-success" href="{{ path('add_funds_create', {'unitId': switchedUnitId}) }}"><i class="fa fa-plus-circle"></i> {{ 'add_funds_button'|trans({}, 'SonataAdminBundle') }}</a>
+							</div>
+						</div>
+						<div class="dashBlock-body">
+
+							<div class="row">
+
+								<!-- <div class="col-2 dashBlockGraph" style="flex: 0 0 17.667%;max-width: 265px;"> -->
+								<div class="dashBlockGraph col-xl-3 col-xxl-2">
+									{{ balancesDonut|raw }}
+								</div>
+								<div class="dashBlockBlocks col-xl-9 col-xxl-10" style="position: relative;">
+
+									<div class="dashBlock-carousel">
+										<div class="row">
+
+											{% if accountsTotalsMenu %}
+												{% for key, value in accountsTotalsMenu %}
+													{% set currencyTotals = value['bankTotals'] + value['cardTotals'] + value['cashTotals'] %}
+													<div class="col-12 col-xl-6 col-xxl-4 dashBlockWrap" style="position: relative;">
+														<div class="balanceCard" currency="{{ key }}">
+															<div>
+																<div class="currencyName"><i class="fa fa-circle"></i><span>{{ key }}</span> {{ 'balance'|trans({}, 'SonataAdminBundle') }}
+																</div>
+
+																<div class="balanceRows">
+																	<div class="balanceRow" href="{{ path('account_list_modal', {'type': 'bank'}) }}" data-toggle="modal" data-target="#universalModal">
+																		<div><i class="fa fa-university"></i></div>
+																		<div>{{ 'bank'|capitalize|trans({}, 'SonataAdminBundle') }}</div>
+																		<div>{% if value['bankTotals'] %}{{ value['bankTotals']|number_format(2, '.', ',')}}{% else %}0.00{% endif %}</div>
+																		<div><i class="far fa-eye"></i></div>
+																	</div>
+																	<div class="balanceRow" href="{{ path('account_list_modal', {'type': 'card'}) }}" data-toggle="modal" data-target="#universalModal">
+																		<div><i class="far fa-credit-card"></i></div>
+																		<div>{{ 'card'|capitalize|trans({}, 'SonataAdminBundle') }}</div>
+																		<div>{{ value['cardTotals']|number_format(2, '.', ',') }}</div>
+																		<div><i class="far fa-eye"></i></div>
+																	</div>
+																	<div class="balanceRow" href="{{ path('account_list_modal', {'type': 'cash'}) }}" data-toggle="modal" data-target="#universalModal">
+																		<div><i class="far fa-money-bill-alt"></i></div>
+																		<div>{{ 'cash'|capitalize|trans({}, 'SonataAdminBundle') }}</div>
+																		<div>{{ value['cashTotals']|number_format(2, '.', ',') }}</div>
+																		<div><i class="far fa-eye"></i></div>
+																	</div>
+																</div>
+
+																<div class="balance-total">
+																	<div class="balanceRow">
+																		<div><i class="far fa-sack-dollar"></i></div>
+																		<div>{{ key }} {{ 'total'|capitalize|trans({}, 'SonataAdminBundle') }}</div>
+																		<div>{{ currencyTotals|number_format(2, '.', ',') }}</div>
+																		<div></div>
+																	</div>
+																</div>
+
+															</div>
+															<span class="balanceCardDeco"></span>
+														</div>
+													</div>
+												{% endfor %}
+											{% else %}
+
+												<div class="col-12 dashBlockWrap" style="position: relative;">
+													<div class="balanceCard balanceCardEmpty" currency="default">
+														<div>
+															<div class="noContent">
+																{{ 'no_accounts'|trans({}, 'SonataAdminBundle') }}
+															</div>
+														</div>
+														<span class="balanceCardDeco"></span>
+													</div>
+												</div>
+
+											{% endif %}
+
+										</div>
+
+										<div class="dshBlck-crsl-nav" dir="L"><i class="fa fa-angle-left"></i></div>
+										<div class="dshBlck-crsl-nav" dir="R"><i class="fa fa-angle-right"></i></div>
+									</div>
+
+									<script type="text/javascript">tmpl.helpers.dashboardCarousels();</script>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+
+		{# Modal account_list_modal.html.twig #}
+		{#
+		<div class="modal fade" id="accountListModal" tabindex="-1" role="dialog" aria-labelledby="accountListModal" aria-hidden="true">
+			<div id="modalDialog" class="modal-dialog" role="document">
+				<div class="modal-content">
+					{# {% include 'Block/account_list_modal.html.twig' %} # }
+				</div>
+			</div>
+		</div>
+		#}
+
+		{# NOTE: Add Funds button modal solution #}
+		{# Modal add_funds_main_entry_modal.html.twig #}
+		{# <div class="modal fade" id="addFundsMainEntryModal" tabindex="-1" role="dialog" aria-labelledby="addFundsMainEntryModal" aria-hidden="true">
+			<div id="modalDialog" class="modal-dialog" role="document">
+				<div class="modal-content" style="border-radius:6px; width:70%;">
+
+				</div>
+			</div>
+		</div> #}
+	</div>
+	{#
+	<script>
+		$(document).ready(function () {
+			$('#accountListModal').on('shown.bs.modal', function () {
+				$(this).removeData('bs.modal');
+			});
+
+			$('#addFundsMainEntryModal').on('shown.bs.modal', function () {
+				$(this).removeData('bs.modal');
+			});
+		});
+	</script>
+	#}
+{% endif %}
+
+{% endblock %}
