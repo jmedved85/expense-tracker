@@ -1,0 +1,53 @@
+{% extends '@SonataAdmin/CRUD/show.html.twig' %}
+
+{%- set isSuperAdmin = is_super_admin() -%}
+
+{% block content %}
+    {% if admin.hasAccess('create') and admin.hasRoute('create') %}
+        <div style="margin-left:20px;">
+            {# {% include 'CRUD/go_back_button.html.twig' %} #}
+
+            {% if object.deactivated == false %}
+                {% if object.accountType.getName() == 'Cash Account' or object.accountType.getName() == 'Card Account' %}
+                    {% include 'Account/purchase_button.html.twig' %}
+
+                    {% if object.accountType.getName() == 'Cash Account' %}
+                        {% include 'Account/cash_transfer_button.html.twig' %}
+                        {% include 'Account/cash_withdrawal_button.html.twig' %}
+                        {% include 'Account/currency_exchange_button.html.twig' %}
+                    {% endif %}
+
+                    {% if object.accountType.getName() == 'Card Account' %}
+                        {# {% if isSuperAdmin %} #}
+                            {% include 'Account/bank_transfer_button.html.twig' %}
+                        {# {% endif %} #}
+                    {% endif %}
+                {% elseif object.accountType.getName() == 'Bank Account' %}
+                    {% include 'Account/bank_transfer_button.html.twig' %}
+                {% endif %}
+            {% endif %}
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block actions %}
+    <ul class="dropdown-menu show" role="menu">
+        {% if object is not null and admin.id(object) is not null and admin.hasAccess('edit', object) and admin.hasRoute('edit') %}
+            <li>
+                <a href="{{ path('admin_app_account_edit', {'id': object.id}) }}" class="btn btn-primary sonata-action-element" title="{{ 'action_check'|trans({}, 'SonataAdminBundle') }}">
+                    <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                    {{ 'action_check'|trans({}, 'SonataAdminBundle') }}
+                </a>
+            </li>
+        {% endif %}
+        <li>
+            <a class="btn btn-default sonata-action-element" href="{{ path('admin_app_account_list') }}">
+                <i class="fas fa-list" aria-hidden="true"></i>
+                Return to list
+            </a>
+        </li>
+    </ul>
+{% endblock %}
+
+

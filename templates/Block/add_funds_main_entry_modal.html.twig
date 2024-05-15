@@ -1,0 +1,276 @@
+{%- block add_funds_main_entry_modal -%}
+
+    {%- set bankAccounts = get_bank_accounts() -%}
+
+    <div class="modal-header">
+        <div class="row">
+            <div class="col-sm-10" style="padding-left:30px;">
+                <div class="modal-title" style="font-size: 24px;">
+                    {{ 'add_funds'|trans({}, 'SonataAdminBundle') }}
+                </div>
+                <div style="font-size: 16px;"></div>
+            </div>
+            <div class="col-sm-2 text-right">
+                <button type="button" class="close" style="font-size:50px; font-weight:500" aria-label="Close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <form id="addFundsMainEntryForm" style="text-align: left;" action="{{ path('add_funds_main_entry') }}" method="POST">
+                <div id="addFundsToAccountSelect" class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="bankAccountSelect">{{ 'to_account'|trans({}, 'SonataAdminBundle') }}:</label>
+                            <select class="form-control" id="bankAccountSelect" name="accountSelect">
+                                <option selected disabled hidden>{{ 'select_account'|trans({}, 'SonataAdminBundle') }}</option>
+                                {% for account in bankAccounts %}
+                                    <option value="{{ account.id }}~{{ account.name }}~{{ account.currency }}">{{ account.nameWithCurrencyBalance }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="addFundsMainEntryDateSelectInputContainer" class="row">
+                    <div id="addFundsMainEntryDateContainer" class="col-sm-6">
+                        <div class="form-group">
+                            <label for="addFundsMainEntryDate">{{ 'date'|trans({}, 'SonataAdminBundle') }}:</label>
+                            <input type="date" class="form-control" id="addFundsMainEntryDate" name="dateInput">
+                        </div>
+                    </div>
+                    <div id="addFundsMainEntryAmountInputContainer" class="col-sm-6">
+                        <div class="form-group">
+                            <label id="addFundsMainEntryAmountInputLabel" for="addFundsMainEntryAmountInput">{{ 'amount'|trans({}, 'SonataAdminBundle') }}:</label>
+                            <input type="text" class="form-control" id="addFundsMainEntryAmountInput" name="amountInput" data-type="currency" style="text-align: end;" placeholder="{{ 'enter_value'|trans({}, 'SonataAdminBundle') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div id="addFundsMainEntryBankFeeInputContainer" class="col-sm-6">
+                        <div class="form-group">
+                            <label id="addFundsMainEntryAddBankFeeInputLabel" for="addFundsMainEntryAddBankFeeInput">{{ 'bank_fee_amount'|trans({}, 'SonataAdminBundle') }}:</label>
+                            <input type="text" class="form-control" id="addFundsMainEntryAddBankFeeInput" name="addBankFeeInput" data-type="currency" style="text-align: end;" placeholder="{{ 'enter_value'|trans({}, 'SonataAdminBundle') }}">
+                        </div>
+                    </div>
+                    <div id="bankFeeNotAddedCheckContainer" class="col-sm-6">
+                        <div class="form-group">
+                            <div class="form-group" style="display: flex; flex-direction: column; align-items: center;">
+                                <label for="bankFeeNotAddedCheck">{{ 'bank_fee_not_applicable'|trans({}, 'SonataAdminBundle') }}:</label>
+                                <input style="margin: 10px 0 0;" id="bankFeeNotAddedCheck" type="checkbox" class="larger-checkbox" name="bankFeeNotAddedCheck">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="addFundsMainEntryDescriptionContainer" class="row">
+                    <div class="col-sm-12">
+                        <label for="addFundsMainEntryDescription">{{ 'description'|trans({}, 'SonataAdminBundle') }}:</label>
+                        <textarea class="form-control" id="addFundsMainEntryDescription" name="description" rows="5"></textarea>
+                    </div>
+                </div>
+
+                <div id="addFundsMainEntryUploadFileContainer" class="row">
+                    <div class="col-sm-12">
+                        <div style="margin-top:10px;">
+                            <label for="addFundsMainEntryUploadFile">{{ 'upload_file'|trans({}, 'SonataAdminBundle') }}:</label>
+                            <div style="display:flex;">
+                                <input type="file" id="input-file-hidden" name="input-file-hidden" style="display: none;">
+                                <button type="button" id="select-file-button" class="btn btn-sm btn-default view_link" style="padding: 5px 25px;">
+                                    <i class="fa fa-upload" title="Upload File" aria-hidden="true"></i>
+                                </button>
+                                <span id="uploaded-file-name" class="uploaded-file-name"></span>
+                            </div>
+                        </div>
+                        <p class="help-block">{{ 'supported_file_types'|trans({}, 'SonataAdminBundle') }}</p>
+                    </div>
+                </div>
+
+                <div class="row text-center">
+                    <div class="col-sm-12">
+                        <div style="margin-top:10px;">
+                            <input id="submitButtonAddFundsMainEntry" type="submit" name="submit_button" value="Submit" class="btn btn-default btn-lg" type="submit">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            const addFundsMainEntryForm = document.querySelector('#addFundsMainEntryForm');
+            const accountContainer = document.querySelector('#addFundsToAccountSelect');
+            const accountSelect = document.querySelector('#bankAccountSelect');
+            const dateInputContainer = document.querySelector('#addFundsMainEntryDateContainer');
+            const dateInput = document.querySelector('#addFundsMainEntryDate');
+            const amountInputContainer = document.querySelector('#addFundsMainEntryAmountInputContainer');
+            const amountInput = document.querySelector('#addFundsMainEntryAmountInput');
+            const amountInputLabel = document.querySelector('#addFundsMainEntryAmountInputLabel');
+            const amountInputLabelTextOriginal = amountInputLabel.textContent;
+            const bankFeeInput = document.querySelector('#addFundsMainEntryAddBankFeeInput');
+            const bankFeeInputLabel = document.querySelector('#addFundsMainEntryAddBankFeeInputLabel');
+            const bankFeeInputLabelTextOriginal = bankFeeInputLabel.textContent;
+            const bankFeeNotAddedCheckContainer = document.querySelector('#bankFeeNotAddedCheckContainer');
+            const bankFeeNotAddedCheck = document.querySelector('#bankFeeNotAddedCheck');
+            const submitButton = document.querySelector('#submitButtonAddFundsMainEntry');
+
+            const inputFile = document.querySelector('#input-file-hidden');
+            const selectFileButton = document.querySelector('#select-file-button');
+            const uploadedFileNameDisplay = document.querySelector('#uploaded-file-name');
+
+            dateInput.disabled = true;
+            amountInput.disabled = true;
+            bankFeeInput.disabled = true;
+            bankFeeNotAddedCheck.disabled = true;
+            submitButton.disabled = true;
+
+            accountSelect.addEventListener('change', () => {
+                const selectedAccount = accountSelect.options[accountSelect.selectedIndex];
+                const selectedAccountCurrency = selectedAccount.value.substr(selectedAccount.value.length - 3);
+                amountInputLabel.textContent = amountInputLabelTextOriginal;
+                amountInputLabel.textContent = amountInputLabel.textContent.replace(":", ` (${selectedAccountCurrency}):`);
+                bankFeeInputLabel.textContent = bankFeeInputLabelTextOriginal;
+                bankFeeInputLabel.textContent = bankFeeInputLabel.textContent.replace(":", ` (${selectedAccountCurrency}):`);
+
+                dateInput.disabled = false;
+                amountInput.disabled = false;
+                bankFeeInput.disabled = false;
+                bankFeeNotAddedCheck.disabled = false;
+                submitButton.disabled = false;
+            })
+
+            bankFeeNotAddedCheck.addEventListener("change", () => {
+                if (bankFeeNotAddedCheck.checked) {
+                    addFundsMainEntryBankFeeInputContainer.style.display = "none";
+                    bankFeeNotAddedCheckContainer.className = 'col-sm-12';
+                } else {
+                    addFundsMainEntryBankFeeInputContainer.style.display = "block";
+                    bankFeeNotAddedCheckContainer.className = 'col-sm-6';
+                }
+            });
+
+            selectFileButton.addEventListener('click', function() {
+                inputFile.click();
+            });
+
+            inputFile.addEventListener('change', function(event) {
+                const selectedFile = inputFile.files[0];
+
+                if (selectedFile) {
+                    uploadedFileNameDisplay.textContent = selectedFile.name;
+                }
+            });
+
+            $(addFundsMainEntryForm).submit(function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(this);
+                const selectedFile = inputFile.files[0];
+
+                if (selectedFile) {
+                    formData.append('uploadedFile', selectedFile);
+                }
+
+                fetch($(this).attr('action'), {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); // Handle response from the server
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+            });
+
+            // submitButton.addEventListener('click', function() {
+            //     addFundsMainEntryForm.submit();
+            // });
+        });
+
+        $("input[data-type='currency']").on({
+            keyup: function() {
+                formatCurrency($(this));
+            },
+            blur: function() { 
+                formatCurrency($(this), "blur");
+            }
+        });
+
+        /* Formats number 1000000 to 1,234,567 */
+        function formatNumber(n) {
+            return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        }
+
+        /* Validates decimal side and puts cursor back in right position. */
+        function formatCurrency(input, blur) {
+            // get input value
+            var input_val = input.val();
+            
+            // don't validate empty input
+            if (input_val === "") { return; }
+            
+            // original length
+            var original_len = input_val.length;
+
+            // initial caret position 
+            var caret_pos = input.prop("selectionStart");
+                
+            // check for decimal
+            if (input_val.indexOf(".") >= 0) {
+
+                // get position of first decimal
+                // this prevents multiple decimals from
+                // being entered
+                var decimal_pos = input_val.indexOf(".");
+
+                // split number by decimal point
+                var left_side = input_val.substring(0, decimal_pos);
+                var right_side = input_val.substring(decimal_pos);
+
+                // add commas to left side of number
+                left_side = formatNumber(left_side);
+
+                // validate right side
+                right_side = formatNumber(right_side);
+                
+                // On blur make sure 2 numbers after decimal
+                if (blur === "blur") {
+                    right_side += "00";
+                }
+                
+                // Limit decimal to only 2 digits
+                right_side = right_side.substring(0, 2);
+
+                // join number by .
+                input_val = left_side + "." + right_side;
+
+            } else {
+                // no decimal entered
+                // add commas to number
+                // remove all non-digits
+                input_val = formatNumber(input_val);
+                
+                // final formatting
+                if (blur === "blur") {
+                    input_val += ".00";
+                }
+            }
+            
+            // send updated string to input
+            input.val(input_val);
+
+            // put caret back in the right position
+            var updated_len = input_val.length;
+            caret_pos = updated_len - original_len + caret_pos;
+            input[0].setSelectionRange(caret_pos, caret_pos);
+        }
+    </script>
+
+{% endblock %}

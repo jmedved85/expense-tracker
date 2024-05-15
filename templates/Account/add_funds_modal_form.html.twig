@@ -1,0 +1,207 @@
+{%- block add_funds_form -%}
+
+{%- set bankAccounts = get_bank_accounts() -%}
+
+{%- set accountTypeName = '' -%}
+
+{%- if object.accountType.name is defined %}
+    {%- set accountTypeName = object.accountType.name -%}
+{%- endif %}
+
+<style>
+    .modal-backdrop {
+        z-index: 600;
+    }
+</style>
+
+<input type="hidden" id="mainAccountCurrency" value="{{ object.currency }}">
+<input type="hidden" id="originalAmountInputLabel" value="{{ 'amount'|trans({}, 'SonataAdminBundle') }}:">
+<input type="hidden" id="originalRealAmountInputLabel" value="{{ 'real_amount'|trans({}, 'SonataAdminBundle') }}:">
+
+<div class="modal-header">
+    <div class="row">
+        <div class="col-sm-10">
+             <div class="modal-title" style="font-size: 20px;">{{ 'add_funds_button'|trans({}, 'SonataAdminBundle') }} to {{ object.nameWithCurrency }}</div>
+             <div style="font-size: 16px;">{{ 'balance'|trans({}, 'SonataAdminBundle') }}: {{ object.balance|format_currency(object.currency) }}</div>
+        </div>
+        <div class="col-sm-2 text-right">
+            <button type="button" class="close" style="font-size:50px; font-weight:500" aria-label="Close" data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="modal-body">
+    <div class="container-fluid">
+        <form id="addFundsForm" style="text-align: left;" action="{{ admin.generateObjectUrl('addFunds', object) }}" method="POST">
+            {% if accountTypeName != 'Cash Account' %}
+                <div id="accountContainerAddFunds" class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="accountSelect">{{ 'from_account'|trans({}, 'SonataAdminBundle') }}:</label>
+                            <select class="form-control" id="accountSelect" name="accountSelect">
+                                <option selected disabled hidden>{{ 'select_account'|trans({}, 'SonataAdminBundle') }}</option>
+                                {% for account in bankAccounts %}
+                                    <option value="{{ account.id }}~{{ account.name }}~{{ account.currency }}">{{ account.nameWithCurrencyBalance }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <div id="addFundsDateSelectInputContainer" class="row">
+                <div id="addFundsDateContainer" class="col-sm-6">
+                    <div class="form-group">
+                        <label for="addFundsDate">{{ 'date'|trans({}, 'SonataAdminBundle') }}:</label>
+                        <input type="date" class="form-control" id="addFundsDate" name="addFundsDate">
+                    </div>
+                </div>
+                <div id="addFundsAmountInputContainer" class="col-sm-6">
+                    <div class="form-group">
+                        <label id="addFundsAmountInputLabel" for="addFundsAmountInput">{{ 'amount'|trans({}, 'SonataAdminBundle') }}:</label>
+                        <input type="text" class="form-control" id="addFundsAmountInput" name="addFundsAmountInput" data-type="currency" style="text-align: end;" placeholder="{{ 'enter_value'|trans({}, 'SonataAdminBundle') }}">
+                    </div>
+                </div>
+                <div id="addFundsRealAmountInputContainer" class="col-sm-6" style="display: none;">
+                    <div class="form-group">
+                        <label id="addFundsRealAmountInputLabel" for="addFundsRealAmountInput">{{ 'real_amount'|trans({}, 'SonataAdminBundle') }}:</label>
+                        <input type="text" class="form-control" id="addFundsRealAmountInput" name="addFundsRealAmountInput" data-type="currency" style="text-align: end;" placeholder="{{ 'enter_value'|trans({}, 'SonataAdminBundle') }}">
+                    </div>
+                </div>
+            </div>
+            <div id="descriptionContainerAddFunds" class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="accountSelect">{{ 'description'|trans({}, 'SonataAdminBundle') }}:</label>
+                        <textarea class="form-control" id="addFundsDescription" name="addFundsDescription" placeholder="Enter a Description"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-sm-12">
+                    <div style="margin-top: 10px;">
+                        <input id="submitButton" type="submit" name="submit_button" value="Submit" class="btn btn-primary btn-lg" type="submit">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        const mainAccountCurrency = document.getElementById("mainAccountCurrency").value;
+        const originalAmountInputLabel = document.getElementById("originalAmountInputLabel").value;
+        const originalRealAmountInputLabel = document.getElementById("originalRealAmountInputLabel").value;
+        const accountContainer = document.querySelector('#accountContainer');
+        const accountSelect = document.querySelector('#accountSelect');
+        const addFundsDateContainer = document.querySelector('#addFundsDateContainer');
+        const addFundsAmountInputContainer = document.querySelector('#addFundsAmountInputContainer');
+        const addFundsAmountInputLabel = document.querySelector('#addFundsAmountInputLabel');
+        const addFundsRealAmountInputContainer = document.querySelector('#addFundsRealAmountInputContainer');
+        const addFundsRealAmountInputLabel = document.querySelector('#addFundsRealAmountInputLabel');
+        addFundsAmountInputLabel.textContent = addFundsAmountInputLabel.textContent.replace(":", ` (${mainAccountCurrency}):`)
+
+        accountSelect.addEventListener('change', () => {
+            const selectedAccount = accountSelect.options[accountSelect.selectedIndex];
+            const selectedAccountCurrency = selectedAccount.value.substr(selectedAccount.value.length - 3);
+            addFundsAmountInputLabel.style.marginTop = '0';
+            addFundsRealAmountInputContainer.style.marginTop = '0';
+
+            if (mainAccountCurrency !== selectedAccountCurrency) {
+                addFundsAmountInputLabel.textContent = originalAmountInputLabel;
+                addFundsRealAmountInputLabel.textContent = originalRealAmountInputLabel;
+                addFundsDateContainer.className = 'col-sm-12';
+                addFundsRealAmountInputContainer.style.display = 'block';
+                addFundsRealAmountInputContainer.style.marginTop = '25px';
+                addFundsAmountInputLabel.style.marginTop = '25px';
+                addFundsAmountInputLabel.textContent = addFundsAmountInputLabel.textContent.replace(":", ` (${mainAccountCurrency}):`);
+                addFundsRealAmountInputLabel.textContent = addFundsRealAmountInputLabel.textContent.replace(":", ` (${selectedAccountCurrency}):`);
+            } else {
+                addFundsDateContainer.className = 'col-sm-6';
+                addFundsRealAmountInputContainer.style.display = 'none';
+            }
+        })
+    });
+
+    $("input[data-type='currency']").on({
+        keyup: function() {
+            formatCurrency($(this));
+        },
+        blur: function() { 
+            formatCurrency($(this), "blur");
+        }
+    });
+
+    /* Formats number 1000000 to 1,234,567 */
+    function formatNumber(n) {
+        return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    }
+
+    /* Validates decimal side and puts cursor back in right position. */
+    function formatCurrency(input, blur) {
+        // get input value
+        var input_val = input.val();
+        
+        // don't validate empty input
+        if (input_val === "") { return; }
+        
+        // original length
+        var original_len = input_val.length;
+
+        // initial caret position 
+        var caret_pos = input.prop("selectionStart");
+            
+        // check for decimal
+        if (input_val.indexOf(".") >= 0) {
+
+            // get position of first decimal
+            // this prevents multiple decimals from
+            // being entered
+            var decimal_pos = input_val.indexOf(".");
+
+            // split number by decimal point
+            var left_side = input_val.substring(0, decimal_pos);
+            var right_side = input_val.substring(decimal_pos);
+
+            // add commas to left side of number
+            left_side = formatNumber(left_side);
+
+            // validate right side
+            right_side = formatNumber(right_side);
+            
+            // On blur make sure 2 numbers after decimal
+            if (blur === "blur") {
+                right_side += "00";
+            }
+            
+            // Limit decimal to only 2 digits
+            right_side = right_side.substring(0, 2);
+
+            // join number by .
+            input_val = left_side + "." + right_side;
+
+        } else {
+            // no decimal entered
+            // add commas to number
+            // remove all non-digits
+            input_val = formatNumber(input_val);
+            
+            // final formatting
+            if (blur === "blur") {
+                input_val += ".00";
+            }
+        }
+        
+        // send updated string to input
+        input.val(input_val);
+
+        // put caret back in the right position
+        var updated_len = input_val.length;
+        caret_pos = updated_len - original_len + caret_pos;
+        input[0].setSelectionRange(caret_pos, caret_pos);
+    }
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,330 @@
+{%- block name -%}
+    <table class="table">
+        <tbody>
+            {# <tr style="background-color:#f9f9f9">
+                <th>{{ 'transaction_title'|trans({}, 'SonataAdminBundle') }}</th>
+            </tr> #}
+        </tbody>
+    </table>
+{%- endblock -%}
+
+{% block field %}
+    {% set route_name = field_description.option('route').name|default(sonata_config.getOption('default_admin_route')) %}
+    {% set route_parameters = field_description.option('route').parameters|default([]) %}
+    
+    <div id="account-transaction-table-container" style="overflow-x:hidden; overflow-y:auto; max-height:375px" >
+        <table id="tableTransaction" class="table">
+            <thead class="sticky-header">
+                <tr>
+                    {# <th scope="col">#</th> #}
+                    {# <th scope="col">{{ 'date_time'|trans({}, 'SonataAdminBundle') }}</th> #}
+                    <th scope="col">{{ 'date'|trans({}, 'SonataAdminBundle') }}</th>
+                    <th scope="col">{{ 'transaction_number_short'|trans({}, 'SonataAdminBundle') }}</th>
+                    <th scope="col">{{ 'transaction_type'|trans({}, 'SonataAdminBundle') }}</th>
+                    <th scope="col">{{ 'description'|trans({}, 'SonataAdminBundle') }}</th>
+                    <th scope="col">{{ 'from'|trans({}, 'SonataAdminBundle') }}</th>
+                    <th scope="col">{{ 'Balance'|trans({}, 'SonataAdminBundle') }}&nbsp;(From)</th>
+                    <th scope="col">{{ 'to'|trans({}, 'SonataAdminBundle') }}</th>
+                    <th scope="col">{{ 'Balance'|trans({}, 'SonataAdminBundle') }}&nbsp;(To)</th>
+                    <th scope="col">{{ 'supplier'|trans({}, 'SonataAdminBundle') }}</th>
+                    {# <th scope="col">Amount</th> #}
+                    <th scope="col">{{ 'money_in'|trans({}, 'SonataAdminBundle') }}</th>
+                    <th scope="col">{{ 'money_out'|trans({}, 'SonataAdminBundle') }}</th>
+                    {# <th scope="col">New Value</th> #}
+                    <th scope="col">{{ 'balance'|trans({}, 'SonataAdminBundle') }}</th>
+                    {# TODO: #}
+                    {# <th scope="col">{{ 'file'|trans({}, 'SonataAdminBundle') }}</th> #}
+                    <th scope="col">{{ 'actions'|trans({}, 'SonataAdminBundle') }}</th>
+                </tr>
+            </thead>
+            {% set num = 1 %}
+            <tbody id="account-transaction-table-body">
+                {% set mainAccount = object.id %}
+
+                {# Checking for duplicate transactions that comes from value, and exclude if there are any #}
+                {% set uniqueTransactions = [] %}
+
+                {% for item in value %}
+                    {% set duplicate = false %}
+
+                    {% if not duplicate %}
+                        {% for uniqueTransaction in uniqueTransactions %}
+                            {% if item.id == uniqueTransaction.id %}
+                                {% set duplicate = true %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if not duplicate %}
+                            {% set uniqueTransactions = uniqueTransactions|merge([item]) %}
+                        {% endif %}
+                    {% endif %}
+
+                {% endfor %}
+
+                {% for transaction in uniqueTransactions %}
+                    {% set transferFromAccount = transaction.transferFromAccount.id ?? null %}
+                    {% set transferToAccount = transaction.transferToAccount.id ?? null %}
+                    {% set transactionType = transaction.transactionType.name %}
+                    {% set transactionLinkShow = '' %}
+                    {% set transactionLinkEdit = '' %}
+                    {% set transactionLinkDelete = '' %}
+
+                    {% if field_description.hasassociationadmin
+                        and field_description.associationadmin.hasRoute(route_name)
+                        and field_description.associationadmin.hasAccess(route_name, transaction) %}
+
+                        {# NOTE: Row Links deactivated #}
+                        {% if transaction.purchase %}
+                            {% set transactionLinkShow = '/admin/app/purchase/' ~ transaction.purchase.id ~ '/show' %}
+                            {% set transactionLinkEdit = '/admin/app/purchase/' ~ transaction.purchase.id ~ '/edit' %}
+                            {% set transactionLinkDelete = '/admin/app/purchase/' ~ transaction.purchase.id ~ '/delete' %}
+
+                            {# <tr class="link-row" onclick="window.location='/admin/app/purchase/{{ transaction.purchase.id }}/show';"> #}
+                        {% elseif transaction.invoice and transaction.transactionType.name != 'Money returned' %}
+                            {% set transactionLinkShow = '/admin/app/invoice/' ~ transaction.invoice.id ~ '/show' %}
+                            {% set transactionLinkEdit = '/admin/app/invoice/' ~ transaction.invoice.id ~ '/edit' %}
+                            {% set transactionLinkDelete = '/admin/app/invoice/' ~ transaction.invoice.id ~ '/delete' %}
+
+                            {# <tr class="link-row" onclick="window.location='/admin/app/invoice/{{ transaction.invoice.id }}/show';"> #}
+                        {% else %}
+                            {% set transactionLinkShow = '/admin/app/transaction/' ~ transaction.id ~ '/show' %}
+
+                            {% if transactionType == 'Cash withdrawal' %}
+                                {% set transactionLinkEdit = '/admin/cash_withdrawal/' ~ transaction.id ~ '/edit' %}
+                            {% elseif transactionType == 'Bank transfer' %}
+                                {% set transactionLinkEdit = '/admin/bank_transfer/' ~ transaction.id ~ '/edit' %}
+                            {% elseif transactionType == 'Currency exchange' %}
+                                {% set transactionLinkEdit = '/admin/currency_exchange/' ~ transaction.id ~ '/edit' %}
+                            {% elseif transactionType == 'Cash transfer' %}
+                                {% set transactionLinkEdit = '/admin/cash_transfer/' ~ transaction.id ~ '/edit' %}
+                            {% else %}
+                                {% set transactionLinkEdit = '/admin/app/transaction/' ~ transaction.id ~ '/edit' %}
+                            {% endif %}
+
+                            {% set transactionLinkDelete = '/admin/app/transaction/' ~ transaction.id ~ '/delete' %}
+                        {% endif %}
+
+                        <tr>
+                            <td>{{ transaction.date.format('d/m/Y') }}</td>
+                            <td>{{ transaction.transactionNumberString ?? '-' }}</td>
+                            <td>{{ transaction.transactionType.name|title }}</td>
+                            <td>
+                                {{ transaction.shortDescription ?? '-' }}
+                            </td>
+                            <td>
+                                {% if transaction.transferFromAccount %}
+                                    {{ transaction.transferFromAccount.nameWithCurrency }}
+                                {% elseif transaction.transferFromAccount == null and transaction.transactionType.name != 'Account charge' %}
+                                    {{ '-' }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if transaction.transferFromAccount %}
+                                    {{ transaction.transferFromAccount.balance }}
+                                {% elseif transaction.transferFromAccount == null and transaction.transactionType.name != 'Account charge' %}
+                                    {{ '-' }}
+                                {% endif %}
+                            </td>
+                            <td>{{ transaction.transferToAccount.nameWithCurrency ?? '-' }}</td>
+                            <td>{{ transaction.transferToAccount.balance ?? '-' }}</td>
+                            <td>
+                                {% if transaction.supplier is not empty and transaction.supplier is not null %}
+                                    {{ transaction.supplier.name ?? '-' }}
+                                {% else %}
+                                    {{ '-' }}
+                                {% endif %}
+                            </td>
+                            {# MONEY IN #}
+                            <td>
+                                {% if transaction.transactionType.name == 'Cash transfer' and mainAccount == transferToAccount %}
+                                    {% if transaction.moneyOut is defined and transaction.moneyOut != null %}
+                                        {{ transaction.moneyOut|number_format(2, '.', ',') }}
+                                    {% elseif transaction.moneyIn is defined and transaction.moneyIn != null %}
+                                        {{ transaction.moneyIn|number_format(2, '.', ',') }}
+                                    {% else %}
+                                        {{ '-' }}
+                                    {% endif %}
+                                {% elseif transaction.transactionType.name == 'Cash transfer' and mainAccount == transferFromAccount %}
+                                    {{ '-' }}
+                                {% elseif transaction.transactionType.name == 'Currency exchange' and mainAccount == transferToAccount %}
+                                    {% if transaction.newValue is defined and transaction.newValue != null %}
+                                        {{ transaction.newValue|number_format(2, '.', ',') }}
+                                    {% else %}
+                                        {{ '-' }}
+                                    {% endif %}
+                                {% elseif transaction.transactionType.name == 'Cash withdrawal' and mainAccount == transferFromAccount %}
+                                    {{ '-' }}
+                                {% elseif transaction.transactionType.name == 'Cash withdrawal' and mainAccount == transferToAccount %}
+                                    {% if transaction.moneyIn is defined and transaction.moneyIn != null %}
+                                        {{ transaction.moneyIn|number_format(2, '.', ',') }}
+                                    {% else %}
+                                        {{ '-' }}
+                                    {% endif %}
+                                {% elseif transaction.transactionType.name == 'Bank transfer' and mainAccount == transferToAccount %}
+                                    {% if transaction.transferFromAccount and transaction.transferToAccount %}
+                                        {% if transaction.transferFromAccount.currency != transaction.transferToAccount.currency %}
+                                            {% if transaction.realAmountPaid %}
+                                                {{ transaction.amount|number_format(2, '.', ',') }}
+                                            {% else %}
+                                                {{ transaction.newValue|number_format(2, '.', ',') }}
+                                            {% endif %}
+                                        {% elseif transaction.amount is defined and transaction.amount != null %}
+                                            {{ transaction.amount|number_format(2, '.', ',') }}
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    {% else %}
+                                        {{ '-' }}
+                                    {% endif %}
+                                {% elseif transaction.transactionType.name == 'Bank transfer' and mainAccount == transferFromAccount %}
+                                    {{ '-' }}
+                                {% else %}
+                                    {% if transaction.moneyIn is defined and transaction.moneyIn != null %}
+                                        {{ transaction.moneyIn|number_format(2, '.', ',') }} 
+                                    {% else %}
+                                        {{ '-' }}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            {# MONEY OUT #}
+                            <td>
+                                {% if transaction.transactionType.name == 'Cash transfer' and mainAccount == transferToAccount %}
+                                    {{ '-' }}
+                                {% elseif transaction.transactionType.name == 'Cash transfer' and mainAccount == transferFromAccount %}
+                                    {% if transaction.moneyOut is defined and transaction.moneyOut != null %}
+                                        {{ transaction.moneyOut|number_format(2, '.', ',') }}
+                                    {% else %}
+                                        {{ '-' }}
+                                    {% endif %}
+                                {% elseif transaction.transactionType.name == 'Currency exchange' and mainAccount == transferToAccount %}
+                                    {{ '-' }}
+                                {% elseif transaction.transactionType.name == 'Cash withdrawal' and mainAccount == transferFromAccount %}
+                                    {% if transaction.transferFromAccount.currency != transaction.transferToAccount.currency %}
+                                        {% if transaction.amountFromAccount is defined and transaction.amountFromAccount != null %}
+                                            {{ transaction.amountFromAccount|number_format(2, '.', ',') }}
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    {% else %}
+                                        {% if transaction.amount is defined and transaction.amount != null %}
+                                            {{ transaction.amount|number_format(2, '.', ',') }}
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    {% endif %}
+                                {% elseif transaction.transactionType.name == 'Bank transfer' and mainAccount == transferToAccount %}
+                                    {{ '-' }}
+                                {% elseif transaction.transactionType.name == 'Bank transfer' and mainAccount == transferFromAccount %}
+                                    {% if transaction.amount is defined and transaction.amount != null %}
+                                        {% if transaction.realAmountPaid %}
+                                            {{ transaction.realAmountPaid|number_format(2, '.', ',') }}
+                                        {% else %}
+                                            {{ transaction.amount|number_format(2, '.', ',') }}
+                                        {% endif %}
+                                    {% else %}
+                                        {{ '-' }}
+                                    {% endif %}
+                                {% else %}
+                                    {% if transaction.moneyOut is defined and transaction.moneyOut != null %}
+                                        {{ transaction.moneyOut|number_format(2, '.', ',') }}
+                                    {% else %}
+                                        {{ '-' }}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            {# BALANCE #}
+                            <td>
+                                {% if transaction.transactionType.name == 'Cash transfer' and mainAccount == transferToAccount %}
+                                    {% if transaction.balanceTransferToAccount is defined and transaction.balanceTransferToAccount != null %}
+                                        {{ transaction.balanceTransferToAccount|number_format(2, '.', ',') }}
+                                    {% else %}
+                                        {{ '-' }}
+                                    {% endif %}
+                                {% elseif transaction.transactionType.name == 'Cash transfer' and mainAccount == transferFromAccount %}
+                                    {% if transaction.balanceTransferFromAccount is defined and transaction.balanceTransferFromAccount != null %}
+                                        {{ transaction.balanceTransferFromAccount|number_format(2, '.', ',') }}
+                                    {% else %}
+                                        {{ '-' }}
+                                    {% endif %}
+                                {% elseif transaction.transactionType.name == 'Currency exchange' and mainAccount == transferToAccount %}
+                                    {% if transaction.balanceTransferToAccount is defined and transaction.balanceTransferToAccount != null %}
+                                        {{ transaction.balanceTransferToAccount|number_format(2, '.', ',') }}
+                                    {% else %}
+                                        {{ '-' }}
+                                    {% endif %}
+                                {% elseif transaction.transactionType.name == 'Currency exchange' and mainAccount == transferFromAccount %}
+                                    {% if transaction.balanceTransferFromAccount is defined and transaction.balanceTransferFromAccount != null %}
+                                        {{ transaction.balanceTransferFromAccount|number_format(2, '.', ',') }}
+                                    {% else %}
+                                        {{ '-' }}
+                                    {% endif %}
+                                {% elseif transaction.transactionType.name == 'Cash withdrawal' and mainAccount == transferFromAccount %}
+                                    {% if transaction.balanceTransferFromAccount is defined and transaction.balanceTransferFromAccount != null %}
+                                        {{ transaction.balanceTransferFromAccount|number_format(2, '.', ',') }}
+                                    {% else %}
+                                        {{ '-' }}
+                                    {% endif %}
+                                {% elseif transaction.transactionType.name == 'Bank transfer' and mainAccount == transferToAccount %}
+                                    {% if transaction.balanceTransferToAccount is defined and transaction.balanceTransferToAccount != null %}
+                                        {{ transaction.balanceTransferToAccount|number_format(2, '.', ',') }}
+                                    {% else %}
+                                        {{ '-' }}
+                                    {% endif %}
+                                {% elseif transaction.transactionType.name == 'Bank transfer' and mainAccount == transferFromAccount %}
+                                    {% if transaction.balanceTransferFromAccount is defined and transaction.balanceTransferFromAccount != null %}
+                                        {{ transaction.balanceTransferFromAccount|number_format(2, '.', ',') }}
+                                    {% else %}
+                                        {{ '-' }}
+                                    {% endif %}
+                                {% else %}
+                                    {{ transaction.balanceMainAccount|number_format(2, '.', ',') }}
+                                {% endif %}
+                            </td>
+                            {# TODO: #}
+                            {# <td>{% include 'CRUD/list_document_file.html.twig' %}</td> #}
+                            {# ACTIONS #}
+                            <td>
+                                <div class="btn-group-list">
+                                    {# TODO: #}
+                                    {# {% include 'Account/action_add_bank_fee.html.twig' %} #}
+                                    <a href={{ transactionLinkShow }} class="btn btn-sm btn-default view_link" title="Show">
+                                        <i class="fas fa-eye" aria-hidden="true"></i>
+                                    </a>
+                                    <a href={{ transactionLinkEdit }} class="btn btn-sm btn-default edit_link" title="Check">
+                                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                                    </a>
+                                    <a href={{ transactionLinkDelete }} class="btn btn-xs btn-danger delete_link" title="Delete">
+                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% set num = num + 1 %}
+                    {% else %}
+                        <li>{{ element|render_relation_element(field_description) }}</li>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Account transaction list height resizing: Call the function initially and whenever the table content changes
+        // updateTableContainerHeight();
+
+        // function updateTableContainerHeight() {
+        //     debugger;
+        //     const container = document.getElementById('account-transaction-table-container');
+        //     const tableBody = document.getElementById('account-transaction-table-body');
+            
+        //     // Calculate the height based on the table body content
+        //     const newHeight = tableBody.clientHeight;
+
+        //     // Set the container's height to the calculated value
+        //     if (newHeight == 37) {
+        //         container.style.height = `${newHeight + 37}px`;
+        //     } else {
+        //         container.style.height = `${newHeight}px`;
+        //     }
+        // }
+    </script>
+{% endblock %}

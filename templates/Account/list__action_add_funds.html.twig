@@ -1,0 +1,30 @@
+{%- block add_funds_modal -%}
+
+{# Link to modal #}
+{# {% if object.accountType == 'Card Account' %} #}
+{% if object.accountType == 'Cash Account' or object.accountType == 'Card Account' %}
+    {% if object.deactivated == false %}
+        <a class="btn btn-sm btn-default" href="{{ admin.generateObjectUrl('addFundsLinkToModal', object) }}" data-toggle="modal" data-target="#addFundsModal" title="Add Funds">
+            <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
+        </a>
+    {% endif %}
+{% endif %}
+
+{# Modal add_funds_modal_form.html.twig #}
+<div class="modal fade" id="addFundsModal" tabindex="-1" role="dialog" aria-labelledby="addFundsModal" aria-hidden="true">
+    <div id="modalDialog" class="modal-dialog" role="document">
+        <div class="modal-content" style="background-color:#D1D6E6;">
+           
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#addFundsModal').on('shown.bs.modal', function () {
+            $(this).removeData('bs.modal');
+        });
+    });
+</script>
+
+{%- endblock -%}

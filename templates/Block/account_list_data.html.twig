@@ -1,0 +1,33 @@
+{%- block account_list_data -%}
+
+<tr>
+    <td>{{ account.nameWithCurrency }}</td>
+    <td{% if account.balance < 0 %} style="color: red"{% endif %}> {{ account.balance|format_currency(account.currency, {fraction_digit: 2}) }}</td>
+    <td>
+        <a href="/admin/app/account/{{ account.id }}/show" class="btn btn-xs btn-default" target="_blank">
+            <i class="fas fa-eye" title="View" aria-hidden="true"></i>
+        </a>
+        <a href="/admin/app/account/{{ account.id }}/edit" class="btn btn-xs btn-default" target="_blank">
+            <i class="fas fa-pencil-alt" title="Edit" aria-hidden="true"></i>
+        </a>
+			
+        {% if account.file.toArray() is not empty %}
+            {% set filePaths = [] %}
+
+            {% set archiveName = account.nameWithCurrency %}
+
+            {% for element in account.file %}
+                {% set fullFilePath = element.getUploadedFullFilePath(get_project_dir()) %}
+                {% set filePaths = filePaths|merge([fullFilePath]) %}
+            {% endfor %}
+
+            {% if filePaths is not empty %}
+                <a href="{{ path('generate_zip', {'filePaths': filePaths, 'archiveName': archiveName}) }}" class="btn btn-xs btn-default" target="_blank">
+                    <i class="fa fa-download" title="Download All" aria-hidden="true"></i>
+                </a>
+            {% endif %}
+        {% endif %}
+    </td>
+</tr>
+
+{%- endblock -%}
