@@ -31,4 +31,6 @@
 /phpcs.xml
 ###< squizlabs/php_codesniffer ###
 
+/node_modules/
+
 .php-version

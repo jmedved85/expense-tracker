@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "@types/jquery": "^3.5.30"
+  },
+  "dependencies": {
+    "@types/select2": "^4.0.63"
+  }
+}

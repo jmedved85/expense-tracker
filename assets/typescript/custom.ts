@@ -25,4 +25,23 @@ document.addEventListener('DOMContentLoaded', function() {
             userCreateButton.style.backgroundColor = ''; // Change back to the original color
         });
     }
+
+    /* Customizing a Create button on the User List and Show */
+    // const userCreateButton = document.querySelector('a[href$="/user/create"]') as HTMLAnchorElement | null;
+
+    if (userCreateButton) {
+        const parentElement = userCreateButton.parentNode as HTMLElement | null;
+        const grandparentElement = parentElement?.parentNode as HTMLElement | null;
+
+        if (grandparentElement && grandparentElement.classList.contains('nav-item')) {
+            grandparentElement.style.padding = '0';
+            userCreateButton.className = 'btn btn-success';
+        }
+
+        const userActionDropdown = userCreateButton.parentElement?.parentElement as HTMLElement | null;
+
+        if (userActionDropdown && userActionDropdown.classList.contains('dropdown-menu')) {
+            userCreateButton.className = 'sonata-action-element';
+        }
+    }
 });
