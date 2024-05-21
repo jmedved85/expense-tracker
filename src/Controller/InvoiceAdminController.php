@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use TypeError;
+use App\Traits\ControllerTrait;
 
 final class InvoiceAdminController extends CRUDController
 {

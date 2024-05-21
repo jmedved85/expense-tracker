@@ -17,7 +17,7 @@ use Twig\Environment;
 class AppUtil
 {
     public function __construct(
-        private string $projectDir,
+        // private string $projectDir,
         private RequestStack $requestStack,
         private Environment $twig,
         private TokenStorageInterface $tokenStorage,
@@ -125,7 +125,7 @@ class AppUtil
     {
         return $this->twig->render('PDF/header.html.twig', [
             'unit' => $unit,
-            'projectDir' => $this->projectDir,
+            // 'projectDir' => $this->projectDir,
             'recordDate' => $recordDate,
         ]);
     }
@@ -138,7 +138,7 @@ class AppUtil
         return $this->twig->render('PDF/footer.html.twig', [
             'unit' => $unit,
             'currentTime' => $currentTime,
-            'projectDir' => $this->projectDir
+            // 'projectDir' => $this->projectDir
         ]);
     }
 }

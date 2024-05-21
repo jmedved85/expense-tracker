@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Traits;
 
 use App\Entity\Account;
 use App\Entity\Transaction;
