@@ -1,144 +1,167 @@
-$(function() {
+document.addEventListener("DOMContentLoaded", function() {
     /* INVOICE CREATE FORM - currency symbol on Amount total invoice field */
     const invoiceCreateForm = document.querySelector('form[action*="/admin/app/invoice/"][action*="/create"]');
     const invoiceAddNewCreateForm = document.querySelector('form[action^="/admin/app/invoice/create"]');
     const invoiceEditForm = document.querySelector('form[action^="/admin/app/invoice"][action*="/edit"]');
     
     if (invoiceAddNewCreateForm || invoiceCreateForm || invoiceEditForm) {
-        const invoiceAccountSelectFieldInvoice = document.querySelector('select[id$="_account"]');
-        const currencySelectFieldInvoice = document.querySelector('select[id$="_currency"]');
-        const currencyTextFieldInvoice = document.querySelector('input[id$="_currency"]');
-        const amountTotalInvoiceContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_amount"]');
-        const realAmountPaidInvoiceContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_realAmountPaid"]');
-        const bankFeeInvoiceContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_bankFeeAmount"]');
-        const invoiceLinesContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_invoiceLines"]');
-        const budgetMainCategorySelect = document.querySelector('select[id$="_budgetMainCategory"]');
-        const invoiceDateInput = document.querySelectorAll('.input-group.date');
+        const invoiceAccountSelectFieldInvoice = document.querySelector('select[id$="_account"]') as HTMLSelectElement;
+        const currencySelectFieldInvoice = document.querySelector('select[id$="_currency"]') as HTMLSelectElement;
+        const currencyTextFieldInvoice = document.querySelector('input[id$="_currency"]') as HTMLInputElement;
+        const amountTotalInvoiceContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_amount"]') as HTMLDivElement;
+        const realAmountPaidInvoiceContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_realAmountPaid"]') as HTMLDivElement;
+        const bankFeeInvoiceContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_bankFeeAmount"]') as HTMLDivElement;
+        const invoiceLinesContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_invoiceLines"]') as HTMLDivElement;
+        const budgetMainCategorySelect = document.querySelector('select[id$="_budgetMainCategory"]') as HTMLSelectElement;
+        const invoiceDateInput = document.querySelectorAll('.input-group.date') as NodeListOf<HTMLElement>;
         // const addNewButtonInvoiceLines = invoiceLinesContainer.querySelector('a[title="Add new"]');
 
         invoiceDateInput.forEach(item => {
             item.style.width = '35%';
         });
 
-        let accountCurrencyCode;
-        let selectedCurrencyCode;
-        let mainCategoryId;
+        let accountCurrencyCode: string | undefined;
+        let selectedCurrencyCode: string;
+        let mainCategoryId: string;
 
         if (invoiceAccountSelectFieldInvoice && currencySelectFieldInvoice && budgetMainCategorySelect) {
-            if (invoiceAccountSelectFieldInvoice === '' || currencySelectFieldInvoice.value === '') {
+            if (invoiceAccountSelectFieldInvoice as HTMLSelectElement && (currencySelectFieldInvoice as HTMLSelectElement).value === '') {
                 if (amountTotalInvoiceContainer) {
                     const currencySymbolElementAmountTotal = amountTotalInvoiceContainer.querySelector('.input-group-addon');
-                    currencySymbolElementAmountTotal.textContent = '\u00A0\u00A0';
+
+                    if (currencySymbolElementAmountTotal) {
+                        currencySymbolElementAmountTotal.textContent = '\u00A0\u00A0';
+                    }
                 }
         
                 if (realAmountPaidInvoiceContainer) {
                     const currencySymbolElementRealAmountPaid = realAmountPaidInvoiceContainer.querySelector('.input-group-addon');
-                    currencySymbolElementRealAmountPaid.textContent = '\u00A0\u00A0';
+
+                    if (currencySymbolElementRealAmountPaid) {
+                        currencySymbolElementRealAmountPaid.textContent = '\u00A0\u00A0';
+                    }
                 }
     
                 if (bankFeeInvoiceContainer) {
                     const currencySymbolElementBankFeeAmount = bankFeeInvoiceContainer.querySelector('.input-group-addon');
-                    currencySymbolElementBankFeeAmount.textContent = '\u00A0\u00A0';
+
+                    if (currencySymbolElementBankFeeAmount) {
+                        currencySymbolElementBankFeeAmount.textContent = '\u00A0\u00A0';
+                    }
                 }
             }
         }
 
-        $(invoiceAccountSelectFieldInvoice).on('select2:select', (e) => {
-            const currencySymbolElementRealAmountPaid = realAmountPaidInvoiceContainer.querySelector('.input-group-addon');
-            const currencySymbolElementBankFeeAmount = bankFeeInvoiceContainer.querySelector('.input-group-addon');
-            const invoiceRealAmountPaidContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_realAmountPaid"]');
-            const realAmountPaidInvoiceInput = realAmountPaidInvoiceContainer.querySelector('input[id$="_realAmountPaid"]');
-            const invoicePaymentStatusSelect = document.querySelector('select[id$="_invoicePaymentStatus"]');
-            const regex = /\((.*?)\)/;
-            let selectedOption = e.params.data;
-            const matches = selectedOption.text.match(regex);
-
-            /* TODO: fix Add New Invoice Paying bank Account select "Real Amount Paid" currency symbol */
-
-            if (matches && matches.length > 1) {
-                accountCurrencyCode = matches[1];
-                const currencySymbol = new Intl.NumberFormat('en', { style: 'currency', currency: accountCurrencyCode }).formatToParts(0).find(part => part.type === 'currency').value.trim();
-
-                if (currencySymbolElementRealAmountPaid) {
-                    currencySymbolElementRealAmountPaid.textContent = currencySymbol;
+        if (invoiceAccountSelectFieldInvoice) {
+            $(invoiceAccountSelectFieldInvoice).on('select2:select', (e) => {
+                const currencySymbolElementRealAmountPaid = realAmountPaidInvoiceContainer.querySelector('.input-group-addon') as HTMLElement;
+                const currencySymbolElementBankFeeAmount = bankFeeInvoiceContainer.querySelector('.input-group-addon') as HTMLElement;
+                const invoiceRealAmountPaidContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_realAmountPaid"]') as HTMLDivElement;
+                const realAmountPaidInvoiceInput = realAmountPaidInvoiceContainer.querySelector('input[id$="_realAmountPaid"]') as HTMLInputElement;
+                const invoicePaymentStatusSelect = document.querySelector('select[id$="_invoicePaymentStatus"]') as HTMLSelectElement;
+                const regex = /\((.*?)\)/;
+                let selectedOption = e.params.data as { text: string };
+                const matches = selectedOption.text.match(regex);
+    
+                /* TODO: fix Add New Invoice Paying bank Account select "Real Amount Paid" currency symbol */
+    
+                if (matches && matches.length > 1) {
+                    accountCurrencyCode = matches[1];
+                    const currencyPart = new Intl.NumberFormat('en', { style: 'currency', currency: accountCurrencyCode })
+                        .formatToParts(0)
+                        .find(part => part.type === 'currency');
+                    const currencySymbol = currencyPart ? currencyPart.value.trim() : '';
+    
+                    if (currencySymbolElementRealAmountPaid) {
+                        currencySymbolElementRealAmountPaid.textContent = currencySymbol;
+                    }
+    
+                    if (currencySymbolElementBankFeeAmount) {
+                        currencySymbolElementBankFeeAmount.textContent = currencySymbol;
+                    }
                 }
-
-                currencySymbolElementBankFeeAmount.textContent = currencySymbol;
-            }
-
-            if (selectedCurrencyCode === undefined) {
-                if (currencySelectFieldInvoice) {
-                    selectedCurrencyCode = currencySelectFieldInvoice.value;
-                } else if (currencyTextFieldInvoice) {
-                    selectedCurrencyCode = currencyTextFieldInvoice.value;
-                } else {
-                    selectedCurrencyCode = '';
-                }
-            }
-
-            if (accountCurrencyCode !== undefined && selectedCurrencyCode !== undefined) {
-                if (accountCurrencyCode === selectedCurrencyCode) {
-                    realAmountPaidInvoiceContainer.style.display = 'none';
-                    realAmountPaidInvoiceInput.required = false;
-                } else {
-                    realAmountPaidInvoiceContainer.style.display = 'block';
-                    realAmountPaidInvoiceInput.required = true;
-                }
-            }
-
-            if (invoicePaymentStatusSelect.value == 'Part-Paid') {
-                // invoicePartPaymentsContainer.style.display = 'block';
-                // invoiceTotalPaidContainer.style.display = 'block';
-                invoiceRealAmountPaidContainer.style.display = 'none';
-                realAmountPaidInvoiceInput.required = false;
-            }
-        })
-
-        $(currencySelectFieldInvoice).on('select2:select', (e) => {
-            if (realAmountPaidInvoiceContainer && amountTotalInvoiceContainer) {
-                const invoicePaymentStatusSelect = document.querySelector('select[id$="_invoicePaymentStatus"]');
-                const realAmountPaidInvoiceInput = realAmountPaidInvoiceContainer.querySelector('input[id$="_realAmountPaid"]');
-                const currencySymbolElementAmountTotal = amountTotalInvoiceContainer.querySelector('.input-group-addon');
-                const selectedOption = currencySelectFieldInvoice.options[currencySelectFieldInvoice.selectedIndex];
-                selectedCurrencyCode = selectedOption.value;
-
-                const currencySymbol = new Intl.NumberFormat('en', { style: 'currency', currency: selectedCurrencyCode }).formatToParts(0).find(part => part.type === 'currency').value.trim();
-
-                if (currencySymbolElementAmountTotal) {
-                    currencySymbolElementAmountTotal.textContent = currencySymbol;
-                }
-
-                if (accountCurrencyCode === undefined) {
-                    accountCurrencyCode = getAccountCurrencyCode(invoiceAccountSelectFieldInvoice);
+    
+                if (selectedCurrencyCode === undefined) {
+                    if (currencySelectFieldInvoice) {
+                        selectedCurrencyCode = currencySelectFieldInvoice.value;
+                    } else if (currencyTextFieldInvoice) {
+                        selectedCurrencyCode = currencyTextFieldInvoice.value;
+                    } else {
+                        selectedCurrencyCode = '';
+                    }
                 }
     
                 if (accountCurrencyCode !== undefined && selectedCurrencyCode !== undefined) {
                     if (accountCurrencyCode === selectedCurrencyCode) {
-                        realAmountPaidInvoiceContainer.style.display = 'none';
-                        realAmountPaidInvoiceInput.required = false;
+                        if (invoiceRealAmountPaidContainer) {
+                            invoiceRealAmountPaidContainer.style.display = 'none';
+                            realAmountPaidInvoiceInput.required = false;
+                        }
                     } else {
-                        if (invoicePaymentStatusSelect.value !== 'Unpaid') {
-                            realAmountPaidInvoiceContainer.style.display = 'block';
-                            realAmountPaidInvoiceInput.required = true;
+                        realAmountPaidInvoiceContainer.style.display = 'block';
+                        realAmountPaidInvoiceInput.required = true;
+                    }
+                }
+    
+                if (invoicePaymentStatusSelect.value == 'Part-Paid') {
+                    // invoicePartPaymentsContainer.style.display = 'block';
+                    // invoiceTotalPaidContainer.style.display = 'block';
+                    invoiceRealAmountPaidContainer.style.display = 'none';
+                    realAmountPaidInvoiceInput.required = false;
+                }
+            })
+        }
+
+        if (currencySelectFieldInvoice) {
+            $(currencySelectFieldInvoice).on('select2:select', (e) => {
+                if (realAmountPaidInvoiceContainer && amountTotalInvoiceContainer) {
+                    const invoicePaymentStatusSelect = document.querySelector('select[id$="_invoicePaymentStatus"]') as HTMLSelectElement;
+                    const realAmountPaidInvoiceInput = realAmountPaidInvoiceContainer.querySelector('input[id$="_realAmountPaid"]') as HTMLInputElement;
+                    const currencySymbolElementAmountTotal = amountTotalInvoiceContainer.querySelector('.input-group-addon') as HTMLElement;
+                    const selectedOption = (currencySelectFieldInvoice as HTMLSelectElement).options[(currencySelectFieldInvoice as HTMLSelectElement).selectedIndex] as HTMLOptionElement;
+                    let selectedCurrencyCode = selectedOption.value;
+    
+                    const currencyPart = new Intl.NumberFormat('en', { style: 'currency', currency: selectedCurrencyCode })
+                        .formatToParts(0)
+                        .find(part => part.type === 'currency');
+                    const currencySymbol = currencyPart ? currencyPart.value.trim() : '';
+    
+                    if (currencySymbolElementAmountTotal) {
+                        currencySymbolElementAmountTotal.textContent = currencySymbol;
+                    }
+    
+                    if (accountCurrencyCode === undefined) {
+                        accountCurrencyCode = getAccountCurrencyCode(invoiceAccountSelectFieldInvoice);
+                    }
+        
+                    if (accountCurrencyCode !== undefined && selectedCurrencyCode !== undefined) {
+                        if (accountCurrencyCode === selectedCurrencyCode) {
+                            realAmountPaidInvoiceContainer.style.display = 'none';
+                            realAmountPaidInvoiceInput.required = false;
+                        } else {
+                            if (invoicePaymentStatusSelect.value !== 'Unpaid') {
+                                realAmountPaidInvoiceContainer.style.display = 'block';
+                                realAmountPaidInvoiceInput.required = true;
+                            }
                         }
                     }
                 }
-            }
-        })
+            })
+        }
 
         /* Amount (Invoice Lines Total) calculation && Budget Category filtration */
-        let invoiceAmountTotal = amountTotalInvoiceContainer.querySelector('input[id$="_amount"]');
-        let selectedBudgetCategories = [];
+        let invoiceAmountTotal = amountTotalInvoiceContainer.querySelector('input[id$="_amount"]') as HTMLInputElement;
+        let selectedBudgetCategories: any[] = [];
 
         invoiceLinesContainer.addEventListener('click', (e) => {
-            if (e.target.matches('a[title="Add new"]')) {
+            if ((e.target as Element).matches('a[title="Add new"]')) {
                 /* INVOICE TOTAL SUM CALCULATION */
                 let lineTotalsSum = 0;
 
                 const lineTotals = invoiceLinesContainer.querySelectorAll('input[id$="_lineTotal"]');
 
                 lineTotals.forEach((lineTotal) => {
-                    let lineTotalValue = lineTotal.value.replace(/,/g, '');
+                    let lineTotalValue = (lineTotal as HTMLInputElement).value.replace(/,/g, '');
                     let lineTotalValueFloat = parseFloat(lineTotalValue);
 
                     if (!isNaN(lineTotalValueFloat)) {
@@ -146,22 +169,22 @@ $(function() {
                     }
                 });
 
-                const formattedSum = lineTotalsSum.toFixed(2);
+                const formattedSum: string = lineTotalsSum.toFixed(2);
 
-                invoiceAmountTotal.value = formattedSum;
-
-                const invoiceLineItems = invoiceLinesContainer.querySelectorAll('.ui-sortable-handle');
+                (invoiceAmountTotal as HTMLInputElement).value = formattedSum;
+                
+                const invoiceLineItems: NodeListOf<Element> = invoiceLinesContainer.querySelectorAll('.ui-sortable-handle');
 
                 invoiceLineItems.forEach((item) => {
-                    const budgetMainCategorySelect = item.querySelector('select[id*="_budgetMainCategory"]');
-                    const budgetCategorySelect = item.querySelector('select[id*="_budgetCategory"]');
+                    const budgetMainCategorySelect: HTMLSelectElement | null = item.querySelector('select[id*="_budgetMainCategory"]') as HTMLSelectElement;
+                    const budgetCategorySelect: HTMLSelectElement | null = item.querySelector('select[id*="_budgetCategory"]') as HTMLSelectElement;
 
                     if (budgetMainCategorySelect.selectedIndex > 0) {
                         const categoryElementId = budgetCategorySelect.id;
                         const categoryOptions = budgetCategorySelect.querySelectorAll('option');
-                        const optionsArr = [];
+                        const optionsArr: { id: string; name: string; selected: boolean; }[] = [];
 
-                        categoryOptions.forEach((option) => {
+                        categoryOptions.forEach((option: HTMLOptionElement) => {
                             const optionIdText = {
                                 id: option.value,
                                 name: option.text,
@@ -182,32 +205,39 @@ $(function() {
 
                 /* FILTERING BUDGET CATEGORIES IF MAIN CATEGORY IS SELECTED */
                 function checkForInvoiceLineRowToOpen() {
-                    const invoiceLinesRows = invoiceLinesContainer.querySelector('.sonata-ba-tbody.ui-sortable')
+                    const invoiceLinesRows: Element | null = invoiceLinesContainer.querySelector('.sonata-ba-tbody.ui-sortable')
                         ?? invoiceLinesContainer.querySelector('.sonata-ba-collapsed-fields');
 
                     if (invoiceLinesRows) {
-                        const invoiceLineTableStyleItems = invoiceLinesContainer.querySelectorAll('.ui-sortable-handle');
-                        const invoiceLineFormStyleItems = invoiceLinesContainer.querySelectorAll('fieldset');
-        
-                        const invoiceLineItems = invoiceLineTableStyleItems.length > 0 ? invoiceLineTableStyleItems : invoiceLineFormStyleItems;
+                        const invoiceLineTableStyleItems: NodeListOf<Element> = invoiceLinesContainer.querySelectorAll('.ui-sortable-handle');
+                        const invoiceLineFormStyleItems: NodeListOf<Element> = invoiceLinesContainer.querySelectorAll('fieldset');
+                    
+                        const invoiceLineItems: NodeListOf<Element> 
+                            = invoiceLineTableStyleItems.length > 0 ? invoiceLineTableStyleItems : invoiceLineFormStyleItems;
 
-                        invoiceLineItems.forEach((item) => {
-                            let itemParent = item.parentElement;
+                        invoiceLineItems.forEach((item: Element) => {
+                            let itemParent: Element | null = item.parentElement;
 
                             if (!(itemParent && itemParent.id.endsWith('file'))) {
-                                const budgetMainCategorySelect = item.querySelector('select[id*="_budgetMainCategory"]');
-                                const budgetCategorySelect = item.querySelector('select[id*="_budgetCategory"]');
-                                const netValueInput = item.querySelector('input[id*="_netValue"]');
-                                const vatInput = item.querySelector('input[id*="_vat"]');
-                                const vatValueInput = item.querySelector('input[id*="_vatValue"]');
-                                const lineTotalInput = item.querySelector('input[id*="_lineTotal"]');
+                                const budgetMainCategorySelect: HTMLSelectElement | null 
+                                    = item.querySelector('select[id*="_budgetMainCategory"]') as HTMLSelectElement;
+                                const budgetCategorySelect: HTMLSelectElement | null 
+                                    = item.querySelector('select[id*="_budgetCategory"]') as HTMLSelectElement;
+                                const netValueInput: HTMLInputElement | null 
+                                    = item.querySelector('input[id*="_netValue"]');
+                                const vatInput: HTMLInputElement | null 
+                                    = item.querySelector('input[id*="_vat"]');
+                                const vatValueInput: HTMLInputElement | null 
+                                    = item.querySelector('input[id*="_vatValue"]');
+                                const lineTotalInput: HTMLInputElement | null 
+                                    = item.querySelector('input[id*="_lineTotal"]');
 
                                 if (Array.isArray(selectedBudgetCategories)) {
                                     if (selectedBudgetCategories.length > 0) {
                                         selectedBudgetCategories.forEach((selectedCategory) => {
-                                            if (budgetMainCategorySelect.selectedIndex > 0) {
+                                            if (budgetMainCategorySelect && budgetMainCategorySelect.selectedIndex > 0) {
                                                 if (budgetCategorySelect.id == selectedCategory.key) {
-                                                    updateBudgetCategoryList(budgetCategorySelect, selectedCategory.value);
+                                                    updateBudgetCategoryListInvoiceCreateEdit(budgetCategorySelect, selectedCategory.value);
                                                 }
                                             }
                                         });
@@ -232,48 +262,56 @@ $(function() {
                                     .then(response => response.json())
                                     .then(data => {
                                         // console.log(data); // Handle response from the server
-                                        updateBudgetCategoryList(budgetCategorySelect, data);
+                                        updateBudgetCategoryListInvoiceCreateEdit(budgetCategorySelect, data);
                                     })
                                     .catch(error => {
                                         console.error('Error:', error);
                                     });
                                 });
 
-                                $(netValueInput).on({
-                                    keyup: function() {
-                                        formatCurrency($(this));
-                                    },
-                                    blur: function() {
-                                        formatCurrency($(this), "blur");
-                                    }
-                                });
+                                if (netValueInput) {
+                                    $(netValueInput).on({
+                                        keyup: function() {
+                                            formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                                        },
+                                        blur: function() {
+                                            formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                                        }
+                                    });
+                                }
 
-                                $(vatInput).on({
-                                    keyup: function() {
-                                        formatCurrency($(this));
-                                    },
-                                    blur: function() {
-                                        formatCurrency($(this), "blur");
-                                    }
-                                });
+                                if (vatInput) {
+                                    $(vatInput).on({
+                                        keyup: function() {
+                                            formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                                        },
+                                        blur: function() {
+                                            formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                                        }
+                                    });
+                                }
 
-                                $(vatValueInput).on({
-                                    keyup: function() {
-                                        formatCurrency($(this));
-                                    },
-                                    blur: function() {
-                                        formatCurrency($(this), "blur");
-                                    }
-                                });
+                                if (vatValueInput) {
+                                    $(vatValueInput).on({
+                                        keyup: function() {
+                                            formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                                        },
+                                        blur: function() {
+                                            formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                                        }
+                                    });
+                                }
 
-                                $(lineTotalInput).on({
-                                    keyup: function() {
-                                        formatCurrency($(this));
-                                    },
-                                    blur: function() {
-                                        formatCurrency($(this), "blur");
-                                    }
-                                });
+                                if (lineTotalInput) {
+                                    $(lineTotalInput).on({
+                                        keyup: function() {
+                                            formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                                        },
+                                        blur: function() {
+                                            formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                                        }
+                                    });
+                                }
                             }
                         });
 
@@ -286,24 +324,28 @@ $(function() {
         });
 
         if (invoiceEditForm) {
-            const invoiceLinesRows = invoiceLinesContainer.querySelector('.sonata-ba-tbody.ui-sortable')
-            ?? invoiceLinesContainer.querySelector('.sonata-ba-collapsed-fields');
+            const invoiceLinesRows: Element | null = invoiceLinesContainer.querySelector('.sonata-ba-tbody.ui-sortable')
+                ?? invoiceLinesContainer.querySelector('.sonata-ba-collapsed-fields');
 
             if (invoiceLinesRows) {
-                const invoiceLineTableStyleItems = invoiceLinesContainer.querySelectorAll('.ui-sortable-handle');
-                const invoiceLineFormStyleItems = invoiceLinesContainer.querySelectorAll('fieldset');
-                const invoiceLineItems = invoiceLineTableStyleItems.length > 0 ? invoiceLineTableStyleItems : invoiceLineFormStyleItems;
+                const invoiceLineTableStyleItems: NodeListOf<Element> = invoiceLinesContainer.querySelectorAll('.ui-sortable-handle');
+                const invoiceLineFormStyleItems: NodeListOf<Element> = invoiceLinesContainer.querySelectorAll('fieldset');
+
+                const invoiceLineItems: NodeListOf<Element> 
+                    = invoiceLineTableStyleItems.length > 0 ? invoiceLineTableStyleItems : invoiceLineFormStyleItems;
 
                 invoiceLineItems.forEach((item) => {
-                    let itemParent = item.parentElement;
+                    let itemParent: Element | null = item.parentElement;
 
                     if (!(itemParent && itemParent.id.endsWith('file'))) {
-                        const budgetMainCategorySelect = item.querySelector('select[id*="_budgetMainCategory"]');
-                        const budgetCategorySelect = item.querySelector('select[id*="_budgetCategory"]');
-                        const netValueInput = item.querySelector('input[id*="_netValue"]');
-                        const vatInput = item.querySelector('input[id*="_vat"]');
-                        const vatValueInput = item.querySelector('input[id*="_vatValue"]');
-                        const lineTotalInput = item.querySelector('input[id*="_lineTotal"]');
+                        const budgetMainCategorySelect: HTMLSelectElement | null 
+                            = item.querySelector('select[id*="_budgetMainCategory"]') as HTMLSelectElement;
+                        const budgetCategorySelect: HTMLSelectElement | null 
+                            = item.querySelector('select[id*="_budgetCategory"]') as HTMLSelectElement;
+                        const netValueInput: HTMLInputElement | null = item.querySelector('input[id*="_netValue"]');
+                        const vatInput: HTMLInputElement | null = item.querySelector('input[id*="_vat"]');
+                        const vatValueInput: HTMLInputElement | null = item.querySelector('input[id*="_vatValue"]');
+                        const lineTotalInput: HTMLInputElement | null = item.querySelector('input[id*="_lineTotal"]');
 
                         if (budgetMainCategorySelect.selectedIndex === 0) {
                             budgetCategorySelect.innerHTML = '';
@@ -323,58 +365,69 @@ $(function() {
                             .then(response => response.json())
                             .then(data => {
                                 // console.log(data); // Handle response from the server
-                                updateBudgetCategoryList(budgetCategorySelect, data);
+                                updateBudgetCategoryListInvoiceCreateEdit(budgetCategorySelect, data);
                             })
                             .catch(error => {
                                 console.error('Error:', error);
                             });
                         });
 
-                        $(netValueInput).on({
-                            keyup: function() {
-                                formatCurrency($(this));
-                            },
-                            blur: function() {
-                                formatCurrency($(this), "blur");
-                            }
-                        });
-    
-                        $(vatInput).on({
-                            keyup: function() {
-                                formatCurrency($(this));
-                            },
-                            blur: function() {
-                                formatCurrency($(this), "blur");
-                            }
-                        });
-    
-                        $(vatValueInput).on({
-                            keyup: function() {
-                                formatCurrency($(this));
-                            },
-                            blur: function() {
-                                formatCurrency($(this), "blur");
-                            }
-                        });
-    
-                        $(lineTotalInput).on({
-                            keyup: function() {
-                                formatCurrency($(this));
-                            },
-                            blur: function() {
-                                formatCurrency($(this), "blur");
-                            }
-                        });
+                        if (netValueInput) {
+                            $(netValueInput).on({
+                                keyup: function() {
+                                    formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                                },
+                                blur: function() {
+                                    formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                                }
+                            });
+                        }
+
+                        if (vatInput) {
+                            $(vatInput).on({
+                                keyup: function() {
+                                    formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                                },
+                                blur: function() {
+                                    formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                                }
+                            });
+                        }
+
+                        if (vatValueInput) {
+                            $(vatValueInput).on({
+                                keyup: function() {
+                                    formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                                },
+                                blur: function() {
+                                    formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                                }
+                            });
+                        }
+
+                        if (lineTotalInput) {
+                            $(lineTotalInput).on({
+                                keyup: function() {
+                                    formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                                },
+                                blur: function() {
+                                    formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                                }
+                            });
+                        }
                     }
                 });
             }
         }
 
-        function updateBudgetCategoryList(budgetCategorySelect, filteredBudgetCategories) {
+        function updateBudgetCategoryListInvoiceCreateEdit(
+            budgetCategorySelect: HTMLSelectElement, 
+            filteredBudgetCategories: { id: string; name: string; selected: boolean; }[]
+        ) {
             budgetCategorySelect.innerHTML = '';
 
             if (filteredBudgetCategories) {
-                const newBudgetCategorySelect = document.createElement('select');
+                const newBudgetCategorySelect: HTMLSelectElement = document.createElement('select');
                 newBudgetCategorySelect.id = budgetCategorySelect.id;
                 newBudgetCategorySelect.name = budgetCategorySelect.name;
                 newBudgetCategorySelect.className = budgetCategorySelect.className;
@@ -422,40 +475,39 @@ $(function() {
         // }
     }
 
-    /* INVOICE DOWNPAYMENTS && MONEY RETURNED CONTAINER DISPLAY ON/OFF by Payment Status 'Part-Paid' && 'Money Returned' selector */
-    // const invoiceCreateForm = document.querySelector('form[action*="/admin/app/invoice/"]');
-    // const invoiceCurrencyContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_currency"]');
-    const invoiceAccountContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_account"]');
-    const invoicePaymentStatusSelect = document.querySelector('select[id$="_invoicePaymentStatus"]');
-    const invoicePartPaymentsContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_invoicePartPayments"]');
-    const invoiceDatePaidContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_invoiceDatePaid"]');
-    const invoiceRealAmountPaidContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_realAmountPaid"]');
-    const invoiceBankFeeAmountContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_bankFeeAmount"]');
-    const bankFeeAmountInputHelp = document.querySelector('p[id$="_bankFeeAmount_help"]');
-    const invoicePartPaymentsElementFieldWidget = document.querySelector('span[id^="field_widget_"][id$="_invoicePartPayments"]');
-    const invoiceAmountContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_amount"]');
-    const invoiceTotalPaidContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_totalPaid"]');
-    const partPaymentDatePaidInput = document.querySelectorAll('input[id*="_invoicePartPayments_"][id*="_datePaid"]');
-    const partPaymentAmountInput = document.querySelectorAll('input[id*="_invoicePartPayments_"][id*="_amount"]');
-    const partPaymentBankFeeInput = document.querySelectorAll('input[id*="_invoicePartPayments_"][id*="_bankFeeAmount"]');
-    const invoiceAccountSelectFieldInvoice = document.querySelector('select[id$="_account"]');
-    const currencySelectFieldInvoice = document.querySelector('select[id$="_currency"]');
-    const currencyTextFieldInvoice = document.querySelector('input[id$="_currency"]');
-    let invoiceMoneyReturnedContainer;
+    // const invoiceCreateForm: HTMLFormElement | null = document.querySelector('form[action*="/admin/app/invoice/"]');
+    // const invoiceCurrencyContainer: HTMLDivElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_currency"]');
+    const invoiceAccountContainer: HTMLDivElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_account"]');
+    const invoicePaymentStatusSelect: HTMLSelectElement | null = document.querySelector('select[id$="_invoicePaymentStatus"]');
+    const invoicePartPaymentsContainer: HTMLDivElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_invoicePartPayments"]');
+    const invoiceDatePaidContainer: HTMLDivElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_invoiceDatePaid"]');
+    const invoiceRealAmountPaidContainer: HTMLDivElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_realAmountPaid"]');
+    const invoiceBankFeeAmountContainer: HTMLDivElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_bankFeeAmount"]');
+    const bankFeeAmountInputHelp: HTMLParagraphElement | null = document.querySelector('p[id$="_bankFeeAmount_help"]');
+    const invoicePartPaymentsElementFieldWidget: HTMLSpanElement | null = document.querySelector('span[id^="field_widget_"][id$="_invoicePartPayments"]');
+    const invoiceAmountContainer: HTMLDivElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_amount"]');
+    const invoiceTotalPaidContainer: HTMLDivElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_totalPaid"]');
+    const partPaymentDatePaidInput: NodeListOf<HTMLInputElement> = document.querySelectorAll('input[id*="_invoicePartPayments_"][id*="_datePaid"]');
+    const partPaymentAmountInput: NodeListOf<HTMLInputElement> = document.querySelectorAll('input[id*="_invoicePartPayments_"][id*="_amount"]');
+    const partPaymentBankFeeInput: NodeListOf<HTMLInputElement> = document.querySelectorAll('input[id*="_invoicePartPayments_"][id*="_bankFeeAmount"]');
+    const invoiceAccountSelectFieldInvoice: HTMLSelectElement | null = document.querySelector('select[id$="_account"]');
+    const currencySelectFieldInvoice: HTMLSelectElement | null = document.querySelector('select[id$="_currency"]');
+    const currencyTextFieldInvoice: HTMLInputElement | null = document.querySelector('input[id$="_currency"]');
+    let invoiceMoneyReturnedContainer: HTMLDivElement | null;
 
-    let colMd6Elements = document.getElementsByClassName("col-md-6");
+    let colMd6Elements: HTMLCollectionOf<Element> = document.getElementsByClassName("col-md-6");
 
     if (colMd6Elements) {
         for (let i = 0; i < colMd6Elements.length; i++) {
-            let h4Element = colMd6Elements[i].querySelector(".box-title");
-            if (h4Element && h4Element.textContent.trim() === "Money Returns") {
-                invoiceMoneyReturnedContainer = colMd6Elements[i];
+            let h4Element = colMd6Elements[i].querySelector(".box-title") as HTMLDivElement;
+            if (h4Element && h4Element.textContent && h4Element.textContent.trim() === "Money Returns") {
+                invoiceMoneyReturnedContainer = colMd6Elements[i] as HTMLDivElement;
             }
         }
     }
 
-    let accountCurrencyCode = "";
-    let selectedCurrencyCode = "";
+    let accountCurrencyCode: string | undefined = "";
+    let selectedCurrencyCode: string = "";
 
     if (invoiceAccountSelectFieldInvoice) {
         accountCurrencyCode = getAccountCurrencyCode(invoiceAccountSelectFieldInvoice);
@@ -469,58 +521,75 @@ $(function() {
         selectedCurrencyCode = '';
     }
 
-    let bankFeeAmountInput = null;
-    let bankFeeAmountInputLabel = null;
+    let bankFeeAmountInput: HTMLInputElement | null = null;
+    let bankFeeAmountInputLabel: HTMLLabelElement | null = null;
 
     if (invoiceBankFeeAmountContainer) {
         bankFeeAmountInput = invoiceBankFeeAmountContainer.querySelector('input[type="text"]');
         bankFeeAmountInputLabel = invoiceBankFeeAmountContainer.querySelector('label[for$="_bankFeeAmount"]');
 
         /* Amount formatting */
-        $(bankFeeAmountInput).on({
-            keyup: function() {
-                formatCurrency($(this));
-            },
-            blur: function() {
-                formatCurrency($(this), "blur");
-            }
-        });
+        if (bankFeeAmountInput) {
+            $(bankFeeAmountInput).on({
+                keyup: function() {
+                    formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                },
+                blur: function() {
+                    formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                }
+            });
+        };
     }
 
     if (invoiceRealAmountPaidContainer) {
-        realAmountPaidInput = invoiceRealAmountPaidContainer.querySelector('input[type="text"]');
+        const realAmountPaidInput: HTMLInputElement | null 
+            = invoiceRealAmountPaidContainer ? invoiceRealAmountPaidContainer.querySelector('input[type="text"]') : null;
 
         /* Amount formatting */
-        $(realAmountPaidInput).on({
-            keyup: function() {
-                formatCurrency($(this));
-            },
-            blur: function() {
-                formatCurrency($(this), "blur");
-            }
-        });
+        if (realAmountPaidInput) {
+            $(realAmountPaidInput).on({
+                keyup: function() {
+                    formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                },
+                blur: function() {
+                    formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                }
+            });
+        }
     }
 
     if (invoicePaymentStatusSelect) {
-        const invoiceAccountSelect = invoiceAccountContainer.querySelector('select[id$="_account"]');
-        const realAmountPaidInvoiceInput = invoiceRealAmountPaidContainer.querySelector('input[id$="_realAmountPaid"]');
+        const invoiceAccountSelect: HTMLSelectElement | null 
+            = invoiceAccountContainer ? invoiceAccountContainer.querySelector('select[id$="_account"]') : null;
+        const realAmountPaidInvoiceInput: HTMLInputElement | null 
+            = invoiceRealAmountPaidContainer ? invoiceRealAmountPaidContainer.querySelector('input[id$="_realAmountPaid"]') : null;
 
         /* NOTE: Temporary solution */
         if (invoicePaymentStatusSelect.value === 'Paid' && invoicePartPaymentsContainer) {
-            const partPaidSelectOption = invoicePaymentStatusSelect.querySelector('option[value="Part-Paid"]');
-            invoiceRealAmountPaidContainer.style.display = 'none';
-            partPaidSelectOption.remove();
-    
-            const partPaymentAddNewButton = invoicePartPaymentsContainer.querySelector('.sonata-ba-action');
-            partPaymentAddNewButton.style.display = 'none';
-    
+            const partPaidSelectOption: HTMLOptionElement | null 
+                = invoicePaymentStatusSelect ? invoicePaymentStatusSelect.querySelector('option[value="Part-Paid"]') : null;
+
+            if (invoiceRealAmountPaidContainer) {
+                invoiceRealAmountPaidContainer.style.display = 'none';
+            }
+            
+            if (partPaidSelectOption) {
+                partPaidSelectOption.remove();
+            }
+            
+            const partPaymentAddNewButton 
+                = invoicePartPaymentsContainer ? invoicePartPaymentsContainer.querySelector('.sonata-ba-action') : null;
+            if (partPaymentAddNewButton) {
+                (partPaymentAddNewButton as HTMLElement).style.display = 'none';
+            }
+            
             if (partPaymentDatePaidInput && partPaymentAmountInput && partPaymentBankFeeInput) {
                 partPaymentDatePaidInput.forEach(item => {
                     if (item.value) {
                         item.readOnly = true;
                     }
                 });
-    
+            
                 partPaymentAmountInput.forEach(item => {
                     if (item.value) {
                         item.readOnly = true;
@@ -528,86 +597,159 @@ $(function() {
                 });
             }
         } else if (invoicePaymentStatusSelect.value === 'Part-Paid' && invoicePartPaymentsContainer) {
-            const paidSelectOption = invoicePaymentStatusSelect.querySelector('option[value="Paid"]');
-            paidSelectOption.remove();
+            const paidSelectOption: HTMLOptionElement | null 
+                = invoicePaymentStatusSelect ? invoicePaymentStatusSelect.querySelector('option[value="Paid"]') : null;
+            if (paidSelectOption) {
+                paidSelectOption.remove();
+            }
         }
 
         if (invoicePaymentStatusSelect.value == 'Unpaid') {
-            invoiceAccountContainer.style.display = 'none';
-            invoiceAccountSelect.required = false;
-            invoicePartPaymentsContainer.style.display = 'none';
-            invoiceTotalPaidContainer.style.display = 'none';
-            invoiceDatePaidContainer.style.display = 'none';
-            invoiceRealAmountPaidContainer.style.display = 'none';
-            invoiceBankFeeAmountContainer.style.display = 'none';
+            if (invoiceAccountContainer) {
+                invoiceAccountContainer.style.display = 'none';
+            }
+            if (invoiceAccountSelect) {
+                invoiceAccountSelect.required = false;
+            }
+            if (invoicePartPaymentsContainer) {
+                invoicePartPaymentsContainer.style.display = 'none';
+            }
+            if (invoiceTotalPaidContainer) {
+                invoiceTotalPaidContainer.style.display = 'none';
+            }
+            if (invoiceDatePaidContainer) {
+                invoiceDatePaidContainer.style.display = 'none';
+            }
+            if (invoiceRealAmountPaidContainer) {
+                invoiceRealAmountPaidContainer.style.display = 'none';
+            }
+            if (invoiceBankFeeAmountContainer) {
+                invoiceBankFeeAmountContainer.style.display = 'none';
+            }
         } else if (invoicePaymentStatusSelect.value == 'Paid') {
-            invoicePartPaymentsContainer.style.display = 'none';
-            invoiceAccountContainer.style.display = 'block';
-            invoiceAccountSelect.required = true;
+            if (invoicePartPaymentsContainer) {
+                invoicePartPaymentsContainer.style.display = 'none';
+            }
+            if (invoiceAccountContainer) {
+                invoiceAccountContainer.style.display = 'block';
+            }
+            if (invoiceAccountSelect) {
+                invoiceAccountSelect.required = true;
+            }
 
             if (invoicePartPaymentsElementFieldWidget) {
-                if (invoicePartPaymentsElementFieldWidget.textContent.trim() !== "") {
-                    partPartPaymentsHasData = true;
-                    invoicePartPaymentsContainer.style.display = 'block';
-                    if (bankFeeAmountInput && bankFeeAmountInputLabel) {
-                        bankFeeAmountInput.disabled = true;
-                        bankFeeAmountInputLabel.textContent = 'Total Bank Fee';
-                        // bankFeeAmountInputHelp.textContent = 'Total Bank Fee paid for the Part-Payment transactions';
+                if (invoicePartPaymentsElementFieldWidget.textContent) {
+                    if (invoicePartPaymentsElementFieldWidget.textContent.trim() !== "") {
+                        // let partPartPaymentsHasData: boolean = true;
+
+                        if (invoicePartPaymentsContainer) {
+                            invoicePartPaymentsContainer.style.display = 'block';
+                        }
+
+                        if (bankFeeAmountInput && bankFeeAmountInputLabel) {
+                            bankFeeAmountInput.disabled = true;
+                            bankFeeAmountInputLabel.textContent = 'Total Bank Fee';
+                            // bankFeeAmountInputHelp.textContent = 'Total Bank Fee paid for the Part-Payment transactions';
+                        }
                     }
                 }
             }
-    
-            invoiceTotalPaidContainer.style.display = 'none';
-            invoiceDatePaidContainer.style.display = 'block';
+
+            if (invoiceTotalPaidContainer) {
+                invoiceTotalPaidContainer.style.display = 'none';
+            }
+
+            if (invoiceDatePaidContainer) {
+                invoiceDatePaidContainer.style.display = 'block';
+            }
 
             if (accountCurrencyCode == selectedCurrencyCode) {
-                invoiceRealAmountPaidContainer.style.display = 'none';
-                realAmountPaidInvoiceInput.required = false;
+                if (invoiceRealAmountPaidContainer) {
+                    invoiceRealAmountPaidContainer.style.display = 'none';
+                }
+                
+                if (realAmountPaidInvoiceInput) {
+                    realAmountPaidInvoiceInput.required = false;
+                }
             } else {
-                invoiceRealAmountPaidContainer.style.display = 'block';
-                realAmountPaidInvoiceInput.required = true;
+                if (invoiceRealAmountPaidContainer) {
+                    invoiceRealAmountPaidContainer.style.display = 'block';
+                }
+                
+                if (realAmountPaidInvoiceInput) {
+                    realAmountPaidInvoiceInput.required = true;
+                }
             }
         } else {
-            invoiceAccountContainer.style.display = 'block';
-            invoiceAccountSelect.required = true;
-            invoicePartPaymentsContainer.style.display = 'block';
-            invoiceTotalPaidContainer.style.display = 'block';
-            invoiceDatePaidContainer.style.display = 'none';
+            if (invoiceAccountContainer) {
+                invoiceAccountContainer.style.display = 'block';
+            }
+            
+            if (invoiceAccountSelect) {
+                invoiceAccountSelect.required = true;
+            }
+            
+            if (invoicePartPaymentsContainer) {
+                invoicePartPaymentsContainer.style.display = 'block';
+            }
+            
+            if (invoiceTotalPaidContainer) {
+                invoiceTotalPaidContainer.style.display = 'block';
+            }
+            
+            if (invoiceDatePaidContainer) {
+                invoiceDatePaidContainer.style.display = 'none';
+            }
+
             if (accountCurrencyCode == selectedCurrencyCode) {
-                invoiceRealAmountPaidContainer.style.display = 'none';
+                if (invoiceRealAmountPaidContainer) {
+                    invoiceRealAmountPaidContainer.style.display = 'none';
+                }
             }
 
             if (invoicePartPaymentsElementFieldWidget) {
-                if (invoicePartPaymentsElementFieldWidget.textContent.trim() !== "") {
-                    invoiceBankFeeAmountContainer.style.display = 'block';
-                    if (bankFeeAmountInput && bankFeeAmountInputLabel) {
-                        bankFeeAmountInput.disabled = true;
-                        bankFeeAmountInputLabel.textContent = 'Total Bank Fee';
-                        // bankFeeAmountInputHelp.textContent = 'Total Bank Fee paid for the Part-Payment transactions';
+                if (invoicePartPaymentsElementFieldWidget.textContent) {
+                    if (invoicePartPaymentsElementFieldWidget.textContent.trim() !== "") {
+                        if (invoiceBankFeeAmountContainer) {
+                            invoiceBankFeeAmountContainer.style.display = 'block';
+                        }
+
+                        if (bankFeeAmountInput && bankFeeAmountInputLabel) {
+                            bankFeeAmountInput.disabled = true;
+                            bankFeeAmountInputLabel.textContent = 'Total Bank Fee';
+                            // bankFeeAmountInputHelp.textContent = 'Total Bank Fee paid for the Part-Payment transactions';
+                        }
                     }
                 }
             } else {
-                invoiceBankFeeAmountContainer.style.display = 'none';
+                if (invoiceBankFeeAmountContainer) {
+                    invoiceBankFeeAmountContainer.style.display = 'none';
+                }
             }
         }
     }
 
     if (invoicePartPaymentsContainer) {
         if (invoicePaymentStatusSelect) {
-            let currentSelection = invoicePaymentStatusSelect.value;
-            const invoiceAccountSelect = invoiceAccountContainer.querySelector('select[id$="_account"]');
-            // const invoiceDatePaidInput = invoiceDatePaidContainer.querySelector('input[id$="_invoiceDatePaid"]');
-            // const invoiceRealAmountPaidInput = invoiceRealAmountPaidContainer.querySelector('input[id$="_realAmountPaid"]');
+            let currentSelection: string = invoicePaymentStatusSelect.value;
+            const invoiceAccountSelect: HTMLSelectElement | null 
+                = invoiceAccountContainer ? invoiceAccountContainer.querySelector('select[id$="_account"]') : null;
+            // const invoiceDatePaidInput: HTMLInputElement | null 
+            //     = invoiceDatePaidContainer ? invoiceDatePaidContainer.querySelector('input[id$="_invoiceDatePaid"]') : null;
+            // const invoiceRealAmountPaidInput: HTMLInputElement | null 
+            //     = invoiceRealAmountPaidContainer ? invoiceRealAmountPaidContainer.querySelector('input[id$="_realAmountPaid"]') : null;
 
-            let invoiceAmountValue;
-            let invoiceTotalPaidValue;
-            
+            let invoiceAmountValue: number | undefined;
+            let invoiceTotalPaidValue: number | undefined;
+
             if (invoiceAmountContainer) {
-                invoiceAmountValue = parseFloat(invoiceAmountContainer.querySelector('input[id$="_amount"]').value);
+                const inputElement: HTMLInputElement | null = invoiceAmountContainer.querySelector('input[id$="_amount"]');
+                invoiceAmountValue = inputElement ? parseFloat(inputElement.value) : undefined;
             }
 
             if (invoiceTotalPaidContainer) {
-                invoiceTotalPaidValue = parseFloat(invoiceTotalPaidContainer.querySelector('input[id$="_totalPaid"]').value);
+                const inputElement: HTMLInputElement | null = invoiceTotalPaidContainer.querySelector('input[id$="_totalPaid"]');
+                invoiceTotalPaidValue = inputElement ? parseFloat(inputElement.value) : undefined;
             }
 
             $(invoicePaymentStatusSelect).on('select2:select', (e) => {
@@ -615,13 +757,33 @@ $(function() {
     
                 switch (selectedOption.id) {
                     case 'Unpaid':
-                        invoiceAccountContainer.style.display = 'none';
-                        invoiceAccountSelect.required = false;
-                        invoicePartPaymentsContainer.style.display = 'none';
-                        invoiceDatePaidContainer.style.display = 'none';
-                        invoiceRealAmountPaidContainer.style.display = 'none';
-                        invoiceBankFeeAmountContainer.style.display = 'none';
-                        invoiceTotalPaidContainer.style.display = 'none';
+                        if (invoiceAccountContainer) {
+                            invoiceAccountContainer.style.display = 'none';
+                        }
+
+                        if (invoiceAccountSelect) {
+                            invoiceAccountSelect.required = false;
+                        }
+
+                        if (invoicePartPaymentsContainer) {
+                            invoicePartPaymentsContainer.style.display = 'none';
+                        }
+
+                        if (invoiceDatePaidContainer) {
+                            invoiceDatePaidContainer.style.display = 'none';
+                        }
+
+                        if (invoiceRealAmountPaidContainer) {
+                            invoiceRealAmountPaidContainer.style.display = 'none';
+                        }
+
+                        if (invoiceBankFeeAmountContainer) {
+                            invoiceBankFeeAmountContainer.style.display = 'none';
+                        }
+
+                        if (invoiceTotalPaidContainer) {
+                            invoiceTotalPaidContainer.style.display = 'none';
+                        }
 
                         if (invoiceMoneyReturnedContainer) {
                             invoiceMoneyReturnedContainer.style.display = 'none';
@@ -629,56 +791,116 @@ $(function() {
 
                         break;
                     case 'Paid':
-                        invoiceAccountContainer.style.display = 'block';
-                        invoiceAccountSelect.required = true;
-                        invoiceDatePaidContainer.style.display = 'block';
-                        // invoiceRealAmountPaidContainer.style.display = 'block';
-                        invoicePartPaymentsContainer.style.display = 'none';
-                        invoiceBankFeeAmountContainer.style.display = 'block';
+                        if (invoiceAccountContainer) {
+                            invoiceAccountContainer.style.display = 'block';
+                        }
+
+                        if (invoiceAccountSelect) {
+                            invoiceAccountSelect.required = true;
+                        }
+
+                        if (invoiceDatePaidContainer) {
+                            invoiceDatePaidContainer.style.display = 'block';
+                        }
+
+                        // if (invoiceRealAmountPaidContainer) {
+                        //     invoiceRealAmountPaidContainer.style.display = 'block';
+                        // }
+
+                        if (invoicePartPaymentsContainer) {
+                            invoicePartPaymentsContainer.style.display = 'none';
+                        }
+
+                        if (invoiceBankFeeAmountContainer) {
+                            invoiceBankFeeAmountContainer.style.display = 'block';
+                        }
 
                         if (currentSelection == 'Part-Paid') {
-                            invoiceTotalPaidContainer.style.display = 'none';
-                            bankFeeAmountInput.disabled = false;
-                            // bankFeeAmountInput.value = '0.00';
-                            bankFeeAmountInputLabel.textContent = 'Bank Fee';
-                            // bankFeeAmountInputHelp.textContent = "Insert value in 'X,XXX.XX' format";
+                            if (invoiceTotalPaidContainer) {
+                                invoiceTotalPaidContainer.style.display = 'none';
+                            }
+
+                            if (bankFeeAmountInput) {
+                                bankFeeAmountInput.disabled = false;
+                                // bankFeeAmountInput.value = '0.00';
+                            }
+
+                            if (bankFeeAmountInputLabel) {
+                                bankFeeAmountInputLabel.textContent = 'Bank Fee';
+                            }
+                            
+                            // if (bankFeeAmountInputHelp) {
+                            //     bankFeeAmountInputHelp.textContent = "Insert value in 'X,XXX.XX' format";
+                            // }
                         }
 
                         if (invoicePartPaymentsElementFieldWidget) {
                             if (currentSelection !== 'Part-Paid') {
-                                if (invoicePartPaymentsElementFieldWidget.textContent.trim() !== "") {
-                                    invoiceTotalPaidContainer.style.display = 'block';
-                                } else {
-                                    invoiceTotalPaidContainer.style.display = 'none';
+                                if (invoicePartPaymentsElementFieldWidget.textContent) {
+                                    if (invoicePartPaymentsElementFieldWidget.textContent.trim() !== "") {
+                                        if (invoiceTotalPaidContainer) {
+                                            invoiceTotalPaidContainer.style.display = 'block';
+                                        }
+                                    } else {
+                                        if (invoiceTotalPaidContainer) {
+                                            invoiceTotalPaidContainer.style.display = 'none';
+                                        }
+                                    }
                                 }
                             }
                         }
 
                         if (invoiceAmountValue == invoiceTotalPaidValue) {
-                            invoiceMoneyReturnedContainer.style.display = 'block';
+                            if (invoiceMoneyReturnedContainer) {
+                                invoiceMoneyReturnedContainer.style.display = 'block';
+                            }
                         }
                         
                         break;
                     case 'Part-Paid':
-                        invoiceAccountContainer.style.display = 'block';
-                        invoiceAccountSelect.required = true;
-                        invoicePartPaymentsContainer.style.display = 'block';
-                        invoiceTotalPaidContainer.style.display = 'block';
-                        invoiceDatePaidContainer.style.display = 'none';
-                        invoiceRealAmountPaidContainer.style.display = 'none';
-                        invoiceBankFeeAmountContainer.style.display = 'none';
+                        if (invoiceAccountContainer) {
+                            invoiceAccountContainer.style.display = 'block';
+                        }
+                        
+                        if (invoiceAccountSelect) {
+                            invoiceAccountSelect.required = true;
+                        }
+                        
+                        if (invoicePartPaymentsContainer) {
+                            invoicePartPaymentsContainer.style.display = 'block';
+                        }
+                        
+                        if (invoiceTotalPaidContainer) {
+                            invoiceTotalPaidContainer.style.display = 'block';
+                        }
+                        
+                        if (invoiceDatePaidContainer) {
+                            invoiceDatePaidContainer.style.display = 'none';
+                        }
+                        
+                        if (invoiceRealAmountPaidContainer) {
+                            invoiceRealAmountPaidContainer.style.display = 'none';
+                        }
+                        
+                        if (invoiceBankFeeAmountContainer) {
+                            invoiceBankFeeAmountContainer.style.display = 'none';
+                        }
 
                         if (invoiceMoneyReturnedContainer) {
-                            if (invoiceTotalPaidValue > 0) {
+                            if (invoiceTotalPaidValue !== undefined && invoiceTotalPaidValue > 0) {
                                 invoiceMoneyReturnedContainer.style.display = 'block';
                             }
                         }
 
                         if (currentSelection == 'Paid') {
-                            const invoiceTotalPaidInput = invoiceTotalPaidContainer.querySelector('input[type="text"]');
-                            invoiceTotalPaidInput.value = '0.00';
+                            const invoiceTotalPaidInput: HTMLInputElement | null 
+                                = invoiceTotalPaidContainer ? invoiceTotalPaidContainer.querySelector('input[type="text"]') : null;
+
+                            if (invoiceTotalPaidInput) {
+                                invoiceTotalPaidInput.value = '0.00';
+                            }
                         }
-                        
+
                         break;
 
                     default:
@@ -723,122 +945,171 @@ $(function() {
 
     /* EXISTING PART-PAYMENTS ON 'PART-PAID' AND 'PAID' INVOICES */
     if (invoicePartPaymentsContainer) {
-        const partPaymentItems = invoicePartPaymentsContainer.querySelectorAll('.sonata-ba-collapsed-fields');
+        const partPaymentItems: NodeListOf<Element> | null 
+            = invoicePartPaymentsContainer ? invoicePartPaymentsContainer.querySelectorAll('.sonata-ba-collapsed-fields') : null;
 
-        partPaymentItems.forEach(item => {
-            let itemParent = item.parentElement.parentElement;
+        if (partPaymentItems) {
+            partPaymentItems.forEach(item => {
+                let itemParent = item.parentElement ? item.parentElement.parentElement : null;
 
-            if (!(itemParent && itemParent.id.endsWith('file'))) {
-                const bankFeeAmountInputContainer = item.querySelector('div[id^="sonata-ba-field-"][id$="_bankFeeAmount"]');
-                const bankFeeInput = item.querySelector('input[id*="_invoicePartPayments_"][id*="_bankFeeAmount"]');
-                const bankFeeNotAddedCheckbox = item.querySelector('.checkbox');
-                const bankFeeNotAddedCheckboxInput = item.querySelector('input[id$="_bankFeeNotAdded"]');
-                const checkboxText = bankFeeNotAddedCheckbox.querySelector('.mChkTitle');
-                checkboxText.style.width = '120px';
-
-                let isBankFeeAmountContainerDisplayed = true;
-
-                /* TODO: finish adding hr element */
-                // let hrElement = createHrElement();
-                // item.insertAdjacentElement('afterend', hrElement);
-
-                /* Amount formatting */
-                $(bankFeeInput).on({
-                    keyup: function() {
-                        formatCurrency($(this));
-                    },
-                    blur: function() {
-                        formatCurrency($(this), "blur");
+                if (!(itemParent && itemParent.id.endsWith('file'))) {
+                    const bankFeeAmountInputContainer: HTMLElement | null = item.querySelector('div[id^="sonata-ba-field-"][id$="_bankFeeAmount"]');
+                    const bankFeeInput: HTMLInputElement | null = item.querySelector('input[id*="_invoicePartPayments_"][id*="_bankFeeAmount"]');
+                    const bankFeeNotAddedCheckbox: HTMLElement | null = item.querySelector('.checkbox');
+                    const bankFeeNotAddedCheckboxInput: HTMLInputElement | null = item.querySelector('input[id$="_bankFeeNotAdded"]');
+                    let checkboxText: HTMLElement | null = null;
+                    
+                    if (bankFeeNotAddedCheckbox) {
+                        checkboxText = bankFeeNotAddedCheckbox.querySelector('.mChkTitle');
                     }
-                });
+                    
+                    if (checkboxText) {
+                        checkboxText.style.width = '120px';
+                    }
     
-                if (bankFeeNotAddedCheckboxInput.checked) {
-                    isBankFeeAmountContainerDisplayed = false;
-                    bankFeeAmountInputContainer.style.display = 'none';
-                } else {
-                    bankFeeAmountInputContainer.style.display = 'block';
-                    isBankFeeAmountContainerDisplayed = true;
-                }
+                    let isBankFeeAmountContainerDisplayed: boolean = true;
+    
+                    /* TODO: finish adding hr element */
+                    // let hrElement = createHrElement();
+                    // item.insertAdjacentElement('afterend', hrElement);
 
-                bankFeeNotAddedCheckboxInput.addEventListener("change", function() {
-                    if (bankFeeNotAddedCheckboxInput.checked) {
-                        isBankFeeAmountContainerDisplayed = false;
-                        bankFeeAmountInputContainer.style.display = 'none';
-                    } else {
-                        bankFeeAmountInputContainer.style.display = 'block';
-                        isBankFeeAmountContainerDisplayed = true;
+                    if (bankFeeInput) {
+                        $(bankFeeInput).on({
+                            keyup: function() {
+                                formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                            },
+                            blur: function() {
+                                formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                            }
+                        });
                     }
-                });
-            }
-        });
+
+                    if (bankFeeNotAddedCheckboxInput) {
+                        if (bankFeeNotAddedCheckboxInput.checked) {
+                            isBankFeeAmountContainerDisplayed = false;
+                            if (bankFeeAmountInputContainer) {
+                                bankFeeAmountInputContainer.style.display = 'none';
+                            }
+                        } else {
+                            if (bankFeeAmountInputContainer) {
+                                bankFeeAmountInputContainer.style.display = 'block';
+                            }
+                            isBankFeeAmountContainerDisplayed = true;
+                        }
+
+                        bankFeeNotAddedCheckboxInput.addEventListener("change", function() {
+                            if (bankFeeNotAddedCheckboxInput.checked) {
+                                isBankFeeAmountContainerDisplayed = false;
+                                if (bankFeeAmountInputContainer) {
+                                    bankFeeAmountInputContainer.style.display = 'none';
+                                }
+                            } else {
+                                if (bankFeeAmountInputContainer) {
+                                    bankFeeAmountInputContainer.style.display = 'block';
+                                }
+                                isBankFeeAmountContainerDisplayed = true;
+                            }
+                        });
+                    }
+                }
+            });
+        }
 
         /* NEW PART PAYMENT CLICK */
         invoicePartPaymentsContainer.addEventListener('click', (e) => {
-            if (e.target.matches('a[title="Add new"]')) {
+            if ((e.target as Element).matches('a[title="Add new"]'))  {
                 setTimeout(() => {
-                    const invoicePartPaymentItems = invoicePartPaymentsContainer.querySelectorAll('.sonata-ba-collapsed-fields');
+                    const invoicePartPaymentItems: NodeListOf<Element> | null 
+                        = invoicePartPaymentsContainer ? invoicePartPaymentsContainer.querySelectorAll('.sonata-ba-collapsed-fields') : null;
 
-                    invoicePartPaymentItems.forEach((item) => {
-                        let itemParent = item.parentElement.parentElement;
+                    if (invoicePartPaymentItems) {
+                        invoicePartPaymentItems.forEach((item) => {
+                            let itemParent = item.parentElement ? item.parentElement.parentElement : null;
+    
+                            if (!(itemParent && itemParent.id.endsWith('file'))) {
+                                const invoiceDatePaidInput: HTMLInputElement | null 
+                                    = item.querySelector('[id*="_invoicePartPayments_"][id*="_datePaid"]');
+                                const partPaymentAmountInput: HTMLInputElement | null 
+                                    = item.querySelector('input[id*="_invoicePartPayments_"][id*="amount"]');
+                                const partPaymentRealAmountInput: HTMLInputElement | null 
+                                    = item.querySelector('input[id*="_invoicePartPayments_"][id*="realAmountPaid"]');
+                                const bankFeeAmountInputContainer: HTMLElement | null 
+                                    = item.querySelector('div[id^="sonata-ba-field-"][id$="_bankFeeAmount"]');
+                                const partPaymentBankFeeInput: HTMLInputElement | null 
+                                    = item.querySelector('input[id*="_invoicePartPayments_"][id*="_bankFeeAmount"]');
+                                const bankFeeNotAddedCheckbox: HTMLElement | null = item.querySelector('.checkbox');
+                                const bankFeeNotAddedCheckboxInput: HTMLInputElement | null 
+                                    = item.querySelector('input[id$="_bankFeeNotAdded"]');
+                                let checkboxText: HTMLElement | null = null;
 
-                        if (!(itemParent && itemParent.id.endsWith('file'))) {
-                            const invoiceDatePaidInput = item.querySelector('[id*="_invoicePartPayments_"][id*="_datePaid"]');
-                            const partPaymentAmountInput = item.querySelector('input[id*="_invoicePartPayments_"][id*="amount"]');
-                            const partPaymentRealAmountInput = item.querySelector('input[id*="_invoicePartPayments_"][id*="realAmountPaid"]');
-                            const bankFeeAmountInputContainer = item.querySelector('div[id^="sonata-ba-field-"][id$="_bankFeeAmount"]');
-                            const partPaymentBankFeeInput = item.querySelector('input[id*="_invoicePartPayments_"][id*="_bankFeeAmount"]');
-                            const bankFeeNotAddedCheckbox = item.querySelector('.checkbox');
-                            const bankFeeNotAddedCheckboxInput = item.querySelector('input[id$="_bankFeeNotAdded"]');
-                            const checkboxText = bankFeeNotAddedCheckbox.querySelector('.mChkTitle');
-
-                            let isBankFeeAmountContainerDisplayed = true;
-
-                            // invoiceDatePaidInput.style.width = '35%';
-                            checkboxText.style.width = '120px';
-
-                            $(partPaymentAmountInput).on({
-                                keyup: function() {
-                                    formatCurrency($(this));
-                                },
-                                blur: function() {
-                                    formatCurrency($(this), "blur");
+                                if (bankFeeNotAddedCheckbox) {
+                                    checkboxText = bankFeeNotAddedCheckbox.querySelector('.mChkTitle');
                                 }
-                            });
 
-                            $(partPaymentRealAmountInput).on({
-                                keyup: function() {
-                                    formatCurrency($(this));
-                                },
-                                blur: function() {
-                                    formatCurrency($(this), "blur");
+                                let isBankFeeAmountContainerDisplayed = true;
+
+                                if (checkboxText) {
+                                    checkboxText.style.width = '120px';
                                 }
-                            });
-
-                            $(partPaymentBankFeeInput).on({
-                                keyup: function() {
-                                    formatCurrency($(this));
-                                },
-                                blur: function() {
-                                    formatCurrency($(this), "blur");
+    
+                                if (partPaymentAmountInput) {
+                                    $(partPaymentAmountInput).on({
+                                        keyup: function() {
+                                            formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                                        },
+                                        blur: function() {
+                                            formatCurrency($(this), "blur");
+                                        }
+                                    });
                                 }
-                            });
-
-                            if (bankFeeNotAddedCheckboxInput.checked) {
-                                isBankFeeAmountContainerDisplayed = false;
-                                bankFeeAmountInputContainer.style.display = 'none';
+    
+                                if (partPaymentRealAmountInput) {
+                                    $(partPaymentRealAmountInput).on({
+                                        keyup: function() {
+                                            formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                                        },
+                                        blur: function() {
+                                            formatCurrency($(this), "blur");
+                                        }
+                                    });
+                                }
+    
+                                if (partPaymentBankFeeInput) {
+                                    $(partPaymentBankFeeInput).on({
+                                        keyup: function() {
+                                            formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                                        },
+                                        blur: function() {
+                                            formatCurrency($(this), "blur");
+                                        }
+                                    });
+                                }
+    
+                                if (bankFeeNotAddedCheckboxInput) {
+                                    if (bankFeeNotAddedCheckboxInput.checked) {
+                                        isBankFeeAmountContainerDisplayed = false;
+                                        if (bankFeeAmountInputContainer) {
+                                            bankFeeAmountInputContainer.style.display = 'none';
+                                        }
+                                    }
+                                
+                                    bankFeeNotAddedCheckboxInput.addEventListener("change", function() {
+                                        if (bankFeeNotAddedCheckboxInput.checked) {
+                                            isBankFeeAmountContainerDisplayed = false;
+                                            if (bankFeeAmountInputContainer) {
+                                                bankFeeAmountInputContainer.style.display = 'none';
+                                            }
+                                        } else {
+                                            if (bankFeeAmountInputContainer) {
+                                                bankFeeAmountInputContainer.style.display = 'block';
+                                            }
+                                            isBankFeeAmountContainerDisplayed = true;
+                                        }
+                                    });
+                                }
                             }
-
-                            bankFeeNotAddedCheckboxInput.addEventListener("change", function() {
-                                if (bankFeeNotAddedCheckboxInput.checked) {
-                                    isBankFeeAmountContainerDisplayed = false;
-                                    bankFeeAmountInputContainer.style.display = 'none';
-                                } else {
-                                    bankFeeAmountInputContainer.style.display = 'block';
-                                    isBankFeeAmountContainerDisplayed = true;
-                                }
-                            });
-                        }
-                    })
+                        })
+                    }
                 }, 1000);
             }
         });
@@ -852,26 +1123,35 @@ $(function() {
     }
 
     /* BUDGET CATEGORY FILTERING */
-    const budgetCategoryListContainer = document.querySelector('#budget-category-list-container');
+    const budgetCategoryListContainer: HTMLElement | null = document.querySelector('#budget-category-list-container');
 
     if (budgetCategoryListContainer) {
-        const budgetMainCategoryTableBody = budgetCategoryListContainer.querySelector('#budgetMainCategories');
-        const budgetMainCategoryTableTextCells = budgetMainCategoryTableBody.querySelectorAll('.sonata-ba-list-field.sonata-ba-list-field-string');
-        const budgetMainCategoryTableActionCells = budgetMainCategoryTableBody.querySelectorAll('.sonata-ba-list-field.sonata-ba-list-field-actions');
-        const subCategoriesButtons = budgetCategoryListContainer.querySelectorAll('#sub-categories-button');
+        const budgetMainCategoryTableBody: HTMLElement | null 
+            = budgetCategoryListContainer.querySelector('#budgetMainCategories');
+        const budgetMainCategoryTableTextCells: NodeListOf<Element> | null 
+            = budgetMainCategoryTableBody 
+            ? budgetMainCategoryTableBody.querySelectorAll('.sonata-ba-list-field.sonata-ba-list-field-string') : null;
+        const budgetMainCategoryTableActionCells: NodeListOf<Element> | null 
+            = budgetMainCategoryTableBody 
+            ? budgetMainCategoryTableBody.querySelectorAll('.sonata-ba-list-field.sonata-ba-list-field-actions') : null;
+        const subCategoriesButtons: NodeListOf<Element> | null = budgetCategoryListContainer.querySelectorAll('#sub-categories-button');
 
-        budgetMainCategoryTableTextCells.forEach(cell => {
-            cell.style.lineHeight = "2";
-        });
-
-        budgetMainCategoryTableActionCells.forEach(cell => {
-            cell.style.textAlign = "center";
-        });
+        if (budgetMainCategoryTableTextCells) {
+            budgetMainCategoryTableTextCells.forEach(cell => {
+                (cell as HTMLElement).style.lineHeight = "2";
+            });
+        }
+        
+        if (budgetMainCategoryTableActionCells) {
+            budgetMainCategoryTableActionCells.forEach(cell => {
+                (cell as HTMLElement).style.textAlign = "center";
+            });
+        }
 
         subCategoriesButtons.forEach(button => {
             button.addEventListener('click', () => {
-                const mainCategoryId = button.dataset.maincategoryid;
-                const mainCategoryName = button.dataset.maincategoryname;
+                const mainCategoryId = (button as HTMLElement).dataset.maincategoryid;
+                const mainCategoryName = (button as HTMLElement).dataset.maincategoryname;
 
                 fetch('/get_budget_categories', {
                     method: 'POST',
@@ -893,12 +1173,41 @@ $(function() {
             });
         });
 
-        function updateBudgetCategoryList(data) {
-            const budgetCategoriesTableBody = budgetCategoryListContainer.querySelector('#budgetCategories');
-            budgetCategoriesTableBody.innerHTML = '';
+        // interface IData {
+        //     // Define the properties of the objects in the array
+        //     // For example:
+        //     id: number;
+        //     name: string;
+        //     // Add more properties as needed
+        // }
+        
+        // function updateBudgetCategoryList(data: IData[]) {
+        //     // ...
+        // }
+
+        function updateBudgetCategoryList(data: any) {
+            const budgetCategoriesTableBody: HTMLElement | null 
+                = budgetCategoryListContainer ? budgetCategoryListContainer.querySelector('#budgetCategories') : null;
+
+            if (budgetCategoriesTableBody) {
+                budgetCategoriesTableBody.innerHTML = '';
+            }
+
+            // interface IData {
+            //     id: number;
+            //     name: string;
+            // }
+            
+            // function updateBudgetCategoryList(data: IData[]) {
+            //     if (data.length > 0) {
+            //         data.forEach((item: IData) => {
+            //             // Create a new row
+            //         });
+            //     }
+            // }
 
             if (data.length > 0) {
-                data.forEach(item => {
+                data.forEach((item: any) => {
                     // Create a new row
                     const newRow = document.createElement('tr');
     
@@ -914,11 +1223,13 @@ $(function() {
                     // Edit buttond
                     const editButton = document.createElement('a');
                     editButton.href = `/admin/app/budgetcategory/${item.id}/edit`;
-                    editButton.classList = 'btn btn-sm btn-default edit_link';
+                    editButton.className = '';
+                    editButton.classList.add('btn', 'btn-sm', 'btn-default', 'edit_link');
                     editButton.title = 'Edit';
                     
                     const editButtonIcon = document.createElement('i');
-                    editButtonIcon.classList = 'fas fa-pencil-alt';
+                    editButtonIcon.className = '';
+                    editButtonIcon.classList.add('fas', 'fa-pencil-alt');
                     editButtonIcon.setAttribute('aria-hidden', 'true');
                     
                     editButton.appendChild(editButtonIcon);
@@ -929,11 +1240,13 @@ $(function() {
                     // Delete button
                     const deleteButton = document.createElement('a');
                     deleteButton.href = `/admin/app/budgetcategory/${item.id}/delete`;
-                    deleteButton.classList = 'btn btn-sm btn-default delete_link';
+                    deleteButton.className = '';
+                    deleteButton.classList.add('btn', 'btn-sm', 'btn-default', 'delete_link');
                     deleteButton.title = 'Delete';
     
                     const deleteButtonIcon = document.createElement('i');
-                    deleteButtonIcon.classList = 'fas fa-times';
+                    deleteButtonIcon.className = '';
+                    deleteButtonIcon.classList.add('fas', 'fa-times');
                     deleteButtonIcon.setAttribute('aria-hidden', 'true');
                     
                     deleteButton.appendChild(deleteButtonIcon);
@@ -949,37 +1262,46 @@ $(function() {
                     newRow.appendChild(nameCell);
                     newRow.appendChild(actionsCell);
     
-                    budgetCategoriesTableBody.appendChild(newRow);
+                    if (budgetCategoriesTableBody) {
+                        budgetCategoriesTableBody.appendChild(newRow);
+                    }
                 });
             } else {
                 // Create a new row
                 const newRow = document.createElement('tr');
                 const newCell = document.createElement('td');
                 const newSpan = document.createElement('span');
-                newCell.colSpan = "2";
-                newCell.classList = 'sonata-ba-list-field sonata-ba-list-field-string';
+                newCell.colSpan = 2;
+                newCell.className = '';
+                newCell.classList.add('sonata-ba-list-field', 'sonata-ba-list-field-string');
                 newSpan.id = 'budget-category-list-no-results';
-                newSpan.classList = 'budget-category-list-no-results';
+                newSpan.className = '';
+                newSpan.classList.add('budget-category-list-no-results');
                 newSpan.textContent = 'No Results - Please add a Sub Category of the Main Category.';
 
                 // Append cells to row
                 newRow.appendChild(newCell);
                 newCell.appendChild(newSpan);
 
-                budgetCategoriesTableBody.appendChild(newRow);
+                if (budgetCategoriesTableBody) {
+                    budgetCategoriesTableBody.appendChild(newRow);
+                }
             }
         }
     }
 
-
-    function getAccountCurrencyCode(invoiceAccountSelectFieldInvoice) {
+    function getAccountCurrencyCode(invoiceAccountSelectFieldInvoice: HTMLSelectElement) {
         const regex = /\((.*?)\)/;
+        let accountCurrencyCode: string | undefined;
 
         let selectedOptionAccount = invoiceAccountSelectFieldInvoice.options[invoiceAccountSelectFieldInvoice.selectedIndex];
         let selectedText = selectedOptionAccount.textContent;
 
-        if (selectedText.match(regex)) {
-            accountCurrencyCode = selectedText.match(regex)[1];
+        if (selectedText) {
+            let match = selectedText.match(regex);
+            if (match) {
+                accountCurrencyCode = match[1];
+            }
         }
 
         return accountCurrencyCode;
@@ -987,17 +1309,27 @@ $(function() {
 
     /* TODO: instantiate this from the class */
     /* Formats number 1000000 to 1,234,567 */
-    function formatNumber(n) {
+    function formatNumber(n: string) {
         return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     }
 
     /* Validates decimal side and puts cursor back in right position. */
-    function formatCurrency(input, blur) {
+    function formatCurrency(input: JQuery, blur: string | undefined) {
         // get input value
         let input_val = input.val();
 
+        // check if input_val is undefined
+        if (input_val === undefined) {
+            return;
+        }
+
         // don't validate empty input
-        if (input_val === "") { return; }
+        if (input_val === "") { 
+            return; 
+        }
+
+        // ensure input_val is a string before accessing its length property
+        input_val = input_val.toString();
 
         // original length
         let original_len = input_val.length;
@@ -1052,6 +1384,6 @@ $(function() {
         // put caret back in the right position
         let updated_len = input_val.length;
         caret_pos = updated_len - original_len + caret_pos;
-        input[0].setSelectionRange(caret_pos, caret_pos);
+        (input[0] as HTMLInputElement).setSelectionRange(caret_pos, caret_pos);
     }
 });

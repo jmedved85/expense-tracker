@@ -1,16 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
     /* BANK TRANSFER/CURRENCY EXCHANGE */
-    const bankTransferCreateForm = document.querySelector('form[action*="/admin/bank_transfer/create"]');
-    const currencyExchangeCreateForm = document.querySelector('form[action*="/admin/currency_exchange/create"]');
-    const cashWithdrawalCreateForm = document.querySelector('form[action*="/admin/cash_withdrawal/create"]');
-    const bankTransferEditForm = document.querySelector('form[action^="/admin/bank_transfer/"][action*="/edit"]');
-    const currencyExchangeEditForm = document.querySelector('form[action^="/admin/currency_exchange/"][action*="/edit"]');
-    const cashWithdrawalEditForm = document.querySelector('form[action^="/admin/cash_withdrawal"][action*="/edit"]');
-    const cashTransferCreateForm = document.querySelector('form[action*="/admin/cash_transfer/create"]');
-    const cashTransferEditForm = document.querySelector('form[action*="/admin/cash_transfer/edit"]');
-    const moneyReturnCreateForm = document.querySelector('form[action^="/admin/money_return/"][action*="/create"]');
-    const moneyReturnEditForm = document.querySelector('form[action^="/admin/money_return/"][action*="/edit"]');
-    const inputGroupAddonElements = document.querySelectorAll('.input-group-addon');
+    const bankTransferCreateForm: HTMLFormElement | null = document.querySelector('form[action*="/admin/bank_transfer/create"]');
+    const currencyExchangeCreateForm: HTMLFormElement | null = document.querySelector('form[action*="/admin/currency_exchange/create"]');
+    const cashWithdrawalCreateForm: HTMLFormElement | null = document.querySelector('form[action*="/admin/cash_withdrawal/create"]');
+    const bankTransferEditForm: HTMLFormElement | null = document.querySelector('form[action^="/admin/bank_transfer/"][action*="/edit"]');
+    const currencyExchangeEditForm: HTMLFormElement | null = document.querySelector('form[action^="/admin/currency_exchange/"][action*="/edit"]');
+    const cashWithdrawalEditForm: HTMLFormElement | null = document.querySelector('form[action^="/admin/cash_withdrawal"][action*="/edit"]');
+    const cashTransferCreateForm: HTMLFormElement | null = document.querySelector('form[action*="/admin/cash_transfer/create"]');
+    const cashTransferEditForm: HTMLFormElement | null = document.querySelector('form[action*="/admin/cash_transfer/edit"]');
+    const moneyReturnCreateForm: HTMLFormElement | null = document.querySelector('form[action^="/admin/money_return/"][action*="/create"]');
+    const moneyReturnEditForm: HTMLFormElement | null = document.querySelector('form[action^="/admin/money_return/"][action*="/edit"]');
+    const inputGroupAddonElements: NodeListOf<Element> = document.querySelectorAll('.input-group-addon');
 
     inputGroupAddonElements.forEach((item: Element) => {
         const htmlItem = item as HTMLElement;
@@ -21,17 +21,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     if (bankTransferCreateForm || bankTransferEditForm || currencyExchangeCreateForm || currencyExchangeEditForm) {
-        const transactionTypeSelectContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_transactionType"]');
-        const transactionTypeSelect = document.querySelector('select[id$="_transactionType"]');
-        const accountCurrencyContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_currency"]');
-        const accountCurrencyElement = document.querySelector('input[id$="_currency"]') as HTMLInputElement;
-        const accountCurrency = accountCurrencyElement ? accountCurrencyElement.value : null;
-        const transferToAccountSelect = document.querySelector('select[id$="_transferToAccount"]');
-        const amountInputContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_amount"]');
-        const newValueInputContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_newValue"]');
-        const amountInput = document.querySelector('input[id$="_amount"]');
-        const newValueInput = document.querySelector('input[id$="_newValue"]');
-        const dateInput = document.querySelector('.input-group.date');
+        const transactionTypeSelectContainer: HTMLDivElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_transactionType"]');
+        const transactionTypeSelect: HTMLSelectElement | null = document.querySelector('select[id$="_transactionType"]');
+        const accountCurrencyContainer: HTMLDivElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_currency"]');
+        const accountCurrencyElement: HTMLInputElement | null = document.querySelector('input[id$="_currency"]');
+        const accountCurrency: string | null = accountCurrencyElement ? accountCurrencyElement.value : null;
+        const transferToAccountSelect: HTMLSelectElement | null = document.querySelector('select[id$="_transferToAccount"]');
+        const amountInputContainer: HTMLDivElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_amount"]');
+        const newValueInputContainer: HTMLDivElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_newValue"]');
+        const amountInput: HTMLInputElement | null = document.querySelector('input[id$="_amount"]');
+        const newValueInput: HTMLInputElement | null = document.querySelector('input[id$="_newValue"]');
+        const dateInput: HTMLDivElement | null = document.querySelector('.input-group.date');
 
         if (dateInput) {
             (dateInput as HTMLElement).style.width = '35%';
@@ -49,14 +49,37 @@ document.addEventListener('DOMContentLoaded', function() {
         if (amountInput && newValueInput) {
             if (!bankTransferEditForm) {
                 if (currencyExchangeEditForm) {
-                    const selectedOption = transferToAccountSelect.options[transferToAccountSelect.selectedIndex] as HTMLOptionElement;
-                    const optionText = selectedOption.textContent;
-                    const selectedAccountCurrency = optionText.substring(optionText.indexOf("(") + 1, optionText.indexOf(")"));
-                    
-                    const selectedAccountCurrencySymbol = new Intl.NumberFormat('en', { style: 'currency', currency: selectedAccountCurrency }).formatToParts(0).find(part => part.type === 'currency').value.trim();
-                    const currencySymbolElement = newValueInputContainer.querySelector('.input-group-addon') as HTMLElement;
-                    
-                    currencySymbolElement.textContent = selectedAccountCurrencySymbol;
+                    let selectedOption: HTMLOptionElement | undefined;
+                    let selectedAccountCurrency: string | undefined;
+                    let selectedAccountCurrencySymbol: string | undefined;
+                    let currencySymbolElement: HTMLElement | null = null;
+
+                    if (transferToAccountSelect) {
+                        selectedOption = transferToAccountSelect.options[transferToAccountSelect.selectedIndex] as HTMLOptionElement;
+                    }
+
+                    if (selectedOption && selectedOption.textContent) {
+                        const optionText = selectedOption.textContent;
+                        selectedAccountCurrency = optionText.substring(optionText.indexOf("(") + 1, optionText.indexOf(")"));
+                    }
+
+                    if (selectedAccountCurrency) {
+                        const currencyPart 
+                            = new Intl.NumberFormat('en', { style: 'currency', currency: selectedAccountCurrency })
+                                .formatToParts(0).find(part => part.type === 'currency');
+                        if (currencyPart) {
+                            selectedAccountCurrencySymbol = currencyPart.value.trim();
+                        }
+                    }
+
+                    if (newValueInputContainer) {
+                        currencySymbolElement = newValueInputContainer.querySelector('.input-group-addon') as HTMLElement;
+                    }
+
+                    if (currencySymbolElement && selectedAccountCurrencySymbol !== undefined) {
+                        currencySymbolElement.textContent = selectedAccountCurrencySymbol;
+                    }
+
                     (newValueInputContainer as HTMLElement).style.display = 'block';
                 } else {
                     (amountInputContainer as HTMLElement).style.display = 'none';
@@ -64,72 +87,145 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             } else {
                 (newValueInputContainer as HTMLElement).style.display = 'none';
+                let selectedOption: HTMLOptionElement | undefined;
+                let selectedAccountCurrency: string | undefined;
+                let selectedAccountCurrencySymbol: string | undefined;
+                let currencySymbolElement: HTMLElement | null = null;
 
-                const selectedOption = transferToAccountSelect.options[transferToAccountSelect.selectedIndex] as HTMLOptionElement;
-                const optionText = selectedOption.textContent;
-                const selectedAccountCurrency = optionText.substring(optionText.indexOf("(") + 1, optionText.indexOf(")"));
+                if (transferToAccountSelect) {
+                    selectedOption = transferToAccountSelect.options[transferToAccountSelect.selectedIndex] as HTMLOptionElement;
+                }
+
+                if (selectedOption && selectedOption.textContent) {
+                    const optionText = selectedOption.textContent;
+                    selectedAccountCurrency = optionText.substring(optionText.indexOf("(") + 1, optionText.indexOf(")"));
+                }
 
                 if (selectedAccountCurrency !== accountCurrency) {
-                    const selectedAccountCurrencySymbol = new Intl.NumberFormat('en', { style: 'currency', currency: selectedAccountCurrency }).formatToParts(0).find(part => part.type === 'currency').value.trim();
-                    const currencySymbolElement = newValueInputContainer.querySelector('.input-group-addon') as HTMLElement;
+                    if (selectedAccountCurrency) {
+                        const currencyPart = new Intl.NumberFormat('en', { style: 'currency', currency: selectedAccountCurrency }).formatToParts(0).find(part => part.type === 'currency');
+                        if (currencyPart) {
+                            selectedAccountCurrencySymbol = currencyPart.value.trim();
+                        }
+                    }
 
-                    currencySymbolElement.textContent = selectedAccountCurrencySymbol;
-                    (newValueInputContainer as HTMLElement).style.display = 'block';
+                    if (newValueInputContainer) {
+                        currencySymbolElement = newValueInputContainer.querySelector('.input-group-addon') as HTMLElement;
+                    }
+
+                    if (currencySymbolElement && selectedAccountCurrencySymbol !== undefined) {
+                        currencySymbolElement.textContent = selectedAccountCurrencySymbol;
+                    }
+
+                    if (newValueInputContainer) {
+                        (newValueInputContainer as HTMLElement).style.display = 'block';
+                    }
                 }
             }
         }
 
-        $(transferToAccountSelect).on('select2:select', (e) => {
-            const selectedOption = transferToAccountSelect.options[transferToAccountSelect.selectedIndex];
-            const optionText = selectedOption.textContent;
-            const selectedAccountCurrency = optionText.substring(optionText.indexOf("(") + 1, optionText.indexOf(")"));
-            const selectedAccountCurrencySymbol = new Intl.NumberFormat('en', { style: 'currency', currency: selectedAccountCurrency }).formatToParts(0).find(part => part.type === 'currency').value.trim();
+        if (transferToAccountSelect) {
+            $(transferToAccountSelect).on('select2:select', (e) => {
+                let selectedOption: HTMLOptionElement | null = null;
+                let optionText: string | null = null;
+                let selectedAccountCurrency: string | undefined;
+                let selectedAccountCurrencySymbol: string | undefined;
+                let currencySymbolElement: HTMLElement | null = null;
 
-            const currencySymbolElement = newValueInputContainer.querySelector('.input-group-addon');
+                if (transferToAccountSelect) {
+                    selectedOption = transferToAccountSelect.options[transferToAccountSelect.selectedIndex];
+                }
+                
+                if (selectedOption) {
+                    optionText = selectedOption.textContent;
+                }
 
-            if (selectedAccountCurrency === accountCurrency) {
-                newValueInputContainer.style.display = 'none';
-                amountInputContainer.style.display = 'block';
-            } else {
-                amountInputContainer.style.display = 'block';
-                currencySymbolElement.textContent = selectedAccountCurrencySymbol;
-                newValueInputContainer.style.display = 'block';
-            }
-        })
+                if (optionText) {
+                    selectedAccountCurrency = optionText.substring(optionText.indexOf("(") + 1, optionText.indexOf(")"));
+                }
+
+                if (selectedAccountCurrency) {
+                    const currencyPart = new Intl.NumberFormat('en', { style: 'currency', currency: selectedAccountCurrency }).formatToParts(0).find(part => part.type === 'currency');
+                    if (currencyPart) {
+                        selectedAccountCurrencySymbol = currencyPart.value.trim();
+                    }
+                }
+
+                if (newValueInputContainer) {
+                    currencySymbolElement = newValueInputContainer.querySelector('.input-group-addon');
+
+                    if (selectedAccountCurrency === accountCurrency) {
+                        newValueInputContainer.style.display = 'none';
+
+                        if (amountInputContainer) {
+                            amountInputContainer.style.display = 'block';
+                        }
+                    } else {
+                        if (amountInputContainer) {
+                            amountInputContainer.style.display = 'block';
+                        }
+
+                        if (currencySymbolElement && selectedAccountCurrencySymbol !== undefined) {
+                            currencySymbolElement.textContent = selectedAccountCurrencySymbol;
+                        }
+
+                        newValueInputContainer.style.display = 'block';
+                    }
+                }
+            })
+        }
 
         /* Amount formatting */
-        $(amountInput).on({
-            keyup: function() {
-                formatCurrency($(this));
-            },
-            blur: function() {
-                formatCurrency($(this), "blur");
-            }
-        });
+        if (amountInput) {
+            $(amountInput).on({
+                keyup: function() {
+                    formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                },
+                blur: function() {
+                    formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                }
+            });
+        }
 
         /* New value formatting */
-        $(newValueInput).on({
-            keyup: function() {
-                formatCurrency($(this));
-            },
-            blur: function() {
-                formatCurrency($(this), "blur");
-            }
-        });
+        if (newValueInput) {
+            $(newValueInput).on({
+                keyup: function() {
+                    formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                },
+                blur: function() {
+                    formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                }
+            });
+        }
     }
 
     if (cashWithdrawalCreateForm || cashWithdrawalEditForm) {
-        const transactionTypeSelectContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_transactionType"]');
-        const accountCurrencyContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_currency"]');
-        const accountCurrency = document.querySelector('input[id$="_currency"]').value;
-        const transferFromAccountSelect = document.querySelector('select[id$="_transferFromAccount"]');
-        const amountInputContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_amount"]');
-        const amountFromAccountInputContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_amountFromAccount"]');
-        const amountInput = document.querySelector('input[id$="_amount"]');
-        const amountFromAccountInput = document.querySelector('input[id$="_amountFromAccount"]');
-        const dateInput = document.querySelector('.input-group.date');
+        const transactionTypeSelectContainer: HTMLElement | null 
+            = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_transactionType"]');
+        const accountCurrencyContainer: HTMLElement | null 
+            = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_currency"]');
+        const accountCurrencyInput: HTMLInputElement | null 
+            = document.querySelector('input[id$="_currency"]');
+        const transferFromAccountSelect: HTMLSelectElement | null 
+            = document.querySelector('select[id$="_transferFromAccount"]');
+        const amountInputContainer: HTMLElement | null 
+            = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_amount"]');
+        const amountFromAccountInputContainer: HTMLElement | null 
+            = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_amountFromAccount"]');
+        const amountInput: HTMLInputElement | null = document.querySelector('input[id$="_amount"]');
+        const amountFromAccountInput: HTMLInputElement | null = document.querySelector('input[id$="_amountFromAccount"]');
+        const dateInput: HTMLElement | null = document.querySelector('.input-group.date');
+        
+        let accountCurrency: string | null = null;
+        
+        if (accountCurrencyInput) {
+            accountCurrency = accountCurrencyInput.value;
+        }
 
-        dateInput.style.width = '35%';
+        if (dateInput) {
+            dateInput.style.width = '35%';
+        }
 
         if (transactionTypeSelectContainer) {
             transactionTypeSelectContainer.style.display = 'none';
@@ -140,94 +236,183 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (cashWithdrawalCreateForm) {
-            amountInputContainer.style.display = 'none';
-            amountFromAccountInputContainer.style.display = 'none';
+            if (amountInputContainer) {
+                amountInputContainer.style.display = 'none';
+            }
+            
+            if (amountFromAccountInputContainer) {
+                amountFromAccountInputContainer.style.display = 'none';
+            }
         }
 
         if (amountInput && amountFromAccountInput) {
             if (cashWithdrawalEditForm) {
-                const selectedOption = transferFromAccountSelect.options[transferFromAccountSelect.selectedIndex];
-                const optionText = selectedOption.textContent;
-                const selectedAccountCurrency = optionText.substring(optionText.indexOf("(") + 1, optionText.indexOf(")"));
+                let selectedOption: HTMLOptionElement | null = null;
+                let optionText: string | null = null;
+                let selectedAccountCurrency: string | undefined;
+                
+                if (transferFromAccountSelect) {
+                    selectedOption = transferFromAccountSelect.options[transferFromAccountSelect.selectedIndex];
+                }
+                
+                if (selectedOption) {
+                    optionText = selectedOption.textContent;
+                }
+                
+                if (optionText) {
+                    selectedAccountCurrency = optionText.substring(optionText.indexOf("(") + 1, optionText.indexOf(")"));
+                }
 
                 if (selectedAccountCurrency !== accountCurrency) {
-                    const selectedAccountCurrencySymbol = new Intl.NumberFormat('en', { style: 'currency', currency: selectedAccountCurrency }).formatToParts(0).find(part => part.type === 'currency').value.trim();
-                    const currencySymbolElement = amountFromAccountInputContainer.querySelector('.input-group-addon');
-
-                    currencySymbolElement.textContent = selectedAccountCurrencySymbol;
-                    amountFromAccountInputContainer.style.display = 'block';
+                    let selectedAccountCurrencySymbol: string | undefined;
+                    let currencySymbolElement: HTMLElement | null = null;
+                    
+                    if (selectedAccountCurrency) {
+                        const currencyPart 
+                            = new Intl.NumberFormat('en', { style: 'currency', currency: selectedAccountCurrency })
+                                .formatToParts(0).find(part => part.type === 'currency');
+                        if (currencyPart) {
+                            selectedAccountCurrencySymbol = currencyPart.value.trim();
+                        }
+                    }
+                    
+                    if (amountFromAccountInputContainer) {
+                        currencySymbolElement = amountFromAccountInputContainer.querySelector('.input-group-addon');
+                    }
+                    
+                    if (currencySymbolElement && selectedAccountCurrencySymbol !== undefined) {
+                        currencySymbolElement.textContent = selectedAccountCurrencySymbol;
+                    }
+                    
+                    if (amountFromAccountInputContainer) {
+                        amountFromAccountInputContainer.style.display = 'block';
+                    }
                 } else {
-                    amountFromAccountInputContainer.style.display = 'none';
+                    if (amountFromAccountInputContainer) {
+                        amountFromAccountInputContainer.style.display = 'none';
+                    }
                 }
             } else {
-                amountInputContainer.style.display = 'none';
-                amountFromAccountInputContainer.style.display = 'none';
+                if (amountInputContainer) {
+                    amountInputContainer.style.display = 'none';
+                }
+                
+                if (amountFromAccountInputContainer) {
+                    amountFromAccountInputContainer.style.display = 'none';
+                }
             }
         }
 
-        $(transferFromAccountSelect).on('select2:select', (e) => {
-            const selectedOption = transferFromAccountSelect.options[transferFromAccountSelect.selectedIndex];
-            const optionText = selectedOption.textContent;
-            const selectedAccountCurrency = optionText.substring(optionText.indexOf("(") + 1, optionText.indexOf(")"));
-            const selectedAccountCurrencySymbol = new Intl.NumberFormat('en', { style: 'currency', currency: selectedAccountCurrency }).formatToParts(0).find(part => part.type === 'currency').value.trim();
-
-            const currencySymbolElement = amountFromAccountInputContainer.querySelector('.input-group-addon');
-
-            if (selectedAccountCurrency === accountCurrency) {
-                amountFromAccountInputContainer.style.display = 'none';
-                amountInputContainer.style.display = 'block';
-            } else {
-                amountInputContainer.style.display = 'block';
-                currencySymbolElement.textContent = selectedAccountCurrencySymbol;
-                amountFromAccountInputContainer.style.display = 'block';
-            }
-        })
+        if (transferFromAccountSelect) {
+            $(transferFromAccountSelect).on('select2:select', (e) => {
+                let selectedOption: HTMLOptionElement | null = null;
+                let optionText: string | null = null;
+                let selectedAccountCurrency: string | undefined;
+                let selectedAccountCurrencySymbol: string | undefined;
+                let currencySymbolElement: HTMLElement | null = null;
+                
+                if (transferFromAccountSelect) {
+                    selectedOption = transferFromAccountSelect.options[transferFromAccountSelect.selectedIndex];
+                }
+                
+                if (selectedOption) {
+                    optionText = selectedOption.textContent;
+                }
+                
+                if (optionText) {
+                    selectedAccountCurrency = optionText.substring(optionText.indexOf("(") + 1, optionText.indexOf(")"));
+                }
+                
+                if (selectedAccountCurrency) {
+                    const currencyPart = new Intl.NumberFormat('en', { style: 'currency', currency: selectedAccountCurrency }).formatToParts(0).find(part => part.type === 'currency');
+                    if (currencyPart) {
+                        selectedAccountCurrencySymbol = currencyPart.value.trim();
+                    }
+                }
+                
+                if (amountFromAccountInputContainer) {
+                    currencySymbolElement = amountFromAccountInputContainer.querySelector('.input-group-addon');
+                }
+    
+                if (selectedAccountCurrency === accountCurrency) {
+                    if (amountFromAccountInputContainer) {
+                        amountFromAccountInputContainer.style.display = 'none';
+                    }
+                    
+                    if (amountInputContainer) {
+                        amountInputContainer.style.display = 'block';
+                    }
+                } else {
+                    if (amountInputContainer) {
+                        amountInputContainer.style.display = 'block';
+                    }
+                    
+                    if (currencySymbolElement && selectedAccountCurrencySymbol !== undefined) {
+                        currencySymbolElement.textContent = selectedAccountCurrencySymbol;
+                    }
+                    
+                    if (amountFromAccountInputContainer) {
+                        amountFromAccountInputContainer.style.display = 'block';
+                    }
+                }
+            })
+        }
 
         /* Amount from formatting */
-        $(amountFromAccountInput).on({
-            keyup: function() {
-                formatCurrency($(this));
-            },
-            blur: function() {
-                formatCurrency($(this), "blur");
-            }
-        });
+        if (amountFromAccountInput) {
+            $(amountFromAccountInput).on({
+                keyup: function() {
+                    formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                },
+                blur: function() {
+                    formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                }
+            });
+        }
 
         /* Amount formatting */
-        $(amountInput).on({
-            keyup: function() {
-                formatCurrency($(this));
-            },
-            blur: function() {
-                formatCurrency($(this), "blur");
-            }
-        });
+        if (amountInput) {
+            $(amountInput).on({
+                keyup: function() {
+                    formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                },
+                blur: function() {
+                    formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                }
+            });
+        }
     }
 
     if (cashTransferCreateForm || cashTransferEditForm) {
-        const dateInput = document.querySelector('.input-group.date');
-        const amountInput = document.querySelector('input[id$="_amount"]');
+        const dateInput: HTMLElement | null = document.querySelector('.input-group.date');
+        const amountInput: HTMLInputElement | null = document.querySelector('input[id$="_amount"]');
 
-        dateInput.style.width = '35%';
+        if (dateInput) {
+            dateInput.style.width = '35%';
+        }
 
         /* Amount from formatting */
-        $(amountInput).on({
-            keyup: function() {
-                formatCurrency($(this));
-            },
-            blur: function() {
-                formatCurrency($(this), "blur");
-            }
-        });
+        if (amountInput) {
+            $(amountInput).on({
+                keyup: function() {
+                    formatCurrency($(this as unknown as JQuery<HTMLElement>), '');
+                },
+                blur: function() {
+                    formatCurrency($(this as unknown as JQuery<HTMLElement>), "blur");
+                }
+            });
+        }
     }
 
     if (moneyReturnCreateForm || moneyReturnEditForm) {
-        const transactionTypeSelectContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_transactionType"]');
-        const invoiceSelectContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_invoice"]');
-        const transactionSelectContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_transaction"]');
-        const dateInput = document.querySelector('.input-group.date');
+        const transactionTypeSelectContainer: HTMLElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_transactionType"]');
+        const invoiceSelectContainer: HTMLElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_invoice"]');
+        const transactionSelectContainer: HTMLElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_transaction"]');
+        const dateInput: HTMLElement | null = document.querySelector('.input-group.date');
 
-        dateInput.style.width = '35%';
+        if (dateInput) {
+            dateInput.style.width = '35%';
+        }
 
         if (transactionTypeSelectContainer) {
             transactionTypeSelectContainer.style.display = 'none';
@@ -243,35 +428,43 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /* ADD FUNDS */
-    const addFundsCreateForm = document.querySelector('form[action*="/admin/add_funds/create"]');
-    const addFundsEditForm = document.querySelector('form[action^="/admin/add_funds/"][action*="/edit"]');
-    const transactionEditForm = document.querySelector('form[action^="/admin/app/transaction/"][action*="/edit"]');
+    const addFundsCreateForm: HTMLFormElement | null = document.querySelector('form[action*="/admin/add_funds/create"]');
+    const addFundsEditForm: HTMLFormElement | null = document.querySelector('form[action^="/admin/add_funds/"][action*="/edit"]');
+    const transactionEditForm: HTMLFormElement | null = document.querySelector('form[action^="/admin/app/transaction/"][action*="/edit"]');
 
     if (addFundsCreateForm || addFundsEditForm || transactionEditForm) {
-        const accountSelect = document.querySelector('select[id$="_mainAccount"]');
-        const transactionTypeSelectContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_transactionType"]');
-        const bankFeeAmountInputContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_bankFeeAmount"]');
-        const bankFeeAmountInput = document.querySelector('input[id$="_bankFeeAmount"]');
-        const bankFeeNotAddedCheckbox = document.querySelector('input[id$="_bankFeeNotAdded"]');
-        const amountInputContainer = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_amount"]');
-        const amountInput = document.querySelector('input[id$="_amount"]');
-        const amountCurrencySymbolElement = amountInputContainer.querySelector('.input-group-addon');
-        let bankFeeCurrencySymbolElement = null;
-		if(bankFeeAmountInputContainer) {
-			bankFeeCurrencySymbolElement = bankFeeAmountInputContainer.querySelector('.input-group-addon');
-		}
-        const dateInput = document.querySelector('.input-group.date');
+        const accountSelect: HTMLSelectElement | null = document.querySelector('select[id$="_mainAccount"]');
+        const transactionTypeSelectContainer: HTMLElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_transactionType"]');
+        const bankFeeAmountInputContainer: HTMLElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_bankFeeAmount"]');
+        const bankFeeAmountInput: HTMLInputElement | null = document.querySelector('input[id$="_bankFeeAmount"]');
+        const bankFeeNotAddedCheckbox: HTMLInputElement | null = document.querySelector('input[id$="_bankFeeNotAdded"]');
+        const amountInputContainer: HTMLElement | null = document.querySelector('div[id^="sonata-ba-field-container-"][id$="_amount"]');
+        const amountInput: HTMLInputElement | null = document.querySelector('input[id$="_amount"]');
+        const dateInput: HTMLElement | null = document.querySelector('.input-group.date');
+        let amountCurrencySymbolElement: HTMLElement | null = null;
+        let bankFeeCurrencySymbolElement: HTMLElement | null = null;
+        let isBankFeeAmountContainerDisplayed: boolean;
 
-        dateInput.style.width = '35%';
+        if (amountInputContainer) {
+            amountCurrencySymbolElement = amountInputContainer.querySelector('.input-group-addon');
+        }
+        
+        if (bankFeeAmountInputContainer) {
+            bankFeeCurrencySymbolElement = bankFeeAmountInputContainer.querySelector('.input-group-addon');
+        }
 
-        let isBankFeeAmountContainerDisplayed;
+        if (dateInput) {
+            dateInput.style.width = '35%';
+        }
 
         if (transactionTypeSelectContainer) {
             transactionTypeSelectContainer.style.display = 'none';
         }
 
         if (addFundsCreateForm) {
-            const bankFeeCurrencySymbolElement = bankFeeAmountInputContainer.querySelector('.input-group-addon');
+            if (bankFeeAmountInputContainer) {
+                bankFeeCurrencySymbolElement = bankFeeAmountInputContainer.querySelector('.input-group-addon');
+            }
 
             if (bankFeeCurrencySymbolElement) {
                 bankFeeCurrencySymbolElement.textContent = '';
@@ -284,32 +477,50 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-		if(bankFeeNotAddedCheckbox) {
+		if (bankFeeNotAddedCheckbox) {
 			if (bankFeeNotAddedCheckbox.checked == true) {
 				isBankFeeAmountContainerDisplayed = false;
-				bankFeeAmountInputContainer.style.display = 'none';
+
+				if (bankFeeAmountInputContainer) {
+                    bankFeeAmountInputContainer.style.display = 'none';
+                }
 			} else {
 				isBankFeeAmountContainerDisplayed = true;
 			}
 		}
 
-        $(accountSelect).on('select2:select', (e) => {
-            let selectedAccountCurrency = getAccountCurrencyCode(accountSelect);
+        if (accountSelect) {
+            $(accountSelect).on('select2:select', (e) => {
+                let selectedAccountCurrency: string | null = getAccountCurrencyCode(accountSelect);
+    
+                const currencySymbolPart 
+                    = new Intl.NumberFormat('en', { style: 'currency', currency: selectedAccountCurrency })
+                        .formatToParts(0).find(part => part.type === 'currency');
+        
+                if (currencySymbolPart) {
+                    const currencySymbol = currencySymbolPart.value.trim();
+        
+                    if (bankFeeCurrencySymbolElement) {
+                        bankFeeCurrencySymbolElement.textContent = currencySymbol;
+                    }
+        
+                    if (amountCurrencySymbolElement) {
+                        amountCurrencySymbolElement.textContent = currencySymbol;
+                    }
+                }
+            });
+        }
 
-            if (selectedAccountCurrency) {
-                const currencySymbol = new Intl.NumberFormat('en', { style: 'currency', currency: selectedAccountCurrency }).formatToParts(0).find(part => part.type === 'currency').value.trim();
-
-                bankFeeCurrencySymbolElement.textContent = currencySymbol;
-                amountCurrencySymbolElement.textContent = currencySymbol;
-            }
-        });
-
-		if(bankFeeNotAddedCheckbox) {
+		if (bankFeeNotAddedCheckbox) {
 			bankFeeNotAddedCheckbox.addEventListener('change', function () {
 				if (bankFeeNotAddedCheckbox.checked) {
-					bankFeeAmountInputContainer.style.display = 'none';
+					if (bankFeeAmountInputContainer) {
+                        bankFeeAmountInputContainer.style.display = 'none';
+                    }
 				} else {
-					bankFeeAmountInputContainer.style.display = 'block';
+					if (bankFeeAmountInputContainer) {
+                        bankFeeAmountInputContainer.style.display = 'block';
+                    }
 				}
 			});
 		}
