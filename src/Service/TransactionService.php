@@ -270,7 +270,7 @@ class TransactionService
         DateTimeInterface $date,
         Unit $unit,
         TransactionType $transactionType,
-        ?Account $accountFrom = null,
+        Account $accountFrom = null,
         Account $accountTo,
         string $funds,
         string $realAmount,

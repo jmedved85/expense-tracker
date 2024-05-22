@@ -100,7 +100,7 @@ class Transaction
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     private ?Invoice $invoice = null;
 
-    #[ORM\ManyToOne(inversedBy: 'transactions')]
+    #[ORM\OneToOne(targetEntity: InvoicePartPayment::class, mappedBy: "transaction", cascade: ["persist", "remove"])]
     private ?InvoicePartPayment $invoicePartPayment = null;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
@@ -581,11 +581,21 @@ class Transaction
     {
         return $this->invoicePartPayment;
     }
-
-    public function setInvoicePartPayment(?InvoicePartPayment $invoicePartPayment): static
+    
+    public function setInvoicePartPayment(?InvoicePartPayment $invoicePartPayment): self
     {
+        // unset the owning side of the relation if necessary
+        if ($invoicePartPayment === null && $this->invoicePartPayment !== null) {
+            $this->invoicePartPayment->setTransaction(null);
+        }
+    
+        // set the owning side of the relation if necessary
+        if ($invoicePartPayment !== null && $invoicePartPayment->getTransaction() !== $this) {
+            $invoicePartPayment->setTransaction($this);
+        }
+    
         $this->invoicePartPayment = $invoicePartPayment;
-
+    
         return $this;
     }
 
