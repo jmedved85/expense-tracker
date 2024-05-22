@@ -1,4 +1,4 @@
-add_new_button: Add New
+Balance: Balance
 Banking: Banking
 Budgets: Budgets
 Categories: Categories
@@ -7,3 +7,198 @@ Invoices: Invoices
 Purchases: Purchases
 Suppliers: Suppliers
 Units: Units
+
+account: Account
+accounts: Accounts
+account_balance: Account Balance
+account_charged: Account Being Charged
+account_name: Account Name
+account_type: Account Type
+accounts_list: Accounts List
+accounts_totals: Accounts Totals
+actions: Actions
+active: Active
+action_check: Check
+actual_avg_message: Calculated in the invoice and purchase lines
+add_bank_fee: Add Bank Fee
+add_bank_fee_button: Add Bank Fee
+add_budget_button: Add Budget
+add_funds: Add Funds
+add_funds_button: Add Funds
+add_funds_message: Add Funds to
+add_funds_to_account: Add funds to Account
+add_new_button: Add New
+add_new_main_category: Add New Main Category
+add_new_sub_category: Add New Sub-Category
+admin_account_title: Admin
+all_accounts: All Accounts
+all_account_types: All Account Types
+all_main_budget_categories: All Main Categories
+all_budget_categories: All Sub Categories
+all_departments: All Departments
+all_descriptions: All Descriptions
+all_suppliers: All Suppliers
+all_transactions: All Transactions
+all_transaction_types: All Transaction Types
+amount: Amount
+approval_status: Approval Status
+approvals: Approvals
+approvals_list: Approvals List
+approvals_totals_due: Approvals Totals Due
+author: Author
+balance: Balance
+bank_header: Bank
+bank_accounts: Bank Accounts
+bank_fee: Bank Fee
+bank_fee_added: Bank Fee Added
+bank_fee_amount: Bank Fee Amount
+bank_fee_not_added: Bank Fee Not Added
+bank_fee_not_applicable: Bank Fee Not Applicable
+bank_fee_not_applicable_short: Bank Fee N/A
+bank_transfer_button: Bank Transfer
+bank_currency_transfer_button: Bank / Currency Transfer
+btn_create_and_return_to_invoice: Create and return to Invoice
+budget: Budget
+budget_category: Budget Sub Category
+budget_main_category: Budget Main Category
+budget_main_category_list_empty_message: No Main Categories were found on this Unit. Please Add new.
+budget_category_list_empty_message: Click on the 'Sub-Categories' button on the Main Category to list Categories.
+cancel_button: Cancel
+card_accounts: Card Accounts
+card_header: Card
+cash_accounts: Cash Accounts
+cash_header: Cash
+cash_transfer_button: Cash Transfer
+cash_withdrawal_button: Cash Withdrawal
+check_button: Check
+close_button: Close
+closing_balance: Closing Balance
+comment: Comment
+comments: Comments
+comments_approvals_title: Comments and Approvals
+complete_reports: Complete Reports
+currency: Currency
+currency_exchange_button: Currency Exchange
+current_balance: Account Current Balance
+dashboard_account_list_empty_message: No Accounts were found on this Unit.
+dashboard_approvals_list_empty_message: No Approvals were found on this Unit.
+date: Date
+date_due: Date Due
+date_from: Date From
+date_of_purchase: Date Of Purchase
+date_paid: Date Paid
+date_range_title: Date range
+date_time: Date/Time
+date_to: Date To
+delete_file: Delete a File
+department: Department
+description: Description
+document_number: Doc No
+due: Due
+enter_text: Enter a Text
+enter_value: Enter a Value
+exit_unit_button: Exit Unit
+expenses: Expenses
+file: Doc File
+from: From
+from_account: From Account
+funds_transfer_button: Funds Transfer
+generate_report_heading: Generate Report
+generate_report_modify_heading: Modify Report options
+go_back_button: Go Back
+invoice_date_paid: Invoice Date Paid
+invoice_title: 'Invoices:'
+invoice_lines_title: 'Invoice Lines:'
+invoices: 'Invoices'
+line_total: Line Total
+main_category: Main Category
+month: Month
+money_in: Money In
+money_out: Money Out
+money_in_out_difference: Money In/Out Difference
+month_and_year_title: Month and year
+monthly_balance: Monthly Balance
+monthly_expenses: Monthly Expenses
+monthly_expenses_summary: Monthly Expenses Summary
+monthly_money_in: Monthly Money In
+monthly_money_out: Monthly Money Out
+money_returned_button: Money Returned
+name: Name
+net: Net
+new_purchase_button: New Purchase
+no: No
+no_comments: No new comments.
+no_funds_added_message: No funds have been added. Please add funds using the 'Add Funds' button.
+no_invoices_fr: No unpaid / part-paid invoices found.
+no_payroll_requests_fr: No payroll requests found.
+no_purchase_orders_fr: No purchase orders found.
+no_results: No Results.
+no_dashboard_content: Your dashboard is currently empty.
+no_dashboard_content_unit: There is currently no data for this unit.
+no_accounts: There are currently no accounts.
+quarterly_option: Quarterly
+opening_balance: Opening Balance
+paid: Paid
+part_paid_invoices: Part-Paid Invoices
+part_paid_and_unpaid_invoices: <i class="far fa-vote-nay"></i> Unpaid & Part-Paid Invoices
+payment_status: Payment Status
+period_and_year_title: Period and year
+priority: Priority
+purchase_lines_title: 'Purchase Lines:'
+purchases: 'Purchases'
+real_amount: 'Real Amount'
+recipient_email: "Recipient's E-Mail address"
+report: 'Report'
+report_category_title: Report category
+rest_to_pay: Rest to Pay
+return_to_list_button: Return to List
+select_account: Select Account
+select_account_type: Select Account Type
+select_bank_account: Select Bank Account
+select_category: Select Sub Category
+select_currency: Select Currency
+select_department: Select Department
+select_description: Select Description
+select_main_category: Select Main Category
+select_month: Select Month
+select_period: Select Period
+select_unit: Select Unit
+select_unit_message: Please select an unit to add a new item.
+select_unit_message_report: Please select an Unit to generate a report.
+select_supplier: Select Supplier
+select_transaction_type: Select Transaction Type
+select_year: Select Year
+send_document_email: Send Document on E-Mail
+send_funds: Send Funds
+supported_file_types: 'Supported file types: JPG/JPEG, PNG, and PDF'
+sub_categories: Sub-Categories
+sub_category: Sub Category
+supplier: Supplier
+submit_button: Submit
+switch_to_unit_dropdown_title: Switch to Unit
+to: To
+to_account: To Account
+to_unit: To Unit
+total: Total
+total_invoice_purchase_lines: Total (Invoice/Purchase Lines)
+totals: Totals
+total_in: Account Total Money In
+total_out: Account Total Money Out
+total_expenses: Total Expenses
+total_paid: Total Paid
+transactions: Transactions
+transaction_number: 'Transaction Number'
+transaction_number_short: 'Txn No'
+transaction_title: 'Transactions:'
+transaction_type: Transaction Type
+type_of_payment: Type Of Payment
+unit: Unit
+unpaid_invoices: Unpaid Invoices
+updated: Updated
+upload_file: Upload File
+uploaded_file: Uploaded File
+vat: VAT
+view_download_report: View/Download Complete Report
+with_transaction_check: With Transactions 
+yearly_option: Yearly
+yes: Yes

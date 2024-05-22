@@ -276,7 +276,7 @@ class TransactionService
         string $realAmount,
         string $description,
         array $userAndDateTime,
-        ?float $balanceTransferFrom = null,
+        float $balanceTransferFrom = null,
         float $balanceTransferTo
     ): Transaction {
         /** @var TransactionRepository $transactionRepository*/

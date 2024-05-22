@@ -1,14 +1,24 @@
+Account List: Account List
+Account Name: Account Name
+Account Type: Account Type
 Accounts: Accounts
-Transactions: Transactions
-Budgets: Budgets
+Actions: Actions
+Active: Active
+Balance: Balance
 Budget: Budget
 Budget Item: Budget Item
-Categories: Categories
-Budget Sub Categories: Budget Sub Categories
 Budget Main Categories: Budget Main Categories
-General Category: General Category
+Budget Sub Categories: Budget Sub Categories
+Categories: Categories
+Currency: Currency
+Deactivated: Deactivated
 Departments: Departments
+File Preview: File Preview
+General Category: General Category
 Invoices: Invoices
+Name: Name
 Purchases: Purchases
 Suppliers: Suppliers
+Transactions: Transactions
+Unit: Unit
 Units: Units

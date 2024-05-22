@@ -709,7 +709,7 @@ class InvoiceAdmin extends AbstractAdmin
         //     /* TODO: make better solution, like custom type which will have custom template */
         //     $form
         //         ->add('emptyType', EmptyType::class, [
-        //             'label' => 'Please select a Yacht to create and edit Invoices',
+        //             'label' => 'Please select an Unit to create and edit Invoices',
         //             'mapped' => false,
         //             'required' => false
         //         ])
