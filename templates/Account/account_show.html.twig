@@ -1,28 +1,24 @@
 {% extends '@SonataAdmin/CRUD/show.html.twig' %}
 
-{%- set isSuperAdmin = is_super_admin() -%}
-
 {% block content %}
     {% if admin.hasAccess('create') and admin.hasRoute('create') %}
-        <div style="margin-left:20px;">
+        <div style="margin-bottom:15px;">
             {# {% include 'CRUD/go_back_button.html.twig' %} #}
 
             {% if object.deactivated == false %}
-                {% if object.accountType.getName() == 'Cash Account' or object.accountType.getName() == 'Card Account' %}
+                {% if object.accountTypeName == 'Cash' or object.accountTypeName == 'Credit Card' %}
                     {% include 'Account/purchase_button.html.twig' %}
 
-                    {% if object.accountType.getName() == 'Cash Account' %}
+                    {% if object.accountTypeName == 'Cash' %}
                         {% include 'Account/cash_transfer_button.html.twig' %}
                         {% include 'Account/cash_withdrawal_button.html.twig' %}
                         {% include 'Account/currency_exchange_button.html.twig' %}
                     {% endif %}
 
-                    {% if object.accountType.getName() == 'Card Account' %}
-                        {# {% if isSuperAdmin %} #}
-                            {% include 'Account/bank_transfer_button.html.twig' %}
-                        {# {% endif %} #}
+                    {% if object.accountTypeName == 'Credit Card' %}
+                        {% include 'Account/bank_transfer_button.html.twig' %}
                     {% endif %}
-                {% elseif object.accountType.getName() == 'Bank Account' %}
+                {% elseif object.accountTypeName == 'Bank' %}
                     {% include 'Account/bank_transfer_button.html.twig' %}
                 {% endif %}
             {% endif %}

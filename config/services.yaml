@@ -26,9 +26,9 @@ services:
     admin.account:
         class: App\Admin\AccountAdmin
         calls:
-        #     - [ setTemplate, ['edit', 'Account\account_edit.html.twig'] ]
-        #     - [ setTemplate, ['show', 'Account\account_show.html.twig'] ]
-        #     - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
+            - [ setTemplate, ['edit', 'Account\account_edit.html.twig'] ]
+            - [ setTemplate, ['show', 'Account\account_show.html.twig'] ]
+            - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
             - [ setTemplate, ['button_create', 'Button\create_button.html.twig'] ]
         tags:
             - { name: sonata.admin, model_class: App\Entity\Account, controller: App\Controller\AccountAdminController, manager_type: orm, group: Banking, label: Accounts }

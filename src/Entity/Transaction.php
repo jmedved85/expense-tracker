@@ -581,21 +581,21 @@ class Transaction
     {
         return $this->invoicePartPayment;
     }
-    
+
     public function setInvoicePartPayment(?InvoicePartPayment $invoicePartPayment): self
     {
         // unset the owning side of the relation if necessary
         if ($invoicePartPayment === null && $this->invoicePartPayment !== null) {
             $this->invoicePartPayment->setTransaction(null);
         }
-    
+
         // set the owning side of the relation if necessary
         if ($invoicePartPayment !== null && $invoicePartPayment->getTransaction() !== $this) {
             $invoicePartPayment->setTransaction($this);
         }
-    
+
         $this->invoicePartPayment = $invoicePartPayment;
-    
+
         return $this;
     }
 

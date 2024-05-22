@@ -14,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use App\Entity\Account;
 use App\Entity\AccountType;
+use App\Traits\AdminTrait;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use InvalidArgumentException;
 use Sonata\AdminBundle\Datagrid\DatagridInterface;
@@ -22,21 +24,30 @@ use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
 use Sonata\Form\Type\CollectionType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class AccountAdmin extends AbstractAdmin
 {
+    use AdminTrait;
+
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private TokenStorageInterface $tokenStorage
+    ) {
+    }
+
     // MARK: ConfigureRoutes
     protected function configureRoutes(RouteCollectionInterface $collection): void
     {
-        // $collection
-        //     ->add('redirectToCashTransfer', $this->getRouterIdParameter().'/cash_transfer')
-        //     ->add('redirectToPurchase', $this->getRouterIdParameter().'/purchase')
-        //     ->add('redirectToCashWithdrawal', $this->getRouterIdParameter().'/cash_withdrawal')
-        //     ->add('redirectToCurrencyExchange', $this->getRouterIdParameter().'/currency_exchange')
-        //     ->add('redirectToBankTransfer', $this->getRouterIdParameter().'/bank_transfer')
-        //     ->add('addFundsLinkToModal', $this->getRouterIdParameter().'/addFundsLinkToModal')
-        //     ->add('addFunds', $this->getRouterIdParameter().'/addFunds')
-        // ;
+        $collection
+            ->add('redirectToCashTransfer', $this->getRouterIdParameter() . '/cash_transfer')
+            ->add('redirectToPurchase', $this->getRouterIdParameter() . '/purchase')
+            ->add('redirectToCashWithdrawal', $this->getRouterIdParameter() . '/cash_withdrawal')
+            ->add('redirectToCurrencyExchange', $this->getRouterIdParameter() . '/currency_exchange')
+            ->add('redirectToBankTransfer', $this->getRouterIdParameter() . '/bank_transfer')
+            ->add('addFundsLinkToModal', $this->getRouterIdParameter() . '/addFundsLinkToModal')
+            ->add('addFunds', $this->getRouterIdParameter() . '/addFunds')
+        ;
     }
 
     // /* Remove batch delete action from the list */
@@ -229,7 +240,7 @@ final class AccountAdmin extends AbstractAdmin
         $subject = $this->getSubject();
 
         $accountName = $subject->getName();
-        // $accountType = $subject->getAccountTypeName();
+        $accountTypeName = $subject->getAccountTypeName();
         $currency = $subject->getCurrency();
 
         $show
@@ -241,9 +252,9 @@ final class AccountAdmin extends AbstractAdmin
                 ->add('accountTypeName', null, [
                     'label' => 'Account Type',
                 ])
-                // ->add('unit.name', null, [
-                //     'label' => 'Unit'
-                // ])
+                ->add('unit.name', null, [
+                    'label' => 'Unit'
+                ])
                 ->add('currency')
                 ->add('balance', MoneyType::class, [
                     'label' => 'Balance',
@@ -257,26 +268,26 @@ final class AccountAdmin extends AbstractAdmin
             ->end()
         ;
 
-        // if ($accountType !== 'Cash Account') {
-        //     $show
-        //         ->with('File Preview', [
-        //             'label' => 'File Preview',
-        //             'class' => 'col-md-6'
-        //         ])
-        //             ->add('file', null, [
-        //                 'template' => 'CRUD/show_one_to_many_document_file.html.twig'
-        //             ])
-        //         ->end()
-        //     ;
-        // }
+        if ($accountTypeName !== 'Cash' && $accountTypeName !== 'Wallet') {
+            $show
+                ->with('File Preview', [
+                    'label' => 'File Preview',
+                    'class' => 'col-md-6'
+                ])
+                    // ->add('file', null, [
+                    //     'template' => 'CRUD/show_one_to_many_document_file.html.twig'
+                    // ])
+                ->end()
+            ;
+        }
 
-        // $show
-        //     ->with('Transactions')
-        //         ->add('mainAccountTransactions', CollectionType::class, [
-        //             'template' => 'Account/transaction_account_show_one_to_many.html.twig'
-        //         ])
-        //     ->end()
-        // ;
+        $show
+            ->with('Transactions')
+                ->add('mainAccountTransactions', CollectionType::class, [
+                    'template' => 'Account/transaction_account_show_one_to_many.html.twig'
+                ])
+            ->end()
+        ;
     }
 
     // MARK: - PrePersist
