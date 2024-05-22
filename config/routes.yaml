@@ -19,3 +19,73 @@ sonata_user_admin_security:
 sonata_user_admin_resetting:
     resource: '@SonataUserBundle/Resources/config/routing/admin_resetting.xml'
     prefix: /admin
+    
+# ACCOUNTING ROUTES
+add_funds:
+    path: /add_funds
+    # the controller value has the format 'controller_class::method_name'
+    controller: App\Controller\AdminMenuController::addFundsAction
+
+add_funds_modal:
+    path: /add_funds_modal
+    # the controller value has the format 'controller_class::method_name'
+    controller: App\Controller\AdminMenuController::addFundsModalAction
+
+send_funds:
+    path: /send_funds
+    # the controller value has the format 'controller_class::method_name'
+    controller: App\Controller\AdminMenuController::sendFundsAction
+
+upload_file:
+    path: /upload_file
+    # the controller value has the format 'controller_class::method_name'
+    controller: App\Controller\AdminMenuController::uploadFileAction
+
+delete_file:
+    path: /delete_file
+    # the controller value has the format 'controller_class::method_name'
+    controller: App\Controller\AdminMenuController::deleteFileAction
+
+generate_zip:
+    path: /generate-zip
+    controller: App\Controller\ArchiveController::generateZip
+
+add_new_category_modal:
+    path: /add_new_category_modal/{type}
+    # the controller value has the format 'controller_class::method_name'
+    controller: App\Controller\BudgetMainCategoryAdminController::addNewCategoryModalAction
+    defaults:
+        _sonata_admin: admin.budget_main_category
+
+add_new_category:
+    path: /add_new_category/{type}
+    # the controller value has the format 'controller_class::method_name'
+    controller: App\Controller\BudgetMainCategoryAdminController::addNewCategoryAction
+    defaults:
+        _sonata_admin: admin.budget_main_category
+
+getBudgetCategories:
+    path: /get_budget_categories
+    # the controller value has the format 'controller_class::method_name'
+    controller: App\Controller\BudgetMainCategoryAdminController::getBudgetCategoriesAction
+    defaults:
+        _sonata_admin: admin.budget_main_category
+
+getReportBudgetCategories:
+    path: /get_report_budget_categories
+    # the controller value has the format 'controller_class::method_name'
+    controller: App\Controller\ReportAdminController::getReportBudgetCategoriesAction
+    defaults:
+        _sonata_admin: admin.budget_main_category
+
+sendEmail:
+    path: /send_email
+    # the controller value has the format 'controller_class::method_name'
+    controller: App\Controller\SendMailController::sendEmailAction
+
+display_file:
+    path: /display_file/{subdir}/{filename}
+    controller: App\Controller\FileController::displayFile
+    requirements:
+        subdir: .+
+        filename: .+
