@@ -19,6 +19,7 @@ use Twig\TwigFunction;
 class AppExtension extends AbstractExtension
 {
     public function __construct(
+        private string $projectDir,
         private Pool $configurationPool,
         private AppUtil $appUtil,
         private EntityManagerInterface $entityManager
@@ -33,6 +34,7 @@ class AppExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
+            new TwigFunction('get_project_dir', [$this, 'getProjectDir']),
             new TwigFunction('get_user', [$this, 'getUser']),
             new TwigFunction('is_switched_into_unit', [$this, 'isSwitchedIntoUnit']),
             new TwigFunction('get_switched_unit', [$this, 'getSwitchedUnit']),
@@ -42,6 +44,11 @@ class AppExtension extends AbstractExtension
             new TwigFunction('get_invoice_list_headers', [$this, 'getInvoiceListHeaders']),
             new TwigFunction('get_approved_invoices', [$this, 'getApprovedInvoices']),
         ];
+    }
+
+    public function getProjectDir()
+    {
+        return $this->projectDir;
     }
 
     public function getUser(): ?array
