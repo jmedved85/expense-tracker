@@ -18,7 +18,7 @@ accounts_list: Accounts List
 accounts_totals: Accounts Totals
 actions: Actions
 active: Active
-action_check: Check
+action_edit: Edit
 actual_avg_message: Calculated in the invoice and purchase lines
 add_bank_fee: Add Bank Fee
 add_bank_fee_button: Add Bank Fee
