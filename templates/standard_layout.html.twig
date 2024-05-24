@@ -19,10 +19,112 @@
     {# <script src="{{ asset('js/custom.js') }}"></script> #}
 {% endblock %}
 
-{% block sonata_admin_content_actions_wrappers %}
-    {% if _actions|replace({ '<li>': '', '</li>': '' })|trim is not empty %}
-        <ul class="nav navbar-nav navbar-left" style="padding-top: 8px;">
-            {{ parent() }}
-        </ul>
-    {% endif %}
-{% endblock sonata_admin_content_actions_wrappers %}
+{% block sonata_page_content %}
+    <section class="content-header">
+
+        {% block sonata_page_content_header %}
+            {% block sonata_page_content_nav %}
+                {% if _navbar_title is not empty
+                    or _tab_menu is not empty
+                    or _actions is not empty
+                    or _list_filters_actions is not empty
+                    %}
+                    <nav class="navbar navbar-default" role="navigation">
+                        {# <div class="container-fluid"> #}
+                            {% block tab_menu_navbar_header %}
+                                {% if _navbar_title is not empty %}
+                                    {# <div class="navbar-header">
+                                        <a class="navbar-brand" href="#">{{ _navbar_title|raw }}</a>
+                                    </div> #}
+                                {% endif %}
+                            {% endblock %}
+
+                            {# <div class="navbar-collapse"> #}
+                                {% if _tab_menu is not empty %}
+                                    <div class="navbar-left">
+                                        {{ _tab_menu|raw }}
+                                    </div>
+                                {% endif %}
+
+                                {% if admin is defined and action is defined and action == 'list' and admin.listModes|length > 1 %}
+                                    <div class="nav navbar-right btn-group">
+                                        {% for mode, settings in admin.listModes %}
+                                            <a href="{{ admin.generateUrl('list', app.request.query.all|merge({_list_mode: mode})) }}" class="btn btn-default navbar-btn btn-sm{% if admin.getListMode() == mode %} active{% endif %}">
+                                                {# NEXT_MAJOR: Remove the if and keep the else part #}
+                                                {% if settings.icon is not defined and settings.class is defined %}
+                                                    {% deprecated 'Relying on the "class" setting is deprecated since sonata-project/admin-bundle 4.9, use the "icon" setting instead' %}
+                                                    <i class="{{ settings.class }}" aria-hidden="true"></i>
+                                                {% else %}
+                                                    {{ settings.icon|default('')|parse_icon }}
+                                                {% endif %}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                {% block sonata_admin_content_actions_wrappers %}
+                                    {# {% if _actions|replace({ '<li>': '', '</li>': '' })|trim is not empty %}
+                                        <ul class="nav navbar-nav navbar-left" style="padding-top: 8px;">
+                                            {{ parent() }}
+                                        </ul>
+                                    {% endif %} #}
+
+                                    {% if _actions|replace({ '<li>': '', '</li>': '' })|trim is not empty %}
+                                        <ul class="nav navbar-nav navbar-left desktop-only">
+                                        {% if _actions|split('</a>')|length > 2 %}
+                                            {{ _actions|replace({'<ul class="dropdown-menu show" role="menu">': '', '</ul>': '', 'dd-': ''})|raw }}
+                                        {% else %}
+                                            {{ _actions|raw }}
+                                        {% endif %}
+                                        </ul>
+                                    {% endif %}
+                                {% endblock sonata_admin_content_actions_wrappers %}
+
+                                {% if _list_filters_actions is not empty %}
+                                    {{ _list_filters_actions|raw }}
+                                {% endif %}
+                            {# </div> #}
+                        {# </div> #}
+                    </nav>
+                {% endif %}
+            {% endblock sonata_page_content_nav %}
+        {% endblock sonata_page_content_header %}
+    </section>
+
+    <section class="content">
+        {% block sonata_admin_content %}
+
+            {% block notice %}
+                {% include '@SonataTwig/FlashMessage/render.html.twig' %}
+            {% endblock notice %}
+
+            {% if _preview is not empty %}
+                <div class="sonata-ba-preview">{{ _preview|raw }}</div>
+            {% endif %}
+
+            {% if _content is not empty %}
+                <div class="sonata-ba-content">{{ _content|raw }}</div>
+            {% endif %}
+
+            {% if _show is not empty %}
+                <div class="sonata-ba-show">{{ _show|raw }}</div>
+            {% endif %}
+
+            {% if _form is not empty %}
+                <div class="sonata-ba-form">{{ _form|raw }}</div>
+            {% endif %}
+
+            {% if _list_filters is not empty %}
+                <div class="row">
+                    {{ _list_filters|raw }}
+                </div>
+            {% endif %}
+
+            {% if _list_table is not empty %}
+                <div class="row">
+                    {{ _list_table|raw }}
+                </div>
+            {% endif %}
+        {% endblock sonata_admin_content %}
+    </section>
+{% endblock sonata_page_content %}

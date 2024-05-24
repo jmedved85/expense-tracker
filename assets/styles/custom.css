@@ -1,3 +1,7 @@
 .main-header .logo img {
     max-width: 100%;
 }
+
+.navbar {
+    min-height: auto;
+}
