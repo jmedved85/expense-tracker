@@ -1,8 +1,13 @@
 {% extends base_template %}
 
-{# {%- block actions -%}
-    {% include '@SonataAdmin/CRUD/action_buttons.html.twig' %}
-{%- endblock -%} #}
+{%- block actions -%}
+    <div style="margin: 10px 0;">
+        <a style="padding: 6px 12px;" class="btn btn-default sonata-action-element" href="{{ path('admin_app_account_list') }}">
+            <i class="fas fa-list" aria-hidden="true"></i>
+            Return to List
+        </a>
+    </div>
+{%- endblock -%}
 
 {%- block tab_menu -%}
     {{ knp_menu_render(admin.sidemenu(action), {
@@ -30,7 +35,7 @@
                     {% if admin.hasRoute('edit') and admin.hasAccess('edit', object) %}
                         {{ 'delete_or'|trans({}, 'SonataAdminBundle') }}
 
-                        <a class="btn btn-success" href="{{ admin.generateObjectUrl('edit', object) }}">
+                        <a class="btn btn-primary" href="{{ admin.generateObjectUrl('edit', object) }}">
                             <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                             {{ 'link_action_edit'|trans({}, 'SonataAdminBundle') }}</a>
                     {% endif %}
