@@ -1,3 +1,5 @@
+Account: Account
+Account Create: Account Create
 Account List: Account List
 Account Name: Account Name
 Account Type: Account Type
@@ -5,20 +7,34 @@ Accounts: Accounts
 Actions: Actions
 Active: Active
 Balance: Balance
+Bank: Bank
 Budget: Budget
 Budget Item: Budget Item
 Budget Main Categories: Budget Main Categories
 Budget Sub Categories: Budget Sub Categories
+Cash: Cash
 Categories: Categories
+Check this box to disable the account for making payments on invoices and purchases.: Check this box to disable the account for making payments on invoices and purchases.
+Choose an option: Choose an option
+Credit Card: Credit Card
+Crypto: Crypto
 Currency: Currency
+Deactivate: Deactivate
 Deactivated: Deactivated
+Deactivation: Deactivation
+Debit Card: Debit Card
 Departments: Departments
 File Preview: File Preview
 General Category: General Category
+Investment: Investment
 Invoices: Invoices
+Loan: Loan
 Name: Name
 Purchases: Purchases
+Savings: Savings
 Suppliers: Suppliers
 Transactions: Transactions
 Unit: Unit
 Units: Units
+Upload File: Upload File
+Wallet: Wallet

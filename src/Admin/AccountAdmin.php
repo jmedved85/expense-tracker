@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use App\Entity\Account;
 use App\Entity\AccountType;
+use App\Entity\Unit;
 use App\Traits\AdminTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -67,23 +68,23 @@ final class AccountAdmin extends AbstractAdmin
     // MARK: - Datagrid Filters
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
-        // /* Get unit */
+        /* Get unit */
         // $unitId = $this->getUnitId();
 
         $filter
             ->add('name')
-            // ->add('accountType', null, [
-            //     'placeholder' => 'Choose an option',
-            //     'show_filter' => true,
-            //     'field_type' => ChoiceType::class,
-            //     'field_options' => [
-            //         'choices' => AccountType::NAMES,
-            //     ],
-            //     'query_builder' => function (EntityRepository $er) {
-            //         return $er->createQueryBuilder('a')
-            //             ->orderBy('a.accountType', 'ASC');
-            //     },
-            // ])
+            ->add('accountType', null, [
+                'placeholder' => 'Choose an option',
+                'show_filter' => true,
+                'field_type' => ChoiceType::class,
+                'field_options' => [
+                    'choices' => AccountType::NAMES,
+                ],
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('a')
+                        ->orderBy('a.accountType', 'ASC');
+                },
+            ])
             ->add('balance')
             ->add('currency', null, [
                 'label' => 'Currency',
@@ -128,14 +129,18 @@ final class AccountAdmin extends AbstractAdmin
         // $unitId = $this->getUnitId();
 
         $actions = [
-            // 'addFunds' => [
-            //     'template' => 'Account/list__action_add_funds.html.twig',
-            // ],
-            'show' => [],
-            'edit' => [
-                // 'template' => 'CRUD/list__action_edit_no_label.html.twig',
+            'addFunds' => [
+                'template' => 'Account/list__action_add_funds.html.twig',
             ],
-            'delete' => [],
+            'show' => [
+                'template' => 'CRUD/list__action_show_custom.html.twig',
+            ],
+            'edit' => [
+                'template' => 'CRUD/list__action_edit_custom.html.twig',
+            ],
+            'delete' => [
+                'template' => 'CRUD/list__action_delete_custom.html.twig',
+            ],
         ];
 
         $list

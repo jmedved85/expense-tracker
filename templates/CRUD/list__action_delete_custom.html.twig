@@ -1,0 +1,10 @@
+{% if admin.hasAccess('delete', object) and admin.hasRoute('delete') %}
+    {% set button_content = sonata_config.getOption('list_action_button_content') %}
+    <a
+        href="{{ admin.generateObjectUrl('delete', object, actions.link_parameters|default([])) }}"
+        class="btn btn-sm btn-default delete_link"
+        title="{{ 'action_delete'|trans({}, 'SonataAdminBundle') }}"
+    >
+        <i class="fas fa-times" aria-hidden="true"></i>
+    </a>
+{% endif %}

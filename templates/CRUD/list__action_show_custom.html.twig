@@ -1,0 +1,10 @@
+{% if admin.hasAccess('show', object) and admin.hasRoute('show') %}
+    {% set button_content = sonata_config.getOption('list_action_button_content') %}
+    <a
+        href="{{ admin.generateObjectUrl('show', object, actions.link_parameters|default([])) }}"
+        class="btn btn-sm btn-default view_link"
+        title="{{ 'action_show'|trans({}, 'SonataAdminBundle') }}"
+    >
+        <i class="fas fa-eye" aria-hidden="true"></i>
+    </a>
+{% endif %}

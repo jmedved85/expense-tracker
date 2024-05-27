@@ -28,20 +28,22 @@
 {% endblock %}
 
 {% block actions %}
-    <a style="padding: 6px 12px;" class="btn btn-default sonata-action-element" href="{{ path('admin_app_account_list') }}">
-        <i class="fas fa-list" aria-hidden="true"></i>
-        Return to list
-    </a>
-    {% if object is not null and admin.id(object) is not null and admin.hasAccess('edit', object) and admin.hasRoute('edit') %}
-        <a href="{{ path('admin_app_account_edit', {'id': object.id}) }}" 
-            class="btn btn-default sonata-action-element" 
-            style="padding: 6px 12px;"
-            title="{{ 'action_edit'|trans({}, 'SonataAdminBundle') }}"
-        >
-            <i class="fas fa-pencil-alt" aria-hidden="true"></i>
-            {{ 'action_edit'|trans({}, 'SonataAdminBundle') }}
+    <div style="margin: 10px 0;">
+        <a style="padding: 6px 12px;" class="btn btn-default sonata-action-element" href="{{ path('admin_app_account_list') }}">
+            <i class="fas fa-list" aria-hidden="true"></i>
+            Return to List
         </a>
-    {% endif %}
+        {% if object is not null and admin.id(object) is not null and admin.hasAccess('edit', object) and admin.hasRoute('edit') %}
+            <a href="{{ path('admin_app_account_edit', {'id': object.id}) }}" 
+                class="btn btn-primary sonata-action-element" 
+                style="padding: 6px 12px;"
+                title="{{ 'action_edit'|trans({}, 'SonataAdminBundle') }}"
+            >
+                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                {{ 'action_edit'|trans({}, 'SonataAdminBundle') }}
+            </a>
+        {% endif %}
+    </div>
 {% endblock %}
 
 

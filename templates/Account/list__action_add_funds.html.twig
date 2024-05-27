@@ -1,11 +1,16 @@
 {%- block add_funds_modal -%}
 
 {# Link to modal #}
-{# {% if object.accountType == 'Card Account' %} #}
-{% if object.accountType == 'Cash Account' or object.accountType == 'Card Account' %}
+{% if object.accountTypeName == 'Cash' or object.accountTypeName == 'Credit Card' %}
     {% if object.deactivated == false %}
-        <a class="btn btn-sm btn-default" href="{{ admin.generateObjectUrl('addFundsLinkToModal', object) }}" data-toggle="modal" data-target="#addFundsModal" title="Add Funds">
+        <a class="btn btn-sm btn-default" 
+            href="{{ admin.generateObjectUrl('addFundsLinkToModal', object) }}" 
+            data-toggle="modal" 
+            data-target="#addFundsModal" 
+            title="Add Funds"
+        >
             <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
+            {# &nbsp;{{ 'add_funds'|trans({}, 'SonataAdminBundle') }} #}
         </a>
     {% endif %}
 {% endif %}

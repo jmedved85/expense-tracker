@@ -1,7 +1,5 @@
-{# DEFAULT FILE: '@SonataAdmin/Button/create_button.html.twig' #}
-
 {% if admin.hasAccess('create') and admin.hasRoute('create') %}
-    <a type="button" class="btn btn-success" href="{{ admin.generateUrl('create') }}">
+    <a type="button" class="btn btn-success" style="margin-top: 8px;" href="{{ admin.generateUrl('create') }}">
         <i class="fas fa-plus-circle" aria-hidden="true"></i>
         &nbsp;{{ 'add_new_button'|trans({}, 'SonataAdminBundle') }}
     </a>
