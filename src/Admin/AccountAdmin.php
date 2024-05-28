@@ -72,10 +72,13 @@ final class AccountAdmin extends AbstractAdmin
         // $unitId = $this->getUnitId();
 
         $filter
-            ->add('name')
+            ->add('name', null, [
+                'advanced_filter' => false
+            ])
             ->add('accountType', null, [
                 'placeholder' => 'Choose an option',
                 'show_filter' => true,
+                'advanced_filter' => false,
                 'field_type' => ChoiceType::class,
                 'field_options' => [
                     'choices' => AccountType::NAMES,
@@ -85,10 +88,13 @@ final class AccountAdmin extends AbstractAdmin
                         ->orderBy('a.accountType', 'ASC');
                 },
             ])
-            ->add('balance')
+            ->add('balance', null, [
+                'advanced_filter' => false
+            ])
             ->add('currency', null, [
                 'label' => 'Currency',
                 'show_filter' => true,
+                'advanced_filter' => false,
                 'field_type' => CurrencyType::class,
                 'field_options' => [
                     'preferred_choices' => ['EUR', 'GBP', 'USD'],
@@ -96,6 +102,7 @@ final class AccountAdmin extends AbstractAdmin
             ])
             ->add('deactivated', null, [
                 'show_filter' => true,
+                'advanced_filter' => false
             ])
         ;
 
@@ -154,8 +161,8 @@ final class AccountAdmin extends AbstractAdmin
                 'label' => 'Account Type',
             ])
             ->add('currency', null, [
+                'header_style' => 'width: 5%; text-align: center',
                 'row_align' => 'center',
-                'header_style' => 'text-align: center',
             ])
             ->add('balance', MoneyType::class, [
                 'template' => 'CRUD/list_currency.html.twig',
@@ -164,11 +171,12 @@ final class AccountAdmin extends AbstractAdmin
             ])
             ->add('deactivated', null, [
                 'label' => 'Active',
-                'template' => 'Account/custom_deactivated_list.html.twig',
+                'header_style' => 'width: 5%; text-align: center',
                 'row_align' => 'center',
-                'header_style' => 'text-align: center',
+                'template' => 'Account/custom_deactivated_list.html.twig',
             ])
             ->add(ListMapper::NAME_ACTIONS, null, [
+                'header_style' => 'width: 25%;',
                 'actions' => $actions,
             ])
         ;
