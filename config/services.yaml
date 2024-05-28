@@ -33,7 +33,7 @@ services:
             - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
             - [ setTemplate, ['button_create', 'CRUD\list__action_create_custom.html.twig'] ]
         tags:
-            - { name: sonata.admin, model_class: App\Entity\Account, controller: App\Controller\AccountAdminController, manager_type: orm, group: Banking, label: Accounts }
+            - { name: sonata.admin, model_class: App\Entity\Account, controller: App\Controller\AccountAdminController, manager_type: orm, group: Banking, label: Accounts, show_mosaic_button: false }
 
     admin.add_funds:
         class: App\Admin\AddFundsAdmin

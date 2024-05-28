@@ -6,6 +6,15 @@
         style="margin: 0 0 0 2px;"
         title="{{ 'action_edit'|trans({}, 'SonataAdminBundle') }}"
     >
-        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+        {% if button_content == 'icon' or button_content == 'all' %}
+            <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+        {% endif %}
+        {% if button_content == 'text' or button_content == 'all' %}
+            {{ 'action_edit'|trans({}, 'SonataAdminBundle') }}
+        {% else %}
+            <span class="sr-only">
+                {{ 'action_edit'|trans({}, 'SonataAdminBundle') }}
+            </span>
+        {% endif %}
     </a>
 {% endif %}
