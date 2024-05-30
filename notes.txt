@@ -32,8 +32,9 @@ http://127.0.0.1:8001/admin/
 
 ----------
 .env.local
-DATABASE_URL=mysql://jmedved:Root753$@127.0.0.1:3306/home-acc
 DATABASE_URL=mysql://root:jmedved85@127.0.0.1:3306/home-acc
+DATABASE_URL=mysql://root:Jmedved85$@127.0.0.1:3306/home-acc
+DATABASE_URL=mysql://jmedved:Root753$@127.0.0.1:3306/home-acc
 APP_ENV=dev
 APP_DEBUG=true
 ----------
@@ -163,3 +164,55 @@ composer require --dev squizlabs/php_codesniffer
 
 vendor/bin/phpcs src
 vendor/bin/phpcbf src
+
+
+PHP / XDEBUG INSTALL
+--------------------
+
+https://php.watch/articles/install-php82-ubuntu-debian
+https://laracasts.com/series/phpstorm-for-laravel-developers/episodes/18
+
+dpkg -l | grep php | tee packages.txt
+sudo add-apt-repository ppa:ondrej/php # Press enter when prompted.
+sudo apt update
+
+sudo apt install php8.2 php8.2-cli php8.2-common php8.2-fpm php8.2-mysql php8.2-zip php8.2-gd php8.2-mbstring php8.2-curl php8.2-xml php8.2-bcmath php8.2-intl 
+
+sudo apt install php8.2 php8.2-cli php8.2-{curl,bz2,mbstring,intl}
+
+
+sudo apt install php8.2-fpm
+
+sudo a2enconf php8.2-fpm
+sudo service apache2 restart
+
+sudo a2disconf php8.2-fpm
+sudo service apache2 restart
+
+----
+
+ls /etc/apache2/conf-enabled
+Look for a file related to PHP. If you have used a2enconf php8.2-fpm, there should be a symlink pointing to the php8.2-fpm.conf file in the conf-enabled directory.
+
+php -v
+php -m
+
+sudo update-alternatives --config php
+
+composer self-update --2
+
+xdebug.so
+/usr/lib/php/20220829	
+
+- xdebug konfiguracija samo u fpm/php.ini, ne zaboraviti chrome extension za xdebug instalirati i imati uključen
+
+fpm/php.ini
+[xdebug]
+zend_extension="xdebug.so"
+xdebug.mode=debug
+xdebug.client_host=127.0.0.1
+xdebug.client_port=9003
+;xdebug.start_with_request=yes
+
+RESTART PHP-FPM
+sudo systemctl restart php8.2-fpm
