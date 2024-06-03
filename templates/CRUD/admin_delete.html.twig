@@ -1,12 +1,14 @@
 {% extends base_template %}
 
 {%- block actions -%}
-    <div style="margin: 10px 0;">
-        <a style="padding: 6px 12px;" class="btn btn-default sonata-action-element" href="{{ path('admin_app_account_list') }}">
-            <i class="fas fa-list" aria-hidden="true"></i>
-            Return to List
-        </a>
-    </div>
+    {% if admin.hasRoute('list') and admin.hasAccess('list') %}
+        <div style="margin: 10px 0;">
+            <a style="padding: 6px 12px;" class="btn btn-default sonata-action-element" href="{{ admin.generateUrl('list') }}">
+                <i class="fas fa-list" aria-hidden="true"></i>
+                Return to List
+            </a>
+        </div>
+    {% endif %}
 {%- endblock -%}
 
 {%- block tab_menu -%}

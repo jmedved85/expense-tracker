@@ -1,0 +1,22 @@
+{% extends '@SonataAdmin/CRUD/base_edit.html.twig' %}
+
+{% block actions %}
+    <div style="margin: 10px 0;">
+        {% if admin.hasRoute('list') and admin.hasAccess('list') %}
+            <a style="padding: 6px 12px;" class="btn btn-default sonata-action-element" href="{{ admin.generateUrl('list') }}">
+                <i class="fas fa-list" aria-hidden="true"></i>
+                Return to List
+            </a>
+        {% endif %}
+        {% if object is not null and admin.id(object) is not null and admin.hasAccess('show', object) and admin.hasRoute('show') %}
+            <a href="{{ admin.generateObjectUrl('show', object) }}" 
+                style="padding: 6px 12px;" 
+                class="btn btn-primary sonata-action-element" 
+                title="{{ 'action_show'|trans({},'SonataAdminBundle') }}"
+            >
+                <i class="fas fa-eye" aria-hidden="true"></i>
+                {{ 'action_show'|trans({}, 'SonataAdminBundle') }}
+            </a>
+        {% endif %}
+    </div>
+{% endblock %}

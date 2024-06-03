@@ -77,16 +77,23 @@ final class DepartmentAdmin extends AbstractAdmin
         // /* Get unit */
         // $unitId = $this->getUnitId();
 
+        $actions = [
+            'show' => [
+                'template' => 'CRUD/list__action_show_custom.html.twig',
+            ],
+            'edit' => [
+                'template' => 'CRUD/list__action_edit_custom.html.twig',
+            ],
+            'delete' => [
+                'template' => 'CRUD/list__action_delete_custom.html.twig',
+            ],
+        ];
+
         $list
-            ->add('name')
+            ->addIdentifier('name')
             ->add(ListMapper::NAME_ACTIONS, null, [
-                'actions' => [
-                    'show' => [],
-                    'edit' => [
-                        // 'template' => 'CRUD/list__action_edit_no_label.html.twig',
-                    ],
-                    'delete' => [],
-                ],
+                'header_style' => 'width: 25%;',
+                'actions' => $actions,
             ])
         ;
 
@@ -106,7 +113,7 @@ final class DepartmentAdmin extends AbstractAdmin
         // $unitId = $this->getUnitId();
 
         $form
-            ->with('Department', ['class' => 'col-md-5'])
+            ->with('Department', ['class' => 'col-md-6'])
                 ->add('name')
             ->end()
         ;
@@ -134,10 +141,12 @@ final class DepartmentAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $show): void
     {
         $show
-            ->add('name')
-            // ->add('unit.name', null, [
-            //     'label' => 'Unit'
-            // ])
+            ->with('Department', ['class' => 'col-md-6'])
+                ->add('name')
+                ->add('unit.name', null, [
+                    'label' => 'Unit'
+                ])
+            ->end()
         ;
     }
 
