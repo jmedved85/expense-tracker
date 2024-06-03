@@ -14,7 +14,19 @@ enum AccountType: int
     case SAVINGS = 8;
     case WALLET = 9;
 
-    public const NAMES = [
+    public const NAMES_STRING = [
+        'Cash' => self::CASH,
+        'Bank' => self::BANK,
+        'Credit Card' => self::CREDIT_CARD,
+        'Debit Card' => self::DEBIT_CARD,
+        'Crypto' => self::CRYPTO,
+        'Investment' => self::INVESTMENT,
+        'Loan' => self::LOAN,
+        'Savings' => self::SAVINGS,
+        'Wallet' => self::WALLET,
+    ];
+
+    public const NAMES_VALUE = [
         'Cash' => self::CASH->value,
         'Bank' => self::BANK->value,
         'Credit Card' => self::CREDIT_CARD->value,

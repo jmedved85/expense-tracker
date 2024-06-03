@@ -81,7 +81,7 @@ final class AccountAdmin extends AbstractAdmin
                 'advanced_filter' => false,
                 'field_type' => ChoiceType::class,
                 'field_options' => [
-                    'choices' => AccountType::NAMES,
+                    'choices' => AccountType::NAMES_VALUE,
                 ],
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('a')
@@ -201,7 +201,7 @@ final class AccountAdmin extends AbstractAdmin
                 ->add('name')
                 ->add('accountType', ChoiceType::class, [
                     'placeholder' => 'Choose an option',
-                    'choices' => AccountType::NAMES,
+                    'choices' => AccountType::NAMES_STRING,
                 ])
                 ->add('currency', CurrencyType::class, [
                     'placeholder' => 'Choose an option',
