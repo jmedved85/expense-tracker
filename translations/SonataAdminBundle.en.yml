@@ -105,7 +105,6 @@ from_account: From Account
 funds_transfer_button: Funds Transfer
 generate_report_heading: Generate Report
 generate_report_modify_heading: Modify Report options
-go_back_button: Go Back
 invoice_date_paid: Invoice Date Paid
 invoice_title: 'Invoices:'
 invoice_lines_title: 'Invoice Lines:'

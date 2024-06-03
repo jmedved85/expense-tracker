@@ -1,9 +1,5 @@
 {% extends '@SonataAdmin/CRUD/show.html.twig' %}
 
-{% block content %}
-    {# {% include 'CRUD/go_back_button.html.twig' %} #}
-{% endblock %}
-
 {% block actions %}
     <ul class="dropdown-menu show" role="menu">
         {% if object is not null and admin.id(object) is not null and admin.hasAccess('edit', object) and admin.hasRoute('edit') %}

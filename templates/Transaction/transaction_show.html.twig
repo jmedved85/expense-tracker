@@ -1,9 +1,5 @@
 {% extends '@SonataAdmin/CRUD/show.html.twig' %}
 
-{% block content %}
-    {# {% include 'CRUD/go_back_button.html.twig' %} #}
-{% endblock %}
-
 {% block actions %}
 
     {% set lastTransaction = get_last_transaction() %}
