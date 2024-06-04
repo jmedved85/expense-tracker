@@ -6,6 +6,7 @@ namespace App\Admin;
 
 use App\Entity\Budget;
 use App\Entity\BudgetType;
+use App\Traits\AdminTrait;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -27,6 +28,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 final class BudgetAdmin extends AbstractAdmin
 {
+    use AdminTrait;
+
     public function __construct(private EntityManagerInterface $entityManager)
     {
     }
@@ -84,7 +87,7 @@ final class BudgetAdmin extends AbstractAdmin
                 'show_filter' => true,
                 'field_type' => CurrencyType::class,
                 'field_options' => [
-                    'preferred_choices' => ['EUR', 'GBP', 'USD'],
+                    'preferred_choices' => $this->preferredCurrencyChoices,
                 ]
             ])
             ->add('totalBudgeted')
@@ -214,7 +217,7 @@ final class BudgetAdmin extends AbstractAdmin
                 ])
                 ->add('currency', CurrencyType::class, [
                     'placeholder' => 'Choose an option',
-                    'preferred_choices' => ['EUR', 'GBP', 'USD']
+                    'preferred_choices' => $this->preferredCurrencyChoices
                 ])
                 /* TODO: After submitting the form,
                     the end date readonly field should be set to the last day of the month */

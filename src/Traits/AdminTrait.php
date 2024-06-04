@@ -17,7 +17,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 trait AdminTrait
 {
-    protected $preferredCurrencyChoices = ['GBP', 'EUR', 'CHF', 'USD'];
+    /* TODO: Add functionality to custom user choice in settings */
+    protected $preferredCurrencyChoices = ['EUR', 'USD', 'GBP'];
 
     public function session()
     {

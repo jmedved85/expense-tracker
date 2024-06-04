@@ -8,6 +8,7 @@ use App\Entity\Budget;
 use App\Entity\BudgetItem;
 use App\Entity\BudgetMainCategory;
 use App\Entity\BudgetSubCategory;
+use App\Traits\AdminTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use InvalidArgumentException;
@@ -25,6 +26,8 @@ use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 
 final class BudgetItemAdmin extends AbstractAdmin
 {
+    use AdminTrait;
+
     public function __construct(private EntityManagerInterface $entityManager)
     {
     }
@@ -330,7 +333,7 @@ final class BudgetItemAdmin extends AbstractAdmin
             ->with('Currency and Amount', ['class' => 'col-md-4'])
                 ->add('currency', CurrencyType::class, [
                     'placeholder' => 'Choose an option',
-                    'preferred_choices' => ['EUR', 'GBP', 'USD']
+                    'preferred_choices' => $this->preferredCurrencyChoices
                 ])
                 ->add('budgeted', MoneyType::class, [
                     'label' => 'Budgeted',

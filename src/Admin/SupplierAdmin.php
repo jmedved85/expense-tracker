@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Admin;
 
 use App\Entity\Supplier;
+use App\Traits\AdminTrait;
 use Doctrine\ORM\EntityRepository;
 use InvalidArgumentException;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -23,6 +24,8 @@ use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 
 final class SupplierAdmin extends AbstractAdmin
 {
+    use AdminTrait;
+
     protected function configureRoutes(RouteCollectionInterface $collection): void
     {
         // $collection
@@ -56,7 +59,7 @@ final class SupplierAdmin extends AbstractAdmin
                 'label' => 'Currency',
                 'field_type' => CurrencyType::class,
                 'field_options' => [
-                    'preferred_choices' => ['GBP', 'EUR', 'TRY', 'AED', 'USD'],
+                    'preferred_choices' => $this->preferredCurrencyChoices,
                 ]
             ])
         ;
@@ -205,7 +208,7 @@ final class SupplierAdmin extends AbstractAdmin
         $form
                 ->add('currency', CurrencyType::class, [
                     'placeholder' => 'Choose an option',
-                    'preferred_choices' => ['GBP', 'EUR', 'TRY', 'AED', 'USD']
+                    'preferred_choices' => $this->preferredCurrencyChoices
                 ])
                 ->add('address')
                 ->add('phoneNumber')

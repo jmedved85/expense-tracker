@@ -97,7 +97,7 @@ final class AccountAdmin extends AbstractAdmin
                 'advanced_filter' => false,
                 'field_type' => CurrencyType::class,
                 'field_options' => [
-                    'preferred_choices' => ['EUR', 'GBP', 'USD'],
+                    'preferred_choices' => $this->preferredCurrencyChoices,
                 ]
             ])
             ->add('deactivated', null, [
@@ -205,7 +205,7 @@ final class AccountAdmin extends AbstractAdmin
                 ])
                 ->add('currency', CurrencyType::class, [
                     'placeholder' => 'Choose an option',
-                    'preferred_choices' => ['EUR', 'GBP', 'USD']
+                    'preferred_choices' => $this->preferredCurrencyChoices
                 ])
             ->end()
             ->with('Upload File', ['class' => 'col-md-4'])
