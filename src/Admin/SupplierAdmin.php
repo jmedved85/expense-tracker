@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Admin;
 
 use App\Entity\Supplier;
+use App\Entity\Unit;
 use App\Traits\AdminTrait;
 use Doctrine\ORM\EntityRepository;
 use InvalidArgumentException;
@@ -54,13 +55,19 @@ final class SupplierAdmin extends AbstractAdmin
         // $unitId = $this->getUnitId();
 
         $filter
-            ->add('name')
+            ->add('name', null, [
+                'advanced_filter' => false,
+            ])
             ->add('currency', null, [
                 'label' => 'Currency',
                 'field_type' => CurrencyType::class,
+                'advanced_filter' => false,
                 'field_options' => [
                     'preferred_choices' => $this->preferredCurrencyChoices,
                 ]
+            ])
+            ->add('unit', null, [
+                'advanced_filter' => false,
             ])
         ;
 
@@ -91,6 +98,18 @@ final class SupplierAdmin extends AbstractAdmin
         // /* Get unit id */
         // $unitId = $this->getUnitId();
 
+        $actions = [
+            'show' => [
+                'template' => 'CRUD/list__action_show_custom.html.twig',
+            ],
+            'edit' => [
+                'template' => 'CRUD/list__action_edit_custom.html.twig',
+            ],
+            'delete' => [
+                'template' => 'CRUD/list__action_delete_custom.html.twig',
+            ],
+        ];
+
         // $requestQueryPcode = $this->getRequest()->query->get('pcode');
 
         /* Get supplier list if it is requested from the purchase form */
@@ -118,6 +137,7 @@ final class SupplierAdmin extends AbstractAdmin
         // } else {
             $list
                 ->addIdentifier('name')
+                ->add('unit')
             // ;
 
             // if (!$unitId) {
@@ -129,34 +149,30 @@ final class SupplierAdmin extends AbstractAdmin
             // }
 
             // $list
-            //     ->add('numberOfInvoices', null, [
-                //     'label' => 'Invoices',
-                //     'header_style' => 'width:5%; text-align:center;',
-                //  'row_align' => 'center',
-                // ])
-                // ->add('numberOfUnpaidInvoices', null, [
-                //     'label' => 'Unpaid',
-                //     'header_style' => 'width:5%; text-align:center;',
-                //  'row_align' => 'center',
-                //     'template' => 'Supplier/unpaid_balance_list_string.html.twig'
-                // ])
+                ->add('numberOfInvoices', null, [
+                    'label' => 'Invoices',
+                    'header_style' => 'width:5%; text-align:center;',
+                    'row_align' => 'center',
+                ])
+                ->add('numberOfUnpaidInvoices', null, [
+                    'label' => 'Unpaid',
+                    'header_style' => 'width:5%; text-align:center;',
+                    'row_align' => 'center',
+                    'template' => 'Supplier/unpaid_balance_list_string.html.twig'
+                ])
                 ->add('currency', null, [
                     'header_style' => 'width:5%; text-align:center;',
                     'row_align' => 'center',
                 ])
-                // ->add('amountOfUnpaidInvoices', MoneyType::class, [
-                //     'label' => 'Balance',
-                //     'header_style' => 'width:8%; text-align:right;',
-                //  'row_align' => 'right',
-                //     'template' => 'Supplier/unpaid_balance_list_string.html.twig'
-                // ])
+                ->add('amountOfUnpaidInvoices', MoneyType::class, [
+                    'label' => 'Balance',
+                    'header_style' => 'width:8%; text-align:right;',
+                 'row_align' => 'right',
+                    'template' => 'Supplier/unpaid_balance_list_string.html.twig'
+                ])
                 ->add(ListMapper::NAME_ACTIONS, null, [
-                    'header_style' => 'width: 20%',
-                    'actions' => [
-                        'show' => [],
-                        'edit' => [],
-                        'delete' => [],
-                    ],
+                    'header_style' => 'width: 25%;',
+                    'actions' => $actions,
                 ])
                 // ->add('comments', null, [
                 //     'header_style' => 'width: 6%',
@@ -183,7 +199,7 @@ final class SupplierAdmin extends AbstractAdmin
         $form
             ->with('First Column', [
                 'label' => $editRoute ? $supplierName : 'Add New Supplier',
-                'class' => 'col-md-6'
+                'class' => 'col-md-5'
             ])
             ->add('name')
         ;
@@ -220,7 +236,7 @@ final class SupplierAdmin extends AbstractAdmin
             ->end()
             ->with('Second Column', [
                 'label' => false,
-                'class' => 'col-md-6'
+                'class' => 'col-md-5'
             ])
                 ->add('vatNumber')
                 ->add('vatRate')
@@ -230,6 +246,22 @@ final class SupplierAdmin extends AbstractAdmin
                 ->add('sortCode')
                 ->add('bicCode')
                 ->add('supplierTerms')
+            ->end()
+            ->with('Unit', [
+                'class' => 'col-md-2'
+            ])
+                ->add('unit', EntityType::class, [
+                    'class' => Unit::class,
+                    'choice_label' => 'name',
+                    'placeholder' => 'Choose an option',
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('s')
+                            ->andWhere('s.active = :active')
+                            ->orderBy('s.name', 'ASC')
+                            ->setParameter('active', true)
+                        ;
+                    },
+                ])
             ->end()
             // ->with('Comments',['class' => 'col-sm-12'])
             //     ->add('comments', CollectionType::class, [
@@ -258,7 +290,7 @@ final class SupplierAdmin extends AbstractAdmin
                 'class' => 'col-md-6'
             ])
                 ->add('name')
-                // ->add('unit.name')
+                ->add('unit.name')
                 ->add('currency')
                 ->add('address')
                 ->add('phoneNumber')
@@ -281,18 +313,18 @@ final class SupplierAdmin extends AbstractAdmin
                 ->add('bicCode')
                 ->add('supplierTerms')
             ->end()
-            // ->with('Invoices')
-            //     ->add('invoices', null, [
-            //         'associated_property' => 'invoiceNumber',
-            //         'template' => 'Supplier/invoice_supplier_show_one_to_many.html.twig'
-            //     ])
-            // ->end()
-            // ->with('Purchases')
-            //     ->add('purchases', null, [
-            //         'associated_property' => 'id',
-            //         'template' => 'Supplier/purchase_supplier_show_one_to_many.html.twig'
-            //     ])
-            // ->end()
+            ->with('Invoices')
+                ->add('invoices', null, [
+                    'associated_property' => 'invoiceNumber',
+                    'template' => 'Supplier/invoice_supplier_show_one_to_many.html.twig'
+                ])
+            ->end()
+            ->with('Purchases')
+                ->add('purchases', null, [
+                    'associated_property' => 'id',
+                    'template' => 'Supplier/purchase_supplier_show_one_to_many.html.twig'
+                ])
+            ->end()
         ;
 
         // if ($subject->getComments()->count() > 0) {
@@ -346,8 +378,8 @@ final class SupplierAdmin extends AbstractAdmin
             throw new InvalidArgumentException('Expected an instance of ProxyQuery');
         }
 
-        // $qb = $query->getQueryBuilder();
-        // $rootAlias = current($query->getQueryBuilder()->getRootAliases());
+        $qb = $query->getQueryBuilder();
+        $rootAlias = current($query->getQueryBuilder()->getRootAliases());
 
         // /* Get unit id */
         // $unitId = $this->getUnitId();
@@ -361,14 +393,14 @@ final class SupplierAdmin extends AbstractAdmin
         //         ->addGroupBy($rootAlias)
         //     ;
         // } else {
-        //     $qb
-        //         ->leftJoin($rootAlias . '.invoices', 'i')
-        //         ->join($rootAlias . '.unit', 's')
-        //         ->addSelect('COUNT(i.id) numberOfInvoices')
-        //         ->where('s.active = :active')
-        //         ->setParameter('active', true)
-        //         ->addGroupBy($rootAlias)
-        //     ;
+            $qb
+                ->leftJoin($rootAlias . '.invoices', 'i')
+                ->join($rootAlias . '.unit', 's')
+                ->addSelect('COUNT(i.id) numberOfInvoices')
+                ->where('s.active = :active')
+                ->setParameter('active', true)
+                ->addGroupBy($rootAlias)
+            ;
         // }
 
         return $query;

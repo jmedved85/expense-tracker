@@ -6,8 +6,12 @@ Account Type: Account Type
 Accounts: Accounts
 Actions: Actions
 Active: Active
+Address: Address
 Balance: Balance
 Bank: Bank
+Bank Account Name: Bank Account Name
+Bank Account Number: Bank Account Number
+Bic Code: Bic Code
 Budget: Budget
 Budget Item: Budget Item
 Budget Main Categories: Budget Main Categories
@@ -16,6 +20,7 @@ Cash: Cash
 Categories: Categories
 Check this box to disable the account for making payments on invoices and purchases.: Check this box to disable the account for making payments on invoices and purchases.
 Choose an option: Choose an option
+Contact Name: Contact Name
 Credit Card: Credit Card
 Crypto: Crypto
 Currency: Currency
@@ -27,17 +32,30 @@ Department: Department
 Department List: Department List
 Department Create: Department Create
 Departments: Departments
+Email: Email
 File Preview: File Preview
 General Category: General Category
+Iban: Iban
 Investment: Investment
 Invoices: Invoices
+Job Title: Job Title
 Loan: Loan
+Mobile Number: Mobile Number
 Name: Name
+Phone Number: Phone Number
 Purchases: Purchases
 Savings: Savings
+Sort Code: Sort Code
+Supplier List: Supplier List
+Supplier Terms: Supplier Terms
 Suppliers: Suppliers
 Transactions: Transactions
 Unit: Unit
+Unit Name: Unit Name
 Units: Units
+Unpaid: Unpaid
 Upload File: Upload File
+Vat Number: Vat Number
+Vat Rate: Vat Rate
 Wallet: Wallet
+Website: Website

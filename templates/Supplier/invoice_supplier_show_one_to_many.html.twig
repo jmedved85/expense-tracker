@@ -1,13 +1,3 @@
-{#{%- block name -%}#}
-{#    <table class="table">#}
-{#        <tbody>#}
-{#            <tr style="background-color:#f9f9f9">#}
-{#                <th>{{ 'invoice_title'|trans({}, 'SonataAdminBundle') }}</th>#}
-{#            </tr>#}
-{#        </tbody>#}
-{#    </table>#}
-{#{%- endblock -%}#}
-
 {% block field %}
     {% set route_name = field_description.option('route').name|default(sonata_config.getOption('default_admin_route')) %}
     {% set route_parameters = field_description.option('route').parameters|default([]) %}

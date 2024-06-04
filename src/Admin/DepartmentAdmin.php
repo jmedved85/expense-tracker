@@ -45,7 +45,12 @@ final class DepartmentAdmin extends AbstractAdmin
         // $unitId = $this->getUnitId();
 
         $filter
-            ->add('name')
+            ->add('name', null, [
+                'advanced_filter' => false,
+            ])
+            ->add('unit', null, [
+                'advanced_filter' => false,
+            ])
         ;
 
         // /* If unit is not selected, unit selection is available */
@@ -91,6 +96,7 @@ final class DepartmentAdmin extends AbstractAdmin
 
         $list
             ->addIdentifier('name')
+            ->add('unit')
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'header_style' => 'width: 25%;',
                 'actions' => $actions,
@@ -115,6 +121,7 @@ final class DepartmentAdmin extends AbstractAdmin
         $form
             ->with('Department', ['class' => 'col-md-6'])
                 ->add('name')
+                ->add('unit')
             ->end()
         ;
 

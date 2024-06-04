@@ -136,7 +136,7 @@ services:
     admin.department:
         class: App\Admin\DepartmentAdmin
         calls:
-            - [ setTemplate, ['list', 'Department\department_list.html.twig'] ]
+            # - [ setTemplate, ['list', 'Department\department_list.html.twig'] ]
             - [ setTemplate, ['edit', 'CRUD\admin_edit.html.twig'] ]
             - [ setTemplate, ['show', 'CRUD\admin_show.html.twig'] ]
             - [ setTemplate, ['delete', 'CRUD\admin_delete.html.twig'] ]
@@ -202,9 +202,8 @@ services:
     admin.supplier:
         class: App\Admin\SupplierAdmin
         calls:
-            # - [ setTemplate, ['edit', 'CRUD\base_edit.html.twig'] ]
-            # - [ setTemplate, ['show', 'Supplier\supplier_show.html.twig'] ]
-            # - [ setTemplate, ['delete', 'CRUD\delete.html.twig'] ]
+            - [ setTemplate, ['edit', 'CRUD\admin_edit.html.twig'] ]
+            - [ setTemplate, ['show', 'CRUD\admin_show.html.twig'] ]
             - [ setTemplate, ['delete', 'CRUD\admin_delete.html.twig'] ]
             - [ setTemplate, ['button_create', 'CRUD\list__action_create_custom.html.twig'] ]
         tags:

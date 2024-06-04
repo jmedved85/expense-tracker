@@ -378,6 +378,37 @@ class Supplier
         return $this;
     }
 
+    public function getNumberOfUnpaidInvoices(): ?int
+    {
+        $numOfUnpaidInvoices = 0;
+
+        $invoices = $this->invoices;
+
+        foreach ($invoices as $invoice) {
+            if ($invoice->getPaymentStatus() == 'Unpaid') {
+                $numOfUnpaidInvoices++;
+            }
+        }
+
+        return $numOfUnpaidInvoices;
+    }
+
+    public function getAmountOfUnpaidInvoices(): ?string
+    {
+        $amountOfUnpaidInvoices = 0;
+
+        $invoices = $this->invoices;
+
+        foreach ($invoices as $invoice) {
+            if ($invoice->getPaymentStatus() == 'Unpaid') {
+                $amount = $invoice->getAmount();
+                $amountOfUnpaidInvoices += $amount;
+            }
+        }
+
+        return number_format((float)$amountOfUnpaidInvoices, 2, '.', ',');
+    }
+
     /**
      * @return Collection<int, Comment>
      */
