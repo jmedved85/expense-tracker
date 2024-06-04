@@ -23,13 +23,16 @@ use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class BudgetItemAdmin extends AbstractAdmin
 {
     use AdminTrait;
 
-    public function __construct(private EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private TokenStorageInterface $tokenStorage
+    ) {
     }
 
     public function configureRoutes(RouteCollectionInterface $collection): void

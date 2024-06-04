@@ -6,6 +6,7 @@ Account Type: Account Type
 Accounts: Accounts
 Actions: Actions
 Active: Active
+Add New Unit: Add New Unit
 Address: Address
 Balance: Balance
 Bank: Bank
@@ -32,14 +33,17 @@ Department: Department
 Department List: Department List
 Department Create: Department Create
 Departments: Departments
+Description: Description
 Email: Email
 File Preview: File Preview
 General Category: General Category
 Iban: Iban
+Image: Image
 Investment: Investment
 Invoices: Invoices
 Job Title: Job Title
 Loan: Loan
+Logo: Logo
 Mobile Number: Mobile Number
 Name: Name
 Phone Number: Phone Number
@@ -51,6 +55,8 @@ Supplier Terms: Supplier Terms
 Suppliers: Suppliers
 Transactions: Transactions
 Unit: Unit
+Unit Create: Unit Create
+Unit List: Unit List
 Unit Name: Unit Name
 Units: Units
 Unpaid: Unpaid

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Admin;
 
 use App\Entity\Department;
+use App\Traits\AdminTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -17,11 +18,16 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Doctrine\ORM\EntityRepository;
 use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class DepartmentAdmin extends AbstractAdmin
 {
-    public function __construct(private EntityManagerInterface $entityManager)
-    {
+    use AdminTrait;
+
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private TokenStorageInterface $tokenStorage
+    ) {
     }
 
     /* Remove batch delete action from the list */

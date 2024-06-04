@@ -7,6 +7,7 @@ namespace App\Admin;
 use App\Entity\Supplier;
 use App\Entity\Unit;
 use App\Traits\AdminTrait;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use InvalidArgumentException;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -22,10 +23,17 @@ use Sonata\Form\Type\CollectionType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class SupplierAdmin extends AbstractAdmin
 {
     use AdminTrait;
+
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private TokenStorageInterface $tokenStorage
+    ) {
+    }
 
     protected function configureRoutes(RouteCollectionInterface $collection): void
     {

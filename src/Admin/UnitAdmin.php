@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Admin;
 
+use App\Entity\Unit;
 use InvalidArgumentException;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridInterface;
@@ -41,6 +42,18 @@ final class UnitAdmin extends AbstractAdmin
     // MARK: - List Fields
     protected function configureListFields(ListMapper $list): void
     {
+        $actions = [
+            'show' => [
+                'template' => 'CRUD/list__action_show_custom.html.twig',
+            ],
+            'edit' => [
+                'template' => 'CRUD/list__action_edit_custom.html.twig',
+            ],
+            'delete' => [
+                'template' => 'CRUD/list__action_delete_custom.html.twig',
+            ],
+        ];
+
         $list
             ->add('name')
             // ->add('image')
@@ -48,11 +61,8 @@ final class UnitAdmin extends AbstractAdmin
             ->add('description')
             ->add('active')
             ->add(ListMapper::NAME_ACTIONS, null, [
-                'actions' => [
-                    'show' => [],
-                    'edit' => [],
-                    'delete' => [],
-                ],
+                'header_style' => 'width: 25%;',
+                'actions' => $actions,
             ])
         ;
     }
@@ -60,12 +70,30 @@ final class UnitAdmin extends AbstractAdmin
     // MARK: - Form Fields
     protected function configureFormFields(FormMapper $form): void
     {
+        $editRoute = $this->isCurrentRoute('edit');
+
+        if ($editRoute) {
+            /** @var Unit $subject  */
+            $subject = $this->getSubject();
+            $unitName = $subject->getName();
+        }
+
         $form
-            ->add('name')
-            ->add('image')
-            ->add('logo')
-            ->add('description')
-            ->add('active')
+            ->with('First Column', [
+                'label' => $editRoute ? $unitName : 'Add New Unit',
+                'class' => 'col-md-6'
+            ])
+                ->add('name')
+                // ->add('image')
+                // ->add('logo')
+                ->add('description')
+                ->end()
+            ->with('Second Column', [
+                    'label' => false,
+                    'class' => 'col-md-6'
+                    ])
+                ->add('active')
+            ->end()
         ;
     }
 
@@ -73,10 +101,12 @@ final class UnitAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $show): void
     {
         $show
-            ->add('name')
-            ->add('image')
-            ->add('logo')
-            ->add('description')
+            ->with('Department', ['class' => 'col-md-6'])
+                ->add('name')
+                // ->add('image')
+                // ->add('logo')
+                ->add('description')
+            ->end()
         ;
     }
 

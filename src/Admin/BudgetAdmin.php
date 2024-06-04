@@ -30,8 +30,10 @@ final class BudgetAdmin extends AbstractAdmin
 {
     use AdminTrait;
 
-    public function __construct(private EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private TokenStorageInterface $tokenStorage
+    ) {
     }
 
     protected function configureRoutes(RouteCollectionInterface $collection): void
