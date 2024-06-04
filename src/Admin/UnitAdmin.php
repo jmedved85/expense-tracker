@@ -46,6 +46,7 @@ final class UnitAdmin extends AbstractAdmin
             // ->add('image')
             // ->add('logo')
             ->add('description')
+            ->add('active')
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [
                     'show' => [],
@@ -64,6 +65,7 @@ final class UnitAdmin extends AbstractAdmin
             ->add('image')
             ->add('logo')
             ->add('description')
+            ->add('active')
         ;
     }
 

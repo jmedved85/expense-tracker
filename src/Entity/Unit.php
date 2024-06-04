@@ -28,6 +28,9 @@ class Unit
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+    #[ORM\Column]
+    private ?bool $active = null;
+
     #[ORM\OneToMany(targetEntity: Account::class, mappedBy: 'unit')]
     private Collection $accounts;
 
@@ -147,6 +150,18 @@ class Unit
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
 
         return $this;
     }
