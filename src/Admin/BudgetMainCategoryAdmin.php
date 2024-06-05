@@ -43,9 +43,34 @@ final class BudgetMainCategoryAdmin extends AbstractAdmin
     // MARK: - Datagrid Filters
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
+        // /* Get unit */
+        // $unitId = $this->getUnitId();
+
         $filter
             ->add('name')
         ;
+
+        // /* If unit is not selected, unit selection is available */
+        // if (!$unitId) {
+        //     $filter
+        //         ->add('unit', null, [
+        //             'label' => 'Unit',
+        //             'show_filter' => true,
+        //             'field_type' => EntityType::class,
+        //             'field_options' => [
+        //                 'class' => Unit::class,
+        //                 'choice_label' => 'name',
+        //                 'query_builder' => function (EntityRepository $er) {
+        //                     return $er->createQueryBuilder('u')
+        //                         ->andWhere('u.active = :active')
+        //                         ->orderBy('u.name', 'ASC')
+        //                         ->setParameter('active', true)
+        //                     ;
+        //                 },
+        //             ],
+        //         ])
+        //     ;
+        // }
     }
 
     // MARK: - List Fields
@@ -54,41 +79,83 @@ final class BudgetMainCategoryAdmin extends AbstractAdmin
         // /* Get unit */
         // $unitId = $this->getUnitId();
 
+        $actions = [
+            'show' => [
+                'template' => 'CRUD/list__action_show_custom.html.twig',
+            ],
+            'edit' => [
+                'template' => 'CRUD/list__action_edit_custom.html.twig',
+            ],
+            'delete' => [
+                'template' => 'CRUD/list__action_delete_custom.html.twig',
+            ],
+        ];
+
         $list
             // ->add($unitId ? 'name' : 'nameWithUnit', null, [
             //     'label' => $unitId ? 'Name' : 'Name (Unit)'
             // ])
             ->add('name')
+            ->add('unit')
             ->add(ListMapper::NAME_ACTIONS, null, [
-                'actions' => [
-                    'show' => [],
-                    'edit' => [
-                        // 'template' => 'CRUD/list__action_edit_no_label.html.twig',
-                    ],
-                    'delete' => [],
+                'header_style' => 'width: 25%;',
+                'actions' => $actions,
                     // 'subCategories' => [
                     //     'template' => 'Budget/list__action_sub_categories_show.html.twig',
                     // ],
-                ],
             ])
         ;
+
+        // if (!$unitId) {
+        //     $list
+        //         ->add('unit.name', null, [
+        //             'label' => 'Unit'
+        //         ])
+        //     ;
+        // }
     }
 
     // MARK: - Form Fields
     protected function configureFormFields(FormMapper $form): void
     {
+        // /* Get unit */
+        // $unitId = $this->getUnitId();
+
         $form
-            ->with('Budget Sub Category', ['class' => 'col-md-6'])
+            ->with('Budget Main Category', ['class' => 'col-md-6'])
                     ->add('name')
             ->end()
         ;
+
+        // if (!$unitId) {
+        //     $form
+        //         ->add('unit', EntityType::class, [
+        //             'label' => 'Unit',
+        //             'class' => Unit::class,
+        //             'choice_label' => 'name',
+        //             'placeholder' => 'Choose an option',
+        //             'query_builder' => function (EntityRepository $er) {
+        //                 return $er->createQueryBuilder('u')
+        //                     ->andWhere('u.active = :active')
+        //                     ->orderBy('u.name', 'ASC')
+        //                     ->setParameter('active', true)
+        //                 ;
+        //             },
+        //         ])
+        //     ;
+        // }
     }
 
     // MARK: - Show Fields
     protected function configureShowFields(ShowMapper $show): void
     {
         $show
-            ->add('name')
+            ->with('Budget Main Category', ['class' => 'col-md-6'])
+                ->add('name')
+                ->add('unit.name', null, [
+                    'label' => 'Unit'
+                ])
+            ->end()
         ;
     }
 
@@ -105,7 +172,7 @@ final class BudgetMainCategoryAdmin extends AbstractAdmin
 
         // if ($unitId) {
         //     $unit = $unitRepository->findOneBy(['id' => $unitId]);
-        //     $account->setUnit($unit);
+        //     $object->setUnit($unit);
         // }
     }
 
@@ -184,8 +251,8 @@ final class BudgetMainCategoryAdmin extends AbstractAdmin
         //     ;
         // } else {
         //     $qb
-        //         ->join($rootAlias . '.unit', 's')
-        //         ->andWhere('s.active = :active')
+        //         ->join($rootAlias . '.unit', 'u')
+        //         ->andWhere('u.active = :active')
         //         ->setParameter('active', true)
         //     ;
         // }

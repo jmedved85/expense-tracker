@@ -173,14 +173,14 @@ class AppExtension extends AbstractExtension
             ;
         } else {
             $result = $qb
-                ->join('i.unit', 's')
+                ->join('i.unit', 'u')
                 ->where('i.invoicePaymentStatus = :invoicePaymentStatusUnpaid')
                 ->andWhere(
                     $qb->expr()->orX(
                         'i.invoiceApprovalStatus = :invoiceApprovalStatusApproved',
                     )
                 )
-                ->andWhere('s.active = :active')
+                ->andWhere('u.active = :active')
                 ->orderBy('i.invoiceDate', 'DESC')
                 ->setParameter('invoicePaymentStatusUnpaid', 'Unpaid')
                 ->setParameter('invoiceApprovalStatusApproved', 'Approved')

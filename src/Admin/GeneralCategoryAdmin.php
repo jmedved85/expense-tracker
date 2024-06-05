@@ -53,9 +53,9 @@ final class GeneralCategoryAdmin extends AbstractAdmin
         //                 'class' => Unit::class,
         //                 'choice_label' => 'name',
         //                 'query_builder' => function (EntityRepository $er) {
-        //                     return $er->createQueryBuilder('s')
-        //                         ->andWhere('s.active = :active')
-        //                         ->orderBy('s.name', 'ASC')
+        //                     return $er->createQueryBuilder('u')
+        //                         ->andWhere('u.active = :active')
+        //                         ->orderBy('u.name', 'ASC')
         //                         ->setParameter('active', true)
         //                     ;
         //                 },
@@ -122,9 +122,9 @@ final class GeneralCategoryAdmin extends AbstractAdmin
         //             'choice_label' => 'name',
         //             'placeholder' => 'Choose an option',
         //             'query_builder' => function (EntityRepository $er) {
-        //                 return $er->createQueryBuilder('s')
-        //                     ->andWhere('s.active = :active')
-        //                     ->orderBy('s.name', 'ASC')
+        //                 return $er->createQueryBuilder('u')
+        //                     ->andWhere('u.active = :active')
+        //                     ->orderBy('u.name', 'ASC')
         //                     ->setParameter('active', true)
         //                 ;
         //             },
@@ -137,7 +137,7 @@ final class GeneralCategoryAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $show): void
     {
         $show
-            ->with('Department', ['class' => 'col-md-6'])
+            ->with('GeneralCategory', ['class' => 'col-md-6'])
                 ->add('name')
                 ->add('unit.name', null, [
                     'label' => 'Unit'
@@ -159,7 +159,7 @@ final class GeneralCategoryAdmin extends AbstractAdmin
 
         // if ($unitId) {
         //     $unit = $unitRepository->findOneBy(['id' => $unitId]);
-        //     $account->setUnit($unit);
+        //     $object->setUnit($unit);
         // }
     }
 
@@ -183,8 +183,8 @@ final class GeneralCategoryAdmin extends AbstractAdmin
         //     ;
         // } else {
         //     $qb
-        //         ->join($rootAlias . '.unit', 's')
-        //         ->andWhere('s.active = :active')
+        //         ->join($rootAlias . '.unit', 'u')
+        //         ->andWhere('u.active = :active')
         //         ->setParameter('active', true)
         //     ;
         // }

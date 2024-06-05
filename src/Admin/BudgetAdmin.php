@@ -108,9 +108,9 @@ final class BudgetAdmin extends AbstractAdmin
         //                 'class' => Unit::class,
         //                 'choice_label' => 'name',
         //                 'query_builder' => function (EntityRepository $er) {
-        //                     return $er->createQueryBuilder('s')
-        //                         ->andWhere('s.active = :active')
-        //                         ->orderBy('s.name', 'ASC')
+        //                     return $er->createQueryBuilder('u')
+        //                         ->andWhere('u.active = :active')
+        //                         ->orderBy('u.name', 'ASC')
         //                         ->setParameter('active', true)
         //                     ;
         //                 },
@@ -234,9 +234,9 @@ final class BudgetAdmin extends AbstractAdmin
         //             'choice_label' => 'name',
         //             'placeholder' => 'Choose an option',
         //             'query_builder' => function (EntityRepository $er) {
-        //                 return $er->createQueryBuilder('s')
-        //                     ->andWhere('s.active = :active')
-        //                     ->orderBy('s.name', 'ASC')
+        //                 return $er->createQueryBuilder('u')
+        //                     ->andWhere('u.active = :active')
+        //                     ->orderBy('u.name', 'ASC')
         //                     ->setParameter('active', true)
         //                 ;
         //             },

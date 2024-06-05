@@ -117,9 +117,9 @@ final class AccountAdmin extends AbstractAdmin
         //                 'class' => Unit::class,
         //                 'choice_label' => 'name',
         //                 'query_builder' => function (EntityRepository $er) {
-        //                     return $er->createQueryBuilder('s')
-        //                         ->andWhere('s.active = :active')
-        //                         ->orderBy('s.name', 'ASC')
+        //                     return $er->createQueryBuilder('u')
+        //                         ->andWhere('u.active = :active')
+        //                         ->orderBy('u.name', 'ASC')
         //                         ->setParameter('active', true)
         //                     ;
         //                 },
@@ -235,9 +235,9 @@ final class AccountAdmin extends AbstractAdmin
         //             'choice_label' => 'name',
         //             'placeholder' => 'Choose an option',
         //             'query_builder' => function (EntityRepository $er) {
-        //                 return $er->createQueryBuilder('s')
-        //                     ->andWhere('s.active = :active')
-        //                     ->orderBy('s.name', 'ASC')
+        //                 return $er->createQueryBuilder('u')
+        //                     ->andWhere('u.active = :active')
+        //                     ->orderBy('u.name', 'ASC')
         //                     ->setParameter('active', true)
         //                 ;
         //             },
@@ -304,9 +304,9 @@ final class AccountAdmin extends AbstractAdmin
     }
 
     // MARK: - PrePersist
-    protected function prePersist(object $account): void
+    protected function prePersist(object $object): void
     {
-        /** @var Account $account */
+        /** @var Account $object */
 
         // /** @var UnitRepository $unitRepository */
         // $unitRepository = $this->entityManager->getRepository(Unit::class);
@@ -316,10 +316,10 @@ final class AccountAdmin extends AbstractAdmin
 
         // if ($unitId) {
         //     $unit = $unitRepository->findOneBy(['id' => $unitId]);
-        //     $account->setUnit($unit);
+        //     $object->setUnit($unit);
         // }
 
-        $account->setDeactivated(false);
+        $object->setDeactivated(false);
     }
 
     // MARK: - Configure Query
@@ -342,8 +342,8 @@ final class AccountAdmin extends AbstractAdmin
         //     ;
         // } else {
         //     $qb
-        //         ->join($rootAlias . '.unit', 's')
-        //         ->andWhere('s.active = :active')
+        //         ->join($rootAlias . '.unit', 'u')
+        //         ->andWhere('u.active = :active')
         //         ->setParameter('active', true)
         //     ;
         // }

@@ -130,8 +130,8 @@ final class UnitAdmin extends AbstractAdmin
         //     ;
         // } else {
         //     $qb
-        //         ->join($rootAlias . '.unit', 's')
-        //         ->andWhere('s.active = :active')
+        //         ->join($rootAlias . '.unit', 'u')
+        //         ->andWhere('u.active = :active')
         //         ->setParameter('active', true)
         //     ;
         // }

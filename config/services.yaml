@@ -76,8 +76,8 @@ services:
         class: App\Admin\BudgetSubCategoryAdmin
         calls:
             # - [ setTemplate, ['list', 'Budget\budget_list.html.twig'] ]
-            # - [ setTemplate, ['edit', 'CRUD\base_edit.html.twig'] ]
-            # - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
+            - [ setTemplate, ['edit', 'CRUD\admin_edit.html.twig'] ]
+            - [ setTemplate, ['show', 'CRUD\admin_show.html.twig'] ]
             - [ setTemplate, ['delete', 'CRUD\admin_delete.html.twig'] ]
             - [ setTemplate, ['button_create', 'CRUD\list__action_create_custom.html.twig'] ]
         tags:
@@ -89,8 +89,8 @@ services:
         calls:
             # - [ setTemplate, ['list', 'Budget\budget_list.html.twig'] ]
             # - [ setTemplate, ['list', 'Budget\budget_category_list.html.twig'] ]
-            # - [ setTemplate, ['edit', 'CRUD\base_edit.html.twig'] ]
-            # - [ setTemplate, ['show', 'CRUD\base_show.html.twig'] ]
+            - [ setTemplate, ['edit', 'CRUD\admin_edit.html.twig'] ]
+            - [ setTemplate, ['show', 'CRUD\admin_show.html.twig'] ]
             - [ setTemplate, ['delete', 'CRUD\admin_delete.html.twig'] ]
             - [ setTemplate, ['button_create', 'CRUD\list__action_create_custom.html.twig'] ]
         tags:

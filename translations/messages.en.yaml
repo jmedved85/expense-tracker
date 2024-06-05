@@ -15,8 +15,13 @@ Bank Account Number: Bank Account Number
 Bic Code: Bic Code
 Budget: Budget
 Budget Item: Budget Item
+Budget Main Category: Budget Main Category
+Budget Main Category Create: Budget Main Category Create
+Budget Main Category List: Budget Main Category List
 Budget Main Categories: Budget Main Categories
 Budget Sub Categories: Budget Sub Categories
+Budget Sub Category: Budget Sub Category
+Budget Sub Category List: Budget Sub Category List
 Cash: Cash
 Categories: Categories
 Check this box to disable the account for making payments on invoices and purchases.: Check this box to disable the account for making payments on invoices and purchases.
@@ -45,6 +50,7 @@ Invoices: Invoices
 Job Title: Job Title
 Loan: Loan
 Logo: Logo
+Main Category: Main Category
 Mobile Number: Mobile Number
 Name: Name
 Phone Number: Phone Number

@@ -181,9 +181,9 @@ final class BudgetItemAdmin extends AbstractAdmin
         //                 'class' => Unit::class,
         //                 'choice_label' => 'name',
         //                 'query_builder' => function (EntityRepository $er) {
-        //                     return $er->createQueryBuilder('s')
-        //                         ->andWhere('s.active = :active')
-        //                         ->orderBy('s.name', 'ASC')
+        //                     return $er->createQueryBuilder('u')
+        //                         ->andWhere('u.active = :active')
+        //                         ->orderBy('u.name', 'ASC')
         //                         ->setParameter('active', true)
         //                     ;
         //                 },
