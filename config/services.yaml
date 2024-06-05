@@ -147,6 +147,8 @@ services:
     admin.general_category:
         class: App\Admin\GeneralCategoryAdmin
         calls:
+            - [ setTemplate, ['edit', 'CRUD\admin_edit.html.twig'] ]
+            - [ setTemplate, ['show', 'CRUD\admin_show.html.twig'] ]
             - [ setTemplate, ['delete', 'CRUD\admin_delete.html.twig'] ]
             - [ setTemplate, ['button_create', 'CRUD\list__action_create_custom.html.twig'] ]
         tags:
