@@ -14,21 +14,16 @@ final class BudgetItemAdminController extends CRUDController
     {
     }
 
-    /**
-     * @param string $id
-    *
-    * @return Response
-    */
-    public function emailModalAction(string $id): Response
-    {
-        $object = $this->admin->getSubject();
+    // public function emailModalAction(string $id): Response
+    // {
+    //     $object = $this->admin->getSubject();
 
-        $template = 'email/email_modal_form.html.twig';
+    //     $template = 'email/email_modal_form.html.twig';
 
-        return $this->render($template, [
-            'object' => $object,
-        ]);
-    }
+    //     return $this->render($template, [
+    //         'object' => $object,
+    //     ]);
+    // }
 
     // /**
     //  * @throws NotFoundHttpException|Exception

@@ -65,6 +65,11 @@ final class BudgetItemAdmin extends AbstractAdmin
         // $unitId = $this->getUnitId();
 
         $filter
+            ->add('name', null, [
+                'label' => 'Budget Item Name',
+                'show_filter' => true,
+                'advanced_filter' => false,
+            ])
             ->add('currency')
             ->add('budget', null, [
                 'show_filter' => true,
@@ -199,7 +204,22 @@ final class BudgetItemAdmin extends AbstractAdmin
         // /* Get unit */
         // $unitId = $this->getUnitId();
 
+        $actions = [
+            'show' => [
+                'template' => 'CRUD/list__action_show_custom.html.twig',
+            ],
+            'edit' => [
+                'template' => 'CRUD/list__action_edit_custom.html.twig',
+            ],
+            'delete' => [
+                'template' => 'CRUD/list__action_delete_custom.html.twig',
+            ],
+        ];
+
         $list
+            ->addIdentifier('name', null, [
+                'label' => 'Budget Item Name',
+            ])
             ->add('budget', EntityType::class, [
                 'class' => Budget::class,
                 'label' => 'Budget Name',
@@ -238,10 +258,12 @@ final class BudgetItemAdmin extends AbstractAdmin
             ->add('leftOver', null, [
                 'label' => 'Left / Over',
                 'mapped' => false,
+                'header_style' => 'text-align: right',
                 // 'template' => 'BudgetItem/left_over_list.html.twig',
             ])
             ->add('actual', MoneyType::class, [
                 'label' => 'Actual Expenses',
+                'header_style' => 'text-align: right',
                 // 'template' => 'CRUD/list_amount.html.twig'
                 // 'template' => 'BudgetItem/actual_expenses_amount.html.twig'
             ])
@@ -256,13 +278,8 @@ final class BudgetItemAdmin extends AbstractAdmin
             //     'header_style' => 'text-align: center',
             // ])
             ->add(ListMapper::NAME_ACTIONS, null, [
-                'actions' => [
-                    'show' => [],
-                    'edit' => [
-                        // 'template' => 'CRUD/list__action_edit_no_label.html.twig',
-                    ],
-                    'delete' => [],
-                ],
+                'header_style' => 'width: 25%;',
+                'actions' => $actions,
             ])
         ;
     }
@@ -276,6 +293,9 @@ final class BudgetItemAdmin extends AbstractAdmin
         $subject = $this->getSubject();
 
         $form
+            ->with('Budget Item Name', ['class' => 'col-md-4'])
+                ->add('name')
+            ->end()
             ->with('Budget and Categories', ['class' => 'col-md-4'])
                 ->add('budget', EntityType::class, [
                     'class' => Budget::class,
@@ -367,7 +387,7 @@ final class BudgetItemAdmin extends AbstractAdmin
                 ->add('budgetSubCategory', null, [
                     'label' => 'Category (Main Category)'
                 ])
-                // ->add('unit.name')
+                ->add('unit.name')
                 ->add('currency')
                 ->add('budgeted', MoneyType::class, [
                     'label' => 'Budgeted',

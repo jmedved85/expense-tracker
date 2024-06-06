@@ -126,6 +126,18 @@ final class BudgetAdmin extends AbstractAdmin
         // /* Get unit */
         // $unitId = $this->getUnitId();
 
+        $actions = [
+            'show' => [
+                'template' => 'CRUD/list__action_show_custom.html.twig',
+            ],
+            'edit' => [
+                'template' => 'CRUD/list__action_edit_custom.html.twig',
+            ],
+            'delete' => [
+                'template' => 'CRUD/list__action_delete_custom.html.twig',
+            ],
+        ];
+
         $list
             ->addIdentifier('name', null, [
                 'label' => 'Budget Name',
@@ -140,6 +152,7 @@ final class BudgetAdmin extends AbstractAdmin
                 'label' => 'Start Date',
                 'pattern' => 'd/M/Y',
             ])
+            /* TODO: user free choose, not automatic? */
             ->add('endDate', 'date', [
                 'label' => 'End Date',
                 'pattern' => 'd/M/Y',
@@ -186,13 +199,8 @@ final class BudgetAdmin extends AbstractAdmin
             //     'header_style' => 'text-align: center',
             // ])
             ->add(ListMapper::NAME_ACTIONS, null, [
-                'actions' => [
-                    'show' => [],
-                    'edit' => [
-                        // 'template' => 'CRUD/list__action_edit_no_label.html.twig',
-                    ],
-                    'delete' => [],
-                ],
+                'header_style' => 'width: 25%;',
+                'actions' => $actions,
             ])
         ;
     }
@@ -262,9 +270,9 @@ final class BudgetAdmin extends AbstractAdmin
                 ->add('budgetTypeName', null, [
                     'label' => 'Budget Type',
                 ])
-                // ->add('unit.name', null, [
-                //     'label' => 'Unit'
-                // ])
+                ->add('unit.name', null, [
+                    'label' => 'Unit'
+                ])
                 ->add('startDate', null, [
                     'label' => 'Start Date',
                     'format' => 'd/m/Y'

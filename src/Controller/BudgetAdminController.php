@@ -15,27 +15,22 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class BudgetAdminController extends CRUDController
 {
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(private GeneratePdfDocumentService $generatePdfDocumentService)
-    {
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private GeneratePdfDocumentService $generatePdfDocumentService
+    ) {
     }
 
-    /**
-     * @param string $id
-     *
-     * @return Response
-     */
-    public function emailModalAction(string $id): Response
-    {
-        $object = $this->admin->getSubject();
+    // public function emailModalAction(string $id): Response
+    // {
+    //     $object = $this->admin->getSubject();
 
-        $template = 'email/email_modal_form.html.twig';
+    //     $template = 'email/email_modal_form.html.twig';
 
-        return $this->render($template, [
-            'object' => $object,
-        ]);
-    }
+    //     return $this->render($template, [
+    //         'object' => $object,
+    //     ]);
+    // }
 
     // /**
     //  * @throws NotFoundHttpException|Exception

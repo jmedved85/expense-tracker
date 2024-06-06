@@ -6,24 +6,34 @@ Account Type: Account Type
 Accounts: Accounts
 Actions: Actions
 Active: Active
+Actual Expenses: Actual Expenses
 Add New Unit: Add New Unit
 Address: Address
+Annual: Annual
 Balance: Balance
 Bank: Bank
 Bank Account Name: Bank Account Name
 Bank Account Number: Bank Account Number
 Bic Code: Bic Code
+Bi-Annual (six months): Bi-Annual (six months)
 Budget: Budget
 Budget Item: Budget Item
+Budget Item List: Budget Item List
+Budget Item Name: Budget Item Name
+Budget List: Budget List
 Budget Main Category: Budget Main Category
 Budget Main Category Create: Budget Main Category Create
 Budget Main Category List: Budget Main Category List
 Budget Main Categories: Budget Main Categories
+Budget Name: Budget Name
 Budget Sub Categories: Budget Sub Categories
 Budget Sub Category: Budget Sub Category
 Budget Sub Category List: Budget Sub Category List
+Budget Type: Budget Type
+Budgeted: Budgeted
 Cash: Cash
 Categories: Categories
+Category (Main Category): Category (Main Category)
 Check this box to disable the account for making payments on invoices and purchases.: Check this box to disable the account for making payments on invoices and purchases.
 Choose an option: Choose an option
 Contact Name: Contact Name
@@ -40,6 +50,7 @@ Department Create: Department Create
 Departments: Departments
 Description: Description
 Email: Email
+End Date: End Date
 File Preview: File Preview
 General Category: General Category
 General Category List: General Category List
@@ -48,18 +59,27 @@ Image: Image
 Investment: Investment
 Invoices: Invoices
 Job Title: Job Title
+Left Over: Left Over
+Left / Over: Left / Over
 Loan: Loan
 Logo: Logo
 Main Category: Main Category
 Mobile Number: Mobile Number
+Monthly: Monthly
 Name: Name
+Quarterly: Quarterly
 Phone Number: Phone Number
 Purchases: Purchases
 Savings: Savings
+"Select Budget:": "Select Budget:"
+"Select Sub Category:": "Select Sub Category:"
 Sort Code: Sort Code
+Start Date: Start Date
 Supplier List: Supplier List
 Supplier Terms: Supplier Terms
 Suppliers: Suppliers
+Total Actual: Total Actual
+Total Budgeted: Total Budgeted
 Transactions: Transactions
 Unit: Unit
 Unit Create: Unit Create
@@ -72,3 +92,4 @@ Vat Number: Vat Number
 Vat Rate: Vat Rate
 Wallet: Wallet
 Website: Website
+Weekly: Weekly

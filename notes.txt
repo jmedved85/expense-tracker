@@ -48,8 +48,13 @@ MIGRATIONS
 bin/console doctrine:migrations:diff
 bin/console doctrine:migrations:migrate
 php bin/console doctrine:schema:validate
-bin/console doctrine:migrations:list \\ popis svih migracija
-bin/console doctrine:migrations:execute 'DoctrineMigrations\Version' --down \\ Revert migracije
+
+Popis svih migracija
+bin/console doctrine:migrations:list 
+
+Revert migracije
+bin/console doctrine:migrations:execute 'DoctrineMigrations\Version' --down
+
 bin/console doctrine:migrations:execute 'DoctrineMigrations\Version' --up
 
 

@@ -16,6 +16,9 @@ class BudgetItem
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $name = null;
+
     #[ORM\Column(length: 3, nullable: true)]
     private ?string $currency = null;
 
@@ -59,16 +62,30 @@ class BudgetItem
 
     public function __toString()
     {
-        return (string) $this->getBudget()->getBudgetTypeName()
-            . ' - '
-            .  (string) ($this->getBudgetSubCategory() ? $this->getBudgetSubCategory()->getName()
-                : $this->getGeneralCategory()->getName())
-        ;
+        return (string) $this->name;
+
+        // return (string) $this->getBudget()->getBudgetTypeName()
+        //     . ' - '
+        //     .  (string) ($this->getBudgetSubCategory() ? $this->getBudgetSubCategory()->getName()
+        //         : $this->getGeneralCategory()->getName())
+        // ;
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     public function getCurrency(): ?string
