@@ -47,14 +47,21 @@ final class AccountAdminController extends CRUDController
 
         $accountId = $object->getId();
         $accountName = $object->getNameWithCurrency();
+        $accountNameCurrencyBalance = $object->getNameWithCurrencyBalance();
         $accountType = $object->getAccountTypeName();
         $accountCurrency = $object->getCurrency();
         $accountBalance = $object->getBalance();
-        $unitId = $object->getUnit()->getId();
+
+        $unitId = null;
+
+        if ($object->getUnit()) {
+            $unitId = $object->getUnit()->getId();
+        }
 
         return $this->redirectToRoute('admin_app_purchase_create', [
             'accountId' => $accountId,
             'accountName' => $accountName,
+            'accountNameCurrencyBalance' => $accountNameCurrencyBalance,
             'accountType' => $accountType,
             'accountCurrency' => $accountCurrency,
             'accountBalance' => $accountBalance,

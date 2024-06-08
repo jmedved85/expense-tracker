@@ -136,6 +136,9 @@ final class AccountAdmin extends AbstractAdmin
         // $unitId = $this->getUnitId();
 
         $actions = [
+            'purchase' => [
+                'template' => 'Account/list__action_purchase.html.twig',
+            ],
             'addFunds' => [
                 'template' => 'Account/list__action_add_funds.html.twig',
             ],

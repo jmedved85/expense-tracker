@@ -1,4 +1,5 @@
 Account: Account
+Account Charge: Account Charge
 Account Create: Account Create
 Account List: Account List
 Account Name: Account Name
@@ -9,11 +10,14 @@ Active: Active
 Actual Expenses: Actual Expenses
 Add New Unit: Add New Unit
 Address: Address
+Amount (Purchase Lines Total): Amount (Purchase Lines Total)
 Annual: Annual
 Balance: Balance
 Bank: Bank
 Bank Account Name: Bank Account Name
 Bank Account Number: Bank Account Number
+Bank Payment: Bank Payment
+Bank Transfer: Bank Transfer
 Bic Code: Bic Code
 Bi-Annual (six months): Bi-Annual (six months)
 Budget: Budget
@@ -32,18 +36,26 @@ Budget Sub Category List: Budget Sub Category List
 Budget Type: Budget Type
 Budgeted: Budgeted
 Cash: Cash
+Cash Payment: Cash Payment
+Cash Transfer: Cash Transfer
+Cash Withdrawal: Cash Withdrawal
 Categories: Categories
 Category (Main Category): Category (Main Category)
 Check this box to disable the account for making payments on invoices and purchases.: Check this box to disable the account for making payments on invoices and purchases.
 Choose an option: Choose an option
 Contact Name: Contact Name
 Credit Card: Credit Card
+Credit Card Payment: Credit Card Payment
 Crypto: Crypto
 Currency: Currency
+Currency Exchange: Currency Exchange
+Date of Purchase: Date of Purchase
+Date Of Purchase: Date Of Purchase
 Deactivate: Deactivate
 Deactivated: Deactivated
 Deactivation: Deactivation
 Debit Card: Debit Card
+Debit Card Payment: Debit Card Payment
 Department: Department
 Department List: Department List
 Department Create: Department Create
@@ -52,6 +64,9 @@ Description: Description
 Email: Email
 End Date: End Date
 File Preview: File Preview
+File Uploads: File Uploads
+From Account: From Account
+Funds Transfer: Funds Transfer
 General Category: General Category
 General Category List: General Category List
 Iban: Iban
@@ -65,22 +80,35 @@ Loan: Loan
 Logo: Logo
 Main Category: Main Category
 Mobile Number: Mobile Number
+Money Return: Money Return
 Monthly: Monthly
 Name: Name
 Quarterly: Quarterly
+Payments: Payments
 Phone Number: Phone Number
+Purchase: Purchase
+Purchase Create: Purchase Create
+Purchase Lines: Purchase Lines
+Purchase List: Purchase List
 Purchases: Purchases
+Real Amount Paid: Real Amount Paid
+Real Currency Paid: Real Currency Paid
 Savings: Savings
+Select: Select
 "Select Budget:": "Select Budget:"
 "Select Sub Category:": "Select Sub Category:"
 Sort Code: Sort Code
 Start Date: Start Date
+Supplier: Supplier
 Supplier List: Supplier List
 Supplier Terms: Supplier Terms
 Suppliers: Suppliers
+To Account: To Account
 Total Actual: Total Actual
 Total Budgeted: Total Budgeted
+Transaction Type: Transaction Type
 Transactions: Transactions
+Type of Payment: Type of Payment
 Unit: Unit
 Unit Create: Unit Create
 Unit List: Unit List

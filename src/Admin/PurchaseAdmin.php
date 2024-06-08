@@ -46,6 +46,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Sonata\AdminBundle\Route\RouteCollectionInterface;
 use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -298,6 +299,7 @@ final class PurchaseAdmin extends AbstractAdmin
 
             $accountId = $subject->getAccount()->getId();
             $accountName = $subject->getAccount()->getNameWithCurrency();
+            $accountNameCurrencyBalance = $subject->getAccount()->getNameWithCurrencyBalance();
             $accountType = $subject->getAccount()->getAccountType();
             $accountCurrency = $subject->getCurrency();
             // $unitId = strval($subject->getAccount()->getUnit()->getid());
@@ -312,50 +314,44 @@ final class PurchaseAdmin extends AbstractAdmin
 
             $accountId = $accountData['accountId'] ?? null;
             $accountName = $accountData['accountName'] ?? null;
+            $accountNameCurrencyBalance = $accountData['accountNameCurrencyBalance'] ?? null;
             $accountType = $accountData['accountType'] ?? null;
             $accountCurrency = $accountData['accountCurrency'] ?? null;
             $unitId = $accountData['unitId'] ?? null;
         }
 
-        // if ($accountType == 'Cash Account') {
-        //     $transactionType = 'Cash payment';
-        // } else {
-        //     $transactionType = 'Card payment';
-        // }
+        if ($accountType == 'Cash') {
+            $transactionType = TransactionType::CASH_PAYMENT->value;
+            $transactionTypeName = TransactionType::getName($transactionType);
+        } elseif ($accountType == 'Debit Card') {
+            $transactionType = TransactionType::DEBIT_CARD_PAYMENT->value;
+            $transactionTypeName = TransactionType::getName($transactionType);
+        }
 
         // if ($unitId) {
             $form
                 ->with('accountName', [
-                    // 'label' => $accountName . ' - ' . 'Purchase',
-                    'label' => 'Purchase',
+                    'label' => $accountName . ' - ' . 'Purchase',
                     'class' => 'col-md-6'
                 ])
-                    /* Only available Cash payment & Card payment */
-                    ->add('account', EntityType::class, [
-                        'class' => Account::class,
-                        'choice_label' => 'nameWithCurrencyBalance',
-                        'label' => 'Account Name',
-                        'query_builder' => function (EntityRepository $er) use ($accountId) {
-                            return $er->createQueryBuilder('a')
-                                ->where('a.id = :account_id')
-                                ->setParameter('account_id', $accountId);
-                        },
+                    ->add('accountName', TextType::class, [
+                        'mapped' => false,
+                        'required' => false,
+                        'disabled' => true,
+                        'data' => $accountNameCurrencyBalance,
                     ])
-                    ->add('transactionType', ChoiceType::class, [
-                        'placeholder' => 'Choose an option',
-                        'label' => 'Type of Payment',
-                        'choices' => TransactionType::NAMES,
-                        ])
-                        // ->add('transactionType', EntityType::class, [
-                        //     'class' => TransactionType::class,
-                        //     'choice_label' => 'name',
-                        //     'label' => 'Type of Payment',
-                        //     'query_builder' => function (EntityRepository $er) use ($transactionType) {
-                        //         return $er->createQueryBuilder('tt')
-                        //             ->where('tt.name = :transactionType')
-                        //             ->setParameter('transactionType', $transactionType);
-                        //     },
-                        // ])
+                    ->add('account', HiddenType::class, [
+                        'data' => $accountId,
+                    ])
+                    ->add('typeOfPayment', TextType::class, [
+                        'mapped' => false,
+                        'required' => false,
+                        'disabled' => true,
+                        'data' => $transactionTypeName,
+                    ])
+                    ->add('transactionType', HiddenType::class, [
+                        'data' => $transactionType,
+                    ])
                     ->add('dateOfPurchase', DatePickerType::class, [
                         'years' => range(1900, $now->format('Y')),
                         'required' => true,
@@ -430,14 +426,14 @@ final class PurchaseAdmin extends AbstractAdmin
                         'required' => false,
                     ])
                 ;
-        if ($accountType == 'Card Account') {
+        if ($accountType == 'Debit Card' || $accountType == 'Credit Card') {
             if (($key = array_search($accountCurrency, $this->preferredCurrencyChoices)) !== false) {
                 unset($this->preferredCurrencyChoices[$key]);
             }
 
             $form
-                ->add('realCurrency', CurrencyType::class, [
-                    'label' => 'Real Currency',
+                ->add('realCurrencyPaid', CurrencyType::class, [
+                    'label' => 'Real Currency Paid',
                     'placeholder' => 'Choose an option',
                     'preferred_choices' => $this->preferredCurrencyChoices,
                     'required' => false,
@@ -455,7 +451,7 @@ final class PurchaseAdmin extends AbstractAdmin
             $form
                 ->end()
                 ->with('File Uploads', [
-                    'class' => 'col-sm-12'
+                    'class' => 'col-sm-6'
                 ])
                     // ->add('file', CollectionType::class, [
                     //     'label' => 'Upload file(s)',

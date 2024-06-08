@@ -4,7 +4,7 @@
     {% if admin.hasAccess('create') and admin.hasRoute('create') %}
         <div style="margin-bottom:15px;">
             {% if object.deactivated == false %}
-                {% if object.accountTypeName == 'Cash' or object.accountTypeName == 'Credit Card' %}
+                {% if object.accountTypeName in ['Cash', 'Debit Card', 'Credit Card'] %}
                     {% include 'Account/purchase_button.html.twig' %}
 
                     {% if object.accountTypeName == 'Cash' %}
