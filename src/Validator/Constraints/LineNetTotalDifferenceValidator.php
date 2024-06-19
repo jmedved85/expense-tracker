@@ -32,7 +32,7 @@ class LineNetTotalDifferenceValidator extends ConstraintValidator
                         $vat = floatval($line->getVat());
                         $vatValue = floatval($line->getVatValue());
                         $lineTotal = floatval($line->getLineTotal());
-                        $lineDescription = $line->getShortDescription();
+                        $lineDescription = $line->getDescription();
 
                         // if ($vat == 0 && $vatValue == 0) {
                         //     if ($netValue !== $lineTotal) {

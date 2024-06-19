@@ -286,6 +286,9 @@ final class PurchaseAdmin extends AbstractAdmin
     // MARK: - Form Fields
     protected function configureFormFields(FormMapper $form): void
     {
+        /** @var AccountRepository $accountRepository */
+        $accountRepository = $this->entityManager->getRepository(Account::class);
+
         $now = new DateTime();
 
         // /* Get unit */
@@ -321,11 +324,11 @@ final class PurchaseAdmin extends AbstractAdmin
         }
 
         if ($accountType == 'Cash') {
-            $transactionType = TransactionType::CASH_PAYMENT->value;
-            $transactionTypeName = TransactionType::getName($transactionType);
+            $transactionTypeValue = TransactionType::CASH_PAYMENT->value;
+            $transactionTypeName = TransactionType::getName($transactionTypeValue);
         } elseif ($accountType == 'Debit Card') {
-            $transactionType = TransactionType::DEBIT_CARD_PAYMENT->value;
-            $transactionTypeName = TransactionType::getName($transactionType);
+            $transactionTypeValue = TransactionType::DEBIT_CARD_PAYMENT->value;
+            $transactionTypeName = TransactionType::getName($transactionTypeValue);
         }
 
         // if ($unitId) {
@@ -340,7 +343,7 @@ final class PurchaseAdmin extends AbstractAdmin
                         'disabled' => true,
                         'data' => $accountNameCurrencyBalance,
                     ])
-                    ->add('account', HiddenType::class, [
+                    ->add('accountId', HiddenType::class, [
                         'data' => $accountId,
                     ])
                     ->add('typeOfPayment', TextType::class, [
@@ -349,8 +352,8 @@ final class PurchaseAdmin extends AbstractAdmin
                         'disabled' => true,
                         'data' => $transactionTypeName,
                     ])
-                    ->add('transactionType', HiddenType::class, [
-                        'data' => $transactionType,
+                    ->add('transactionTypeValue', HiddenType::class, [
+                        'data' => $transactionTypeValue,
                     ])
                     ->add('dateOfPurchase', DatePickerType::class, [
                         'years' => range(1900, $now->format('Y')),
@@ -606,6 +609,7 @@ final class PurchaseAdmin extends AbstractAdmin
         $dateTime = $data['dateTime'];
         $currency = $data['currency'];
         $amountTotal = $data['amountTotal'];
+        $transactionType = $data['transactionType'];
 
         // if ($unitId) {
         //     $unit = $unitRepository->findOneBy([
@@ -618,6 +622,8 @@ final class PurchaseAdmin extends AbstractAdmin
         /* Persist created data in Purchase table */
         // $object->setUnit($unit);
         $object->setDateTimeAdded($dateTime);
+        // TODO: set TransactionType
+        $object->setTransactionType($transactionType);
         $object->setCurrency($currency);
         $object->setAmount($amountTotal);
         $object->setAddedByUser($user);
@@ -781,7 +787,6 @@ final class PurchaseAdmin extends AbstractAdmin
         $qb = $query->getQueryBuilder();
         $rootAlias = current($query->getQueryBuilder()->getRootAliases());
 
-
         // /* Get unit */
         // $unitId = $this->getUnitId();
 
@@ -815,14 +820,21 @@ final class PurchaseAdmin extends AbstractAdmin
         /** @var PurchaseRepository $purchaseRepository */
         $purchaseRepository = $this->entityManager->getRepository(Purchase::class);
 
+        /** @var AccountRepository $accountRepository */
+        $accountRepository = $this->entityManager->getRepository(Account::class);
+
         /* Get logged in user from the token */
         $user = $this->tokenStorage->getToken()->getUser();
+
+        $account = $accountRepository->findOneBy([
+            'id' => $purchase->getAccountId()
+        ]);
 
         /* Get actual dateTime */
         $dateTime = new DateTime();
 
         /* Get currency */
-        $currency = $purchase->getCurrency();
+        $currency = $account->getCurrency();
 
         /* Get lineTotals and calculate into the $amountTotal */
         $purchaseLines = $purchase->getPurchaseLines();
@@ -845,9 +857,10 @@ final class PurchaseAdmin extends AbstractAdmin
         $amountTotalDifference = strval($amountTotal - $currentAmount);
 
         $data['user'] = $user;
-        $data['account'] = $purchase->getAccount();
+        $data['account'] = $account;
         $data['dateTime'] = $dateTime;
-        $data['currency'] = $currency ?: $purchase->getAccount()->getCurrency();
+        $data['transactionType'] = $purchase->getTransactionTypeValue();
+        $data['currency'] = $currency;
         $data['amountTotal'] = $amountTotalStr;
         $data['amountTotalDifference'] = $amountTotalDifference;
         $data['currentAmount'] = $currentAmount;

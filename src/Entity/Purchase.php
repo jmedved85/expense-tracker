@@ -19,6 +19,8 @@ class Purchase
     #[ORM\Column(type: Types::INTEGER)]
     private int $transactionType;
 
+    private ?string $transactionTypeValue = null;
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateOfPurchase = null;
 
@@ -46,6 +48,8 @@ class Purchase
     #[ORM\ManyToOne(inversedBy: 'purchases')]
     private ?Account $account = null;
 
+    private ?string $accountId = null;
+
     #[ORM\ManyToOne(inversedBy: 'purchases')]
     private ?Budget $budget = null;
 
@@ -70,7 +74,7 @@ class Purchase
     #[ORM\ManyToOne(inversedBy: 'purchases')]
     private ?Unit $unit = null;
 
-    #[ORM\OneToMany(targetEntity: PurchaseLine::class, mappedBy: 'purchase')]
+    #[ORM\OneToMany(targetEntity: PurchaseLine::class, mappedBy: 'purchase', cascade: ["persist"])]
     private Collection $purchaseLines;
 
     /**
@@ -109,6 +113,18 @@ class Purchase
     public function getTransactionType(): TransactionType
     {
         return TransactionType::from($this->transactionType);
+    }
+
+    public function getTransactionTypeValue(): ?string
+    {
+        return $this->transactionTypeValue;
+    }
+
+    public function setTransactionTypeValue(?string $transactionTypeValue): self
+    {
+        $this->transactionTypeValue = $transactionTypeValue;
+    
+        return $this;
     }
 
     public function getTransactionTypeName(): string
@@ -222,6 +238,18 @@ class Purchase
     public function getAccount(): ?Account
     {
         return $this->account;
+    }
+
+    public function getAccountId(): ?string
+    {
+        return $this->accountId;
+    }
+
+    public function setAccountId(?string $accountId): self
+    {
+        $this->accountId = $accountId;
+    
+        return $this;
     }
 
     public function setAccount(?Account $account): static

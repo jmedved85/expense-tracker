@@ -67,7 +67,7 @@ final class PurchaseLineAdmin extends AbstractAdmin
             ->add('budgetSubCategory', EntityType::class, [
                 'class' => BudgetSubCategory::class,
                 'choice_label' => 'name',
-                'label' => 'Sub Category',
+                'label' => 'Category',
                 'required' => false,
                 'placeholder' => 'Choose an option',
                 // 'query_builder' =>

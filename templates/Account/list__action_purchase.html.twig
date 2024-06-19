@@ -3,7 +3,7 @@
         <a class="btn btn-sm btn-default" 
             style="margin: 0 2px 0 0;"
             href="{{ admin.generateObjectUrl('redirectToPurchase', object) }}" 
-            title="Purchase"
+            title="{{ 'new_purchase'|trans({}, 'SonataAdminBundle') }}"
         >
             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
         </a>
