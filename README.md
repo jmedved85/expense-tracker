@@ -1,10 +1,14 @@
-# home-acc
+# ExpenseTracker (version 0.0.1)
 
-https://github.com/jmedved85/home-acc
+[GitHub Repository](https://github.com/jmedved85/expense-tracker)
 
-- budget tracker tool for home, small bussiness etc.
-- symfony 6.4 LTS, SonataAdmin, SQL Lite, MySQL, Vue / React / Preact (frontend), Apache Cordova / React Native (mobile), FrankenPHP
-- 1. phase - Symfony / SonataAdmin functional -> DEMO app public
-- 2. phase - testing on home budget, new features
-- 3. phase - mobile, desktop (FrankenPHP?)
-- 4. phase - SPA
+**Author:** Jasmin Medved
+
+**Description:** Expense tracking tool for home, small business, etc. This is a personal full-stack project for developing new ideas that could be implemented in my other, more production-ready projects.
+
+**Technologies:** Symfony 6.4 LTS, SonataAdmin, MySQL, TypeScript
+
+**Project Phases:**
+1. **Phase 1**: API functional -> DEMO app public
+2. **Phase 2**: Testing data entry and new features
+3. **Phase 3**: Frontend SPA application (Stimulus, Turbo), mobile
