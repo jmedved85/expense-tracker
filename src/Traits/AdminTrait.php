@@ -13,10 +13,15 @@ use App\Repository\TransactionRepository;
 use DateTime;
 use DateTimeInterface;
 use Exception;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 trait AdminTrait
 {
+    public function __construct(private RequestStack $requestStack)
+    {
+    }
+
     /* TODO: Add functionality to custom user choice in settings */
     protected $preferredCurrencyChoices = ['EUR', 'USD', 'GBP'];
 
@@ -101,6 +106,28 @@ trait AdminTrait
         }
 
         return $transactionNumber;
+    }
+
+    public function getSwitchedUnit(): ?int
+    {
+        try {
+            $request = $this->getRequest();
+        } catch (Exception $e) {
+            $request = $this->requestStack->getCurrentRequest();
+        }
+
+        if (is_null($request)) {
+            return null;
+        }
+
+        // Check if user is logged in to a specific unit (check session)
+        $switchedUnit = $request->getSession()->get('switched_unit');
+
+        if ($switchedUnit) {
+            return (int) $switchedUnit;
+        }
+
+        return null;
     }
 
     /* TODO: refactor to transaction service class */

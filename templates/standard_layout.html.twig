@@ -19,6 +19,62 @@
     {# <script src="{{ asset('js/custom.js') }}"></script> #}
 {% endblock %}
 
+{% block sonata_header %}
+    <header class="main-header">
+        {% block sonata_header_noscript_warning %}
+            {{ parent() }}
+        {% endblock %}
+
+        {% block logo %}
+            {{ parent() }}
+        {% endblock %}
+
+        {% block sonata_nav %}
+            <nav class="navbar navbar-static-top">
+                <a href="#" class="sidebar-toggle fa5" data-toggle="push-menu"
+                    role="button" title="{{ 'toggle_navigation'|trans({}, 'SonataAdminBundle') }}">
+                    <span class="sr-only">{{ 'toggle_navigation'|trans({}, 'SonataAdminBundle') }}</span>
+                </a>
+
+                <div class="navbar-left">
+                    {% block sonata_breadcrumb %}
+                        {{ parent() }}
+                    {% endblock sonata_breadcrumb %}
+                </div>
+
+                {% block sonata_top_nav_menu %}
+                    <div class="navbar-custom-menu">
+                        <ul class="nav navbar-nav">
+                            {% block sonata_top_nav_menu_add_block %}
+                                {{ parent() }}
+
+                                {%- set unitList = get_unit_list() -%}
+
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" title="Switch to Unit" href="#">
+                                        <i class="fas fa-building"></i> <i class="fas fa-caret-down" aria-hidden="true"></i>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        {% for unit in unitList %}
+                                            <li><a href="#">{{ unit.name }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% endblock %}
+
+                            {% if app.user %}
+                                {% block sonata_top_nav_menu_user_block %}
+                                    {{ parent() }}
+                                {% endblock %}
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endblock %}
+            </nav>
+        {% endblock sonata_nav %}
+    </header>
+{% endblock %}
+
 {% block sonata_page_content %}
     <section class="content-header">
 

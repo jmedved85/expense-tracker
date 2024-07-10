@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Admin;
 
 use App\Entity\Unit;
+use App\Traits\AdminTrait;
 use InvalidArgumentException;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridInterface;
@@ -17,6 +18,8 @@ use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
 
 final class UnitAdmin extends AbstractAdmin
 {
+    use AdminTrait;
+
     /* Remove batch delete action from the list */
     protected function configureBatchActions($actions): array
     {
@@ -25,11 +28,11 @@ final class UnitAdmin extends AbstractAdmin
         return $actions;
     }
 
-    // /* Remove Download button from bottom of the list */
-    // public function getExportFormats(): array
-    // {
-    //     return [];
-    // }
+    /* Remove Download button from bottom of the list */
+    public function getExportFormats(): array
+    {
+        return [];
+    }
 
     // MARK: - Datagrid Filters
     protected function configureDatagridFilters(DatagridMapper $filter): void
@@ -49,13 +52,13 @@ final class UnitAdmin extends AbstractAdmin
             'edit' => [
                 'template' => 'CRUD/list__action_edit_custom.html.twig',
             ],
-            'delete' => [
-                'template' => 'CRUD/list__action_delete_custom.html.twig',
-            ],
+            // 'delete' => [
+            //     'template' => 'CRUD/list__action_delete_custom.html.twig',
+            // ],
         ];
 
         $list
-            ->add('name')
+            ->addIdentifier('name')
             // ->add('image')
             // ->add('logo')
             ->add('description')
@@ -88,8 +91,8 @@ final class UnitAdmin extends AbstractAdmin
                 // ->add('logo')
                 ->add('description')
                 ->end()
-            ->with('Second Column', [
-                    'label' => false,
+            ->with('Active', [
+                    'label' => 'Active Unit',
                     'class' => 'col-md-6'
                     ])
                 ->add('active')
@@ -117,24 +120,23 @@ final class UnitAdmin extends AbstractAdmin
             throw new InvalidArgumentException('Expected an instance of ProxyQuery');
         }
 
-        // $qb = $query->getQueryBuilder();
-        // $rootAlias = current($query->getQueryBuilder()->getRootAliases());
+        $qb = $query->getQueryBuilder();
+        $rootAlias = current($query->getQueryBuilder()->getRootAliases());
 
-        // /* Get unit */
-        // $unitId = $this->getUnitId();
+        /* Get switched unit */
+        $unitId = $this->getSwitchedUnit();
 
-        // if ($unitId) {
-        //     $qb
-        //         ->where($rootAlias . '.unit = :unitId')
-        //         ->setParameter('unitId', $unitId)
-        //     ;
-        // } else {
-        //     $qb
-        //         ->join($rootAlias . '.unit', 'u')
-        //         ->andWhere('u.active = :active')
-        //         ->setParameter('active', true)
-        //     ;
-        // }
+        if ($unitId) {
+            $qb
+                ->where($rootAlias . '.id = :unitId')
+                ->setParameter('unitId', $unitId)
+            ;
+        } else {
+            $qb
+                ->where($rootAlias . '.active = :active')
+                ->setParameter('active', true)
+            ;
+        }
 
         return $query;
     }
