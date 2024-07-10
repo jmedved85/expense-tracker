@@ -1,6 +1,6 @@
 sonata_admin:
-    title: 'HomeAcc'
-    title_logo: custom/logo.svg
+    title: 'ExpenseTracker'
+    title_logo: custom/logo-short.png
     templates:
         layout:                     'standard_layout.html.twig'
         list:                       '@SonataAdmin/CRUD/list.html.twig'
