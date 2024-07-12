@@ -53,7 +53,6 @@ class AppUtil
             // }
 
             /* Get user's role */
-
             $data = [];
 
             $data['user'] = $currentUser;
@@ -86,7 +85,7 @@ class AppUtil
         $switchedIntoUnit = $request->getSession()->get('switched_into_unit');
 
         if ($switchedIntoUnit) {
-            return $unitRepository->find($switchedIntoUnit);
+            return $unitRepository->find($switchedIntoUnit['id']);
         }
 
         return null;

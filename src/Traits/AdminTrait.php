@@ -7,19 +7,23 @@ namespace App\Traits;
 use App\Entity\Account;
 use App\Entity\AccountType;
 use App\Entity\Transaction;
-use App\Entity\TransactionType;
 use App\Entity\User;
 use App\Repository\TransactionRepository;
 use DateTime;
 use DateTimeInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 trait AdminTrait
 {
-    public function __construct(private RequestStack $requestStack)
-    {
+    public function __construct(
+        private RequestStack $requestStack,
+        private TokenStorageInterface $tokenStorage,
+        private EntityManagerInterface $entityManager
+    ) {
     }
 
     /* TODO: Add functionality to custom user choice in settings */

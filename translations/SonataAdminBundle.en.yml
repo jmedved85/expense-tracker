@@ -193,6 +193,7 @@ transaction_title: 'Transactions:'
 transaction_type: Transaction Type
 type_of_payment: Type Of Payment
 unit: Unit
+unit_switch: Unit Switch
 unpaid_invoices: Unpaid Invoices
 updated: Updated
 upload_file: Upload File

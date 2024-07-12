@@ -47,18 +47,42 @@
                         <ul class="nav navbar-nav">
                             {% block sonata_top_nav_menu_add_block %}
                                 {{ parent() }}
+                            {% endblock %}
 
-                                {%- set unitList = get_unit_list() -%}
+                            {% block sonata_top_nav_menu_unit_switch_block %}
+                                {% set unitList = get_unit_list() %}
+                                {% set switchedUnit = get_switched_unit() %}
 
                                 <li class="dropdown">
-                                    <a class="dropdown-toggle" data-toggle="dropdown" title="Switch to Unit" href="#">
-                                        <i class="fas fa-building"></i> <i class="fas fa-caret-down" aria-hidden="true"></i>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        {% for unit in unitList %}
-                                            <li><a href="#">{{ unit.name }}</a></li>
-                                        {% endfor %}
-                                    </ul>
+                                    {% if switchedUnit is defined and switchedUnit is not empty %}
+                                        <a type="submit" 
+                                            class="btn btn-danger" 
+                                            title="{{ 'exit_unit_button'|trans({}, 'SonataAdminBundle') }}" 
+                                            href="{{ path('exit_unit', {'_sonata_admin': 'admin.unit'}) }}"
+                                        >
+                                            <span style="font-weight:700;">{{ switchedUnit.name }}</span>&nbsp;
+                                            <i class="fas fa-sign-out-alt"></i>
+                                        </a>
+                                    {% else %}
+                                        <a class="dropdown-toggle" 
+                                            data-toggle="dropdown" 
+                                            title="{{ 'unit_switch'|trans({}, 'SonataAdminBundle') }}" 
+                                            href="#"
+                                        >
+                                            <i class="fas fa-building"></i> <i class="fas fa-caret-down" aria-hidden="true"></i>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            {% for unit in unitList %}
+                                                <li>
+                                                    <a href="{{ path('switch_to_unit', {'id': unit.id, '_sonata_admin': 'admin.unit'}) }}" 
+                                                        title="{{ unit.name }}"
+                                                    >
+                                                        {{ unit.name }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
                                 </li>
                             {% endblock %}
 

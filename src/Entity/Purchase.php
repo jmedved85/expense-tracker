@@ -123,7 +123,7 @@ class Purchase
     public function setTransactionTypeValue(?string $transactionTypeValue): self
     {
         $this->transactionTypeValue = $transactionTypeValue;
-    
+
         return $this;
     }
 
@@ -248,7 +248,7 @@ class Purchase
     public function setAccountId(?string $accountId): self
     {
         $this->accountId = $accountId;
-    
+
         return $this;
     }
 

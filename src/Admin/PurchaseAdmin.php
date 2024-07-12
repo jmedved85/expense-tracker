@@ -13,6 +13,7 @@ use App\Entity\Transaction;
 use App\Entity\TransactionType;
 use App\Entity\Unit;
 use App\Form\Type\EmptyType;
+use App\Repository\AccountRepository;
 use App\Repository\PurchaseRepository;
 use App\Repository\TransactionRepository;
 use App\Repository\UnitRepository;
@@ -322,6 +323,9 @@ final class PurchaseAdmin extends AbstractAdmin
             $accountCurrency = $accountData['accountCurrency'] ?? null;
             $unitId = $accountData['unitId'] ?? null;
         }
+
+        $transactionTypeName = null;
+        $transactionTypeValue = null;
 
         if ($accountType == 'Cash') {
             $transactionTypeValue = TransactionType::CASH_PAYMENT->value;
