@@ -34,3 +34,4 @@
 /node_modules/
 /.php-version
 /notes.txt
+/public/phpinfo.php
